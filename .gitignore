@@ -1,3 +1,7 @@
+# Scan folders
+scan_*/
+# Vscode folder
+.vscode/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

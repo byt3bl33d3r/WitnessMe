@@ -1,0 +1,8 @@
+-i https://pypi.org/simple
+aiosqlite==0.10.0
+appdirs==1.4.3
+pyee==6.0.0
+pyppeteer==0.0.25
+tqdm==4.32.2
+urllib3==1.25.3
+websockets==8.0
