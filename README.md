@@ -10,7 +10,7 @@ Depending on how mature this project gets, I might submit this as a PR to the or
 
 ## Why & what problems does this solve
 
-- Python 3.7
+- Python >= 3.7
 - No dependency/installation hell (currently uses only 2 third party packages)
 - Asyncio provides Mad Max level speeds
 - Headless chrome/chromium is just straight up gangsta
@@ -34,7 +34,7 @@ optional arguments:
 - Scan an entire subnet and take a screenshot of every HTTP & HTTPS webpage:
 
 ```bash
-~# python witnessme.py 192.168.1.0/24
+python witnessme.py 192.168.1.0/24
 ```
 
 ## To Do

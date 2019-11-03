@@ -8,18 +8,16 @@ import argparse
 import signal
 import stats
 import socket
-import functools
 import pyppeteer
+from time import sleep
 from database import ScanDatabase
 from datetime import datetime
 from ipaddress import ip_address, ip_network, summarize_address_range
-from asyncio import FIRST_COMPLETED
 from argparse import ArgumentDefaultsHelpFormatter
-from time import sleep
 from urllib.parse import urlparse
 
-#logging.getLogger('pyppeteer').setLevel(logging.ERROR)
 logging.basicConfig(format="%(asctime)s [%(levelname)s] - %(filename)s: %(funcName)s - %(message)s", level=logging.INFO)
+logging.getLogger('pyppeteer').setLevel(logging.ERROR)
 
 def patch_pyppeteer():
     """
@@ -84,7 +82,6 @@ async def on_requestfinished(request):
     #logging.info(f"on_requestfinished() called, url: {request.url}")
 
 async def screenshot(url, page):
-    #async with sem:
     #logging.info(f"Taking screenshot of {url}")
     parsed_url = urlparse(url)
 
