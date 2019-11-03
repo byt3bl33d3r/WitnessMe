@@ -4,12 +4,9 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-ipython = "*"
 pylint = "*"
+ipython = "*"
 
 [packages]
 pyppeteer = "*"
 aiosqlite = "*"
-
-[requires]
-python_version = "3.7"

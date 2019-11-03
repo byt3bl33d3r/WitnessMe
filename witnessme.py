@@ -9,6 +9,7 @@ import signal
 import stats
 import socket
 import functools
+import pyppeteer
 from database import ScanDatabase
 from datetime import datetime
 from ipaddress import ip_address, ip_network, summarize_address_range
@@ -16,18 +17,30 @@ from asyncio import FIRST_COMPLETED
 from argparse import ArgumentDefaultsHelpFormatter
 from time import sleep
 from urllib.parse import urlparse
-from pyppeteer import launch
 
-logging.getLogger('pyppeteer').setLevel(logging.ERROR)
-
+#logging.getLogger('pyppeteer').setLevel(logging.ERROR)
 logging.basicConfig(format="%(asctime)s [%(levelname)s] - %(filename)s: %(funcName)s - %(message)s", level=logging.INFO)
+
+def patch_pyppeteer():
+    """
+    There's a bug in pyppeteer currently (https://github.com/miyakogi/pyppeteer/issues/62) which closes the websocket connection to Chromium after ~20s.
+    This is a hack to fix that. Taken from https://github.com/miyakogi/pyppeteer/pull/160
+    """
+    import pyppeteer.connection
+    original_method = pyppeteer.connection.websockets.client.connect
+
+    def new_method(*args, **kwargs):
+        kwargs['ping_interval'] = None
+        kwargs['ping_timeout'] = None
+        return original_method(*args, **kwargs)
+
+    pyppeteer.connection.websockets.client.connect = new_method
 
 def generate_urls(targets):
     for target in targets:
         for host in generate_targets(target):
             for port in args.ports:
                 for scheme in ["http", "https"]:
-                    stats.inputs += 1
                     yield f"{scheme}://{host}:{port}"
 
 def generate_targets(target):
@@ -70,81 +83,112 @@ async def on_requestfinished(request):
     pass
     #logging.info(f"on_requestfinished() called, url: {request.url}")
 
-async def screenshot(url, browser):
-    async with sem:
-        logging.info(f"Taking screenshot of {url}")
-        parsed_url = urlparse(url)
+async def screenshot(url, page):
+    #async with sem:
+    #logging.info(f"Taking screenshot of {url}")
+    parsed_url = urlparse(url)
 
-        hostname, ip = await resolve_host(parsed_url.hostname)
-        screenshot_path = f'./{report_folder}/{parsed_url.scheme}_{parsed_url.hostname}_{parsed_url.port}.png'
+    hostname, ip = await resolve_host(parsed_url.hostname)
+    screenshot_path = f'./{report_folder}/{parsed_url.scheme}_{parsed_url.hostname}_{parsed_url.port}.png'
 
-        result_dict = {
-            "url": url,
-            "screenshot_path": screenshot_path,
-            "ip": ip,
-            "hostname": hostname,
-            "port": parsed_url.port,
-            "svc_name": parsed_url.scheme
+    """
+        The page.goto() options might need to be tweaked depending on testing in real environments.
+
+        https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md#pagewaitfornavigationoptions
+
+        load - consider navigation to be finished when the load event is fired.
+        domcontentloaded - consider navigation to be finished when the DOMContentLoaded event is fired.
+        networkidle0 - consider navigation to be finished when there are no more than 0 network connections for at least 500 ms.
+        networkidle2 - consider navigation to be finished when there are no more than 2 network connections for at least 500 ms.
+    """
+
+    response = await page.goto(
+        url,
+        options={
+            "waitUntil": "networkidle0"
         }
+    )
+
+    await page.screenshot(
+        {
+            'path': screenshot_path,
+            'fullPage': True
+        }
+    )
+
+    result_dict = {
+        "url": url,
+        "screenshot_path": screenshot_path,
+        "ip": ip,
+        "hostname": hostname,
+        "port": parsed_url.port,
+        "svc_name": parsed_url.scheme,
+        "title": await page.title(), # await page.evaluate('document.title')
+        "headers": response.headers
+    }
+
+    logging.info(result_dict)
+    return result_dict
+
+def task_watch(queue):
+    while True:
+        sleep(1)
+        #total_tasks = queue.qsize()
+        logging.info(f"total: {stats.inputs}, done: {stats.execs}, pending: {stats.inputs - stats.execs}, execs: {stats.execs/stats.inputs}")
+
+async def worker(browser, queue):
+    while True:
+        url = await queue.get()
 
         page = await browser.newPage()
+        page.setDefaultNavigationTimeout(10000)
+
         #page.on('request', lambda req: asyncio.create_task(on_request(req)))
         #page.on('requestfinished', lambda req: asyncio.create_task(on_requestfinished(req)))
         #page.on('response', lambda resp: asyncio.create_task(on_response(resp)))
 
-        response = await page.goto(
-            url,
-            options={
-                "waitUntil": "networkidle0"
-            }
-        )
+        try:
+            r = await asyncio.wait_for(screenshot(url, page), timeout=30)
 
-        await page.screenshot(
-            {
-                'path': screenshot_path,
-                'fullPage': True
-            }
-        )
+            async with ScanDatabase(report_folder) as db:
+                await db.add_host_and_service(**r)
+            logging.info(f"Took screenshot of {url}")
+        except asyncio.TimeoutError:
+            logging.info(f"Task for url {url} timed out")
+        except Exception as e:
+            #if not any(err in str(e) for err in ['ERR_ADDRESS_UNREACHABLE', 'ERR_CONNECTION_REFUSED', 'ERR_CONNECTION_TIMED_OUT']):
+            logging.error(f"Error taking screenshot: {e}")
+        finally:
+            stats.execs += 1
+            await page.close()
+            queue.task_done()
 
-        #result_dict["title"] = await page.evaluate('document.title')
-        result_dict["title"] = await page.title()
-        result_dict["headers"] = response.headers
-
-        await page.close()
-        return result_dict
-
-def task_watch(tasks):
-    while True:
-        sleep(1)
-        total_tasks = len(tasks)
-        done_tasks = len([t for t in tasks if t.done()])
-        pending_tasks = len([t for t in tasks if not t.done()])
-
-        logging.info(f"total: {total_tasks}, done: {done_tasks}, pending: {pending_tasks}, execs: {stats.execs}/{stats.inputs}")
+async def producer(queue):
+    for url in generate_urls(args.target):
+        stats.inputs += 1
+        await queue.put(url)
 
 async def start_scan():
     await ScanDatabase.create_db_and_schema(report_folder)
-    browser = await launch(headless=True, ignoreHTTPSErrors=True)
+    queue = asyncio.Queue()
+    asyncio.create_task(producer(queue))
 
+    t = threading.Thread(target=task_watch, args=(queue,))
+    t.setDaemon(True)
+    t.start()
+
+    browser = await pyppeteer.launch(headless=True, ignoreHTTPSErrors=True)
     try:
-        tasks = [ asyncio.create_task(screenshot(url, browser)) for url in generate_urls(args.target) ]
-        t = threading.Thread(target=task_watch, args=(tasks,))
-        t.setDaemon(True)
-        t.start()
+        worker_threads = [asyncio.create_task(worker(browser, queue)) for n in range(args.threads)]
+        logging.info(f"Using {len(worker_threads)} worker thread(s)")
 
-        for task in asyncio.as_completed(tasks):
-            stats.execs += 1
-            try:
-                r = await task
-                logging.info(f"Took screenshot of {r['url']}: {r}")
+        await queue.join()
 
-                async with ScanDatabase(report_folder) as db:
-                    await db.add_host_and_service(**r)
-            except Exception as e:
-                #if not any(err in str(e) for err in ['ERR_ADDRESS_UNREACHABLE', 'ERR_CONNECTION_REFUSED', 'ERR_CONNECTION_TIMED_OUT']):
-                logging.error(f"Error taking screenshot: {e}")
-    except Exception:
-        logging.info("main() got exception")
+        for task in worker_threads:
+            task.cancel()
+        # Wait until all worker tasks are cancelled.
+        await asyncio.gather(*worker_threads, return_exceptions=True)
+
     finally:
         await browser.close()
 
@@ -155,11 +199,10 @@ if __name__ == '__main__':
     parser.add_argument('--threads', default=25, type=int, help='Number of concurrent threads')
     args = parser.parse_args()
 
+    patch_pyppeteer() # https://github.com/miyakogi/pyppeteer/issues/62
+
     time = datetime.now().strftime("%Y_%m_%d_%H%M%S")
     report_folder = f"scan_{time}"
     os.mkdir(report_folder)
 
-    loop = asyncio.get_event_loop()
-    sem = asyncio.BoundedSemaphore(args.threads, loop=loop)
-
-    loop.run_until_complete(start_scan())
+    asyncio.run(start_scan())
