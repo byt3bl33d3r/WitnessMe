@@ -1,8 +1,14 @@
 -i https://pypi.org/simple
 aiosqlite==0.10.0
 appdirs==1.4.3
+imgcat==0.4.0
+prompt-toolkit==2.0.10
 pyee==6.0.0
 pyppeteer==0.0.25
-tqdm==4.32.2
-urllib3==1.25.3
-websockets==8.0
+six==1.12.0
+terminaltables==3.1.0
+tqdm==4.37.0
+urllib3==1.25.6
+wcwidth==0.1.7
+websockets==8.1
+xmltodict==0.12.0
