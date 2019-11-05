@@ -154,9 +154,9 @@ async def start_scan():
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(formatter_class=ArgumentDefaultsHelpFormatter)
     parser.add_argument("target", nargs='+', type=str, help='The target IP(s), range(s), CIDR(s) or hostname(s)')
-    parser.add_argument("-p", "--ports", nargs='+', default=[80, 8080, 443, 8443], help="Ports")
+    parser.add_argument("-p", "--ports", nargs='+', default=[80, 8080, 443, 8443], help="Ports to scan if IP Range/CIDR is provided")
     parser.add_argument('--threads', default=25, type=int, help='Number of concurrent threads')
-    parser.add_argument('--timeout', default=35, type=int, help='Timeout for each connection attempt in seconds (Default: 35)')
+    parser.add_argument('--timeout', default=35, type=int, help='Timeout for each connection attempt in seconds')
     args = parser.parse_args()
 
     patch_pyppeteer() # https://github.com/miyakogi/pyppeteer/issues/62
