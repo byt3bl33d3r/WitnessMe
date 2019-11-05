@@ -6,3 +6,4 @@ pyppeteer==0.0.25
 tqdm==4.32.2
 urllib3==1.25.3
 websockets==8.0
+xmltodict==0.12.0
