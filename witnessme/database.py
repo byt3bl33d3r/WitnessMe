@@ -89,7 +89,7 @@ class ScanDatabase:
             return await cursor.fetchall()
 
     async def search_services(self, search):
-        async with self.db.execute("SELECT * FROM services WHERE title LIKE (?) OR server LIKE (?)", [search. search]) as cursor:
+        async with self.db.execute("SELECT * FROM services WHERE title LIKE (?) OR server LIKE (?)", [search, search]) as cursor:
             return await cursor.fetchall()
 
     async def __aenter__(self):
