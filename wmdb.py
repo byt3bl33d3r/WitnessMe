@@ -6,10 +6,13 @@ import shlex
 import sys
 import pathlib
 import logging
-import json
+#import json
 #import functools
 import aiosqlite
+import webbrowser
+from imgcat import imgcat
 from terminaltables import AsciiTable
+from witnessme.database import ScanDatabase
 from argparse import ArgumentDefaultsHelpFormatter
 from prompt_toolkit import PromptSession
 from prompt_toolkit.completion import Completer, Completion
@@ -20,7 +23,7 @@ from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 from prompt_toolkit.formatted_text import HTML
 #from prompt_toolkit.application import run_in_terminal
 from prompt_toolkit.styles import Style
-from witnessme.database import ScanDatabase
+
 #from prompt_toolkit.document import Document
 
 class WMCompleter(Completer):
@@ -34,7 +37,7 @@ class WMCompleter(Completer):
         except ValueError:
             pass
         else:
-            for cmd in ["exit", "hosts", "servers"]:
+            for cmd in ["exit", "show", "open", "hosts", "servers"]:
                 if cmd.startswith(word_before_cursor):
                     yield Completion(cmd, -len(word_before_cursor), display_meta=getattr(self.cli_menu, cmd).__doc__.strip())
 
@@ -62,6 +65,25 @@ class WMDBShell:
 
         print("Ciao!")
 
+    async def show(self, *args, **kwargs):
+        """
+        Preview screenshot in Terminal
+        """
+        async with ScanDatabase(connection=self.db) as db:
+            entry = await db.get_service_by_id(int(*args[0]))
+            _,_,screenshot_path,_,_,_,_,_,_ = entry
+            imgcat(open(screenshot_path))
+
+    async def open(self, *args, **kwargs):
+        """
+        Open screenshot in browser/previewer
+        """
+        async with ScanDatabase(connection=self.db) as db:
+            entry = await db.get_service_by_id(int(*args[0]))
+            _,_,screenshot_path,_,_,_,_,_,_ = entry
+            screenshot_path = str(pathlib.Path(screenshot_path).absolute())
+            webbrowser.open(screenshot_path.replace("/", "file:////", 1))
+
     async def hosts(self, *args, **kwargs):
         """
         Show hosts
@@ -83,8 +105,13 @@ class WMDBShell:
         async with ScanDatabase(connection=self.db) as db:
             table_data = [["Id", "URL", "Title", "Server"]]
             for entry in await db.get_services():
-                service_id, url, title, headers = entry
-                table_data.append([service_id, url, title, json.loads(headers)['server']])
+                service_id, url,_,_,_,title,server,_,_ = entry
+                table_data.append([
+                    service_id,
+                    url,
+                    title,
+                    server
+                ])
 
             table = AsciiTable(table_data)
             table.inner_row_border = True
@@ -96,22 +123,28 @@ class WMDBShell:
 
         try:
             while True:
-                with patch_stdout():
-                    text = await self.prompt_session.prompt(async_=True)
-                    command = shlex.split(text)
-                    if len(command):
-                        # Apperently you can't call await on a method retrieved via getattr() ??
-                        # So this sucks now but thankfully we don't have a lot of commands
-                        try:
-                            if command[0] == 'exit':
-                                await self.exit(command[1:])
-                                break
-                            elif command[0] == 'hosts':
-                                await self.hosts(command[1:])
-                            elif command[0] == 'servers':
-                                await self.servers(command[1:])
-                        except Exception as e:
-                            print(f"Error calling command '{command[0]}': {e}")
+                #with patch_stdout():
+                text = await self.prompt_session.prompt(async_=True)
+                command = shlex.split(text)
+                if len(command):
+                    # Apperently you can't call await on a method retrieved via getattr() ??
+                    # So this sucks now but thankfully we don't have a lot of commands
+                    try:
+                        if command[0] == 'exit':
+                            await self.exit(command[1:])
+                            break
+                        elif command[0] == 'show':
+                            await self.show(command[1:])
+                        elif command[0] == 'open':
+                            await self.open(command[1:])
+                        elif command[0] == 'hosts':
+                            await self.hosts(command[1:])
+                        elif command[0] == 'servers':
+                            await self.servers(command[1:])
+                    except Exception as e:
+                        import traceback
+                        traceback.print_exc()
+                        print(f"Error calling command '{command[0]}': {e}")
         finally:
             await self.db.close()
 

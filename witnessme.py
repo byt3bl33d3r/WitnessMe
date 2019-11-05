@@ -7,6 +7,7 @@ import os
 import argparse
 import signal
 import pyppeteer
+import pathlib
 import witnessme.stats as stats
 from time import sleep
 from witnessme.utils import patch_pyppeteer, resolve_host
@@ -43,7 +44,11 @@ async def screenshot(url, page):
     parsed_url = urlparse(url)
 
     hostname, ip = await resolve_host(parsed_url.hostname)
-    screenshot_path = f'./{report_folder}/{parsed_url.scheme}_{parsed_url.hostname}_{parsed_url.port}.png'
+    screenshot_path = str(
+        pathlib.Path(
+            f'./{report_folder}/{parsed_url.scheme}_{parsed_url.hostname}_{parsed_url.port}.png'
+        ).absolute()
+    )
 
     """
         The page.goto() options might need to be tweaked depending on testing in real environments.
@@ -71,14 +76,15 @@ async def screenshot(url, page):
     )
 
     return {
-        "url": url,
-        "screenshot_path": screenshot_path,
         "ip": ip,
         "hostname": hostname,
+        "url": url,
+        "screenshot_path": screenshot_path,
         "port": parsed_url.port,
-        "svc_name": parsed_url.scheme,
+        "scheme": parsed_url.scheme,
         "title": await page.title(), # await page.evaluate('document.title')
-        "headers": response.headers
+        "server": response.headers['server'] if 'server' in response.headers else None,
+        "headers": response.headers,
     }
 
 def task_watch(queue):
@@ -92,7 +98,7 @@ async def worker(browser, queue):
         url = await queue.get()
 
         page = await browser.newPage()
-        page.setDefaultNavigationTimeout(args.timeout * 100) # setDefaultNavigationTimeout() accepts milliseconds
+        page.setDefaultNavigationTimeout(args.timeout * 1000) # setDefaultNavigationTimeout() accepts milliseconds
 
         #page.on('request', lambda req: asyncio.create_task(on_request(req)))
         #page.on('requestfinished', lambda req: asyncio.create_task(on_requestfinished(req)))
@@ -150,7 +156,7 @@ if __name__ == '__main__':
     parser.add_argument("target", nargs='+', type=str, help='The target IP(s), range(s), CIDR(s) or hostname(s)')
     parser.add_argument("-p", "--ports", nargs='+', default=[80, 8080, 443, 8443], help="Ports")
     parser.add_argument('--threads', default=25, type=int, help='Number of concurrent threads')
-    parser.add_argument('--timeout', default=10, type=int, help='Timeout for each connection attempt in seconds')
+    parser.add_argument('--timeout', default=35, type=int, help='Timeout for each connection attempt in seconds (Default: 35)')
     args = parser.parse_args()
 
     patch_pyppeteer() # https://github.com/miyakogi/pyppeteer/issues/62

@@ -89,14 +89,24 @@ class NessusParser(XmlParser):
 
         try:
             entry = dict(path)
+            """
+            TO DO: There' a bug here, fix it
+            It seems to be putting http:// instead of https:// on ports with TLS
+            """
             if entry['ReportItem']['svc_name'] == 'https?':
                 self.urls.add(f"https://{entry['ReportHost']['name']}:{entry['ReportItem']['port']}")
-
             elif entry['ReportItem']['pluginID'] == "22964" and entry['ReportItem']['svc_name'] == 'www':
-                if "A web server is running on this port through" in dict(item)['plugin_output']:
+                if int(entry['ReportItem']['port']) == 443:
                     self.urls.add(f"https://{entry['ReportHost']['name']}:{entry['ReportItem']['port']}")
-                else:
+                elif int(entry['ReportItem']['port']) == 80:
                     self.urls.add(f"http://{entry['ReportHost']['name']}:{entry['ReportItem']['port']}")
+                else:
+                    if dict(item)['plugin_output'].lower().find("a web server is running on this port through") != -1:
+                        self.urls.add(f"https://{entry['ReportHost']['name']}:{entry['ReportItem']['port']}")
+                    else:
+                        self.urls.add(f"https://{entry['ReportHost']['name']}:{entry['ReportItem']['port']}")
+                        self.urls.add(f"http://{entry['ReportHost']['name']}:{entry['ReportItem']['port']}")
+                        #logging.error("Unable to process Nessus entry")
 
             elif entry['ReportItem']['svc_name'] in ['http?', 'www']:
                 self.urls.add(f"http://{entry['ReportHost']['name']}:{entry['ReportItem']['port']}")

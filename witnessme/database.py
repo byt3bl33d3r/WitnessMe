@@ -23,12 +23,13 @@ class ScanDatabase:
                 "url" text,
                 "screenshot_path" text,
                 "port" integer,
-                "name" text,
-                "headers" text,
+                "scheme" text,
                 "title" text,
+                "server" text,
+                "headers" text,
                 "host_id" integer,
                 FOREIGN KEY(host_id) REFERENCES hosts(id),
-                UNIQUE(port, host_id, name)
+                UNIQUE(port, host_id, scheme)
             )''')
 
             await db.commit()
@@ -36,13 +37,13 @@ class ScanDatabase:
     async def add_host(self, ip, hostname):
         return await self.db.execute("INSERT OR IGNORE INTO hosts (ip, hostname) VALUES (?,?)", [ip, hostname])
 
-    async def add_service(self, url, screenshot_path, port, name, headers, title, host_id):
+    async def add_service(self, url, screenshot_path, port, scheme, title, server, headers, host_id):
         return await self.db.execute(
-            "INSERT OR IGNORE INTO services (url, screenshot_path, port, name, headers, title, host_id) VALUES (?,?,?,?,?,?,?)",
-            [url, screenshot_path, port, name, headers, title, host_id]
+            "INSERT OR IGNORE INTO services (url, screenshot_path, port, scheme, title, server, headers, host_id) VALUES (?,?,?,?,?,?,?,?)",
+            [url, screenshot_path, port, scheme, title, server, headers, host_id]
         )
 
-    async def add_host_and_service(self, url, screenshot_path, ip, hostname, port, svc_name, headers, title):
+    async def add_host_and_service(self, ip, hostname, url, screenshot_path, port, scheme, title, server, headers):
         cursor = await self.add_host(ip, hostname)
         host_id = cursor.lastrowid
         if host_id == 0:
@@ -50,8 +51,8 @@ class ScanDatabase:
                 row = await cursor.fetchone()
                 host_id = row[0]
 
-        await self.add_service(url, screenshot_path, port, svc_name, json.dumps(headers), title, host_id)
-    
+        await self.add_service(url, screenshot_path, port, scheme, title, server, json.dumps(headers), host_id)
+
     async def get_service_count(self):
         async with self.db.execute("SELECT count(*) FROM services") as cursor:
             result = await cursor.fetchone()
@@ -67,12 +68,28 @@ class ScanDatabase:
             result = await cursor.fetchone()
             return result[0]
 
-    async def get_hosts(self, search=None):
+    async def get_service_by_id(self, service_id: int):
+        async with self.db.execute("SELECT * FROM services WHERE id=(?)", [service_id]) as cursor:
+            return await cursor.fetchone()
+    
+    async def get_host_by_id(self, host_id: int):
+        async with self.db.execute("SELECT * FROM hosts WHERE id=(?)", [host_id]) as cursor:
+            return await cursor.fetchone()
+
+    async def get_hosts(self):
         async with self.db.execute("SELECT * FROM hosts") as cursor:
             return await cursor.fetchall()
 
-    async def get_services(self, search=None):
-        async with self.db.execute("SELECT id, url, title, headers FROM services") as cursor:
+    async def get_services(self):
+        async with self.db.execute("SELECT * FROM services") as cursor:
+            return await cursor.fetchall()
+
+    async def search_hosts(self, search):
+        async with self.db.execute("SELECT * FROM hosts WHERE ip LIKE (?) OR hostname LIKE (?)", [search, search]) as cursor:
+            return await cursor.fetchall()
+
+    async def search_services(self, search):
+        async with self.db.execute("SELECT * FROM services WHERE title LIKE (?) OR") as cursor:
             return await cursor.fetchall()
 
     async def __aenter__(self):
