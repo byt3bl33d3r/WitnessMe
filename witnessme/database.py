@@ -4,8 +4,9 @@ import json
 from datetime import datetime
 
 class ScanDatabase:
-    def __init__(self, report_folder):
+    def __init__(self, report_folder=None, connection=None):
         self.report_folder = report_folder
+        self.connection = connection
 
     @staticmethod
     async def create_db_and_schema(report_folder):
@@ -60,11 +61,28 @@ class ScanDatabase:
         async with self.db.execute("SELECT count(*) FROM hosts") as cursor:
             result = await cursor.fetchone()
             return result[0]
+    
+    async def get_services_on_host(self, host):
+        async with self.db.execute("SELECT count(*) FROM services WHERE  ") as cursor:
+            result = await cursor.fetchone()
+            return result[0]
+
+    async def get_hosts(self, search=None):
+        async with self.db.execute("SELECT * FROM hosts") as cursor:
+            return await cursor.fetchall()
+
+    async def get_services(self, search=None):
+        async with self.db.execute("SELECT id, url, title, headers FROM services") as cursor:
+            return await cursor.fetchall()
 
     async def __aenter__(self):
-        self.db = await aiosqlite.connect(f"{self.report_folder}/witnessme.db")
+        if not self.connection:
+            self.db = await aiosqlite.connect(f"{self.report_folder}/witnessme.db")
+        else:
+            self.db = self.connection
         return self
 
     async def __aexit__(self, exec_type, exc, tb):
         await self.db.commit()
-        await self.db.close()
+        if not self.connection:
+            await self.db.close()

@@ -6,68 +6,25 @@ import asyncio
 import os
 import argparse
 import signal
-import stats
-import socket
 import pyppeteer
+import witnessme.stats as stats
 from time import sleep
-from database import ScanDatabase
+from witnessme.utils import patch_pyppeteer, resolve_host
+from witnessme.database import ScanDatabase
+from witnessme.parsers import AutomaticTargetGenerator
 from datetime import datetime
-from ipaddress import ip_address, ip_network, summarize_address_range
 from argparse import ArgumentDefaultsHelpFormatter
 from urllib.parse import urlparse
 
-logging.basicConfig(format="%(asctime)s [%(levelname)s] - %(filename)s: %(funcName)s - %(message)s", level=logging.INFO)
-logging.getLogger('pyppeteer').setLevel(logging.ERROR)
-
-def patch_pyppeteer():
-    """
-    There's a bug in pyppeteer currently (https://github.com/miyakogi/pyppeteer/issues/62) which closes the websocket connection to Chromium after ~20s.
-    This is a hack to fix that. Taken from https://github.com/miyakogi/pyppeteer/pull/160
-    """
-    import pyppeteer.connection
-    original_method = pyppeteer.connection.websockets.client.connect
-
-    def new_method(*args, **kwargs):
-        kwargs['ping_interval'] = None
-        kwargs['ping_timeout'] = None
-        return original_method(*args, **kwargs)
-
-    pyppeteer.connection.websockets.client.connect = new_method
-
-def generate_urls(targets):
-    for target in targets:
-        for host in generate_targets(target):
-            for port in args.ports:
-                for scheme in ["http", "https"]:
-                    yield f"{scheme}://{host}:{port}"
-
-def generate_targets(target):
-    try:
-        if '-' in target:
-            start_ip, end_ip = target.split('-')
-            try:
-                end_ip = ip_address(end_ip)
-            except ValueError:
-                first_three_octets = start_ip.split(".")[:-1]
-                first_three_octets.append(end_ip)
-                end_ip = ip_address(
-                            ".".join(first_three_octets)
-                        )
-
-            for ip_range in summarize_address_range(ip_address(start_ip), end_ip):
-                for ip in ip_range:
-                    yield str(ip)
-        else:
-            for ip in ip_network(target, strict=False): yield str(ip)
-    except ValueError:
-        yield str(target)
-
-async def resolve_host(host):
-    try:
-        name,_,ips = socket.gethostbyaddr(host)
-        return name, ips[0]
-    except Exception:
-        return '', ''
+logging.basicConfig(format="%(asctime)s [%(levelname)s] - %(filename)s: %(funcName)s - %(message)s", level=logging.DEBUG)
+logging.getLogger('asyncio').setLevel(logging.ERROR)
+logging.getLogger('sqlite3').setLevel(logging.ERROR)
+logging.getLogger('aiosqlite').setLevel(logging.ERROR)
+logging.getLogger('asyncio.coroutines').setLevel(logging.ERROR)
+logging.getLogger('websockets').setLevel(logging.ERROR)
+logging.getLogger('websockets.server').setLevel(logging.ERROR)
+logging.getLogger('websockets.protocol').setLevel(logging.ERROR)
+logging.getLogger('pyppeteer').setLevel(logging.INFO)
 
 async def on_request(request):
     pass
@@ -113,7 +70,7 @@ async def screenshot(url, page):
         }
     )
 
-    result_dict = {
+    return {
         "url": url,
         "screenshot_path": screenshot_path,
         "ip": ip,
@@ -124,29 +81,26 @@ async def screenshot(url, page):
         "headers": response.headers
     }
 
-    logging.info(result_dict)
-    return result_dict
-
 def task_watch(queue):
     while True:
-        sleep(1)
+        sleep(5)
         #total_tasks = queue.qsize()
-        logging.info(f"total: {stats.inputs}, done: {stats.execs}, pending: {stats.inputs - stats.execs}, execs: {stats.execs/stats.inputs}")
+        logging.info(f"total: {stats.inputs}, done: {stats.execs}, pending: {stats.inputs - stats.execs}")
 
 async def worker(browser, queue):
     while True:
         url = await queue.get()
 
         page = await browser.newPage()
-        page.setDefaultNavigationTimeout(10000)
+        page.setDefaultNavigationTimeout(args.timeout * 100) # setDefaultNavigationTimeout() accepts milliseconds
 
         #page.on('request', lambda req: asyncio.create_task(on_request(req)))
         #page.on('requestfinished', lambda req: asyncio.create_task(on_requestfinished(req)))
         #page.on('response', lambda resp: asyncio.create_task(on_response(resp)))
 
         try:
-            r = await asyncio.wait_for(screenshot(url, page), timeout=30)
-
+            r = await asyncio.wait_for(screenshot(url, page), timeout=args.timeout)
+            logging.info(r)
             async with ScanDatabase(report_folder) as db:
                 await db.add_host_and_service(**r)
             logging.info(f"Took screenshot of {url}")
@@ -161,12 +115,14 @@ async def worker(browser, queue):
             queue.task_done()
 
 async def producer(queue):
-    for url in generate_urls(args.target):
-        stats.inputs += 1
-        await queue.put(url)
+    with AutomaticTargetGenerator(args.target) as generated_targets:
+        for url in generated_targets: 
+            stats.inputs += 1
+            await queue.put(url)
 
 async def start_scan():
     await ScanDatabase.create_db_and_schema(report_folder)
+
     queue = asyncio.Queue()
     asyncio.create_task(producer(queue))
 
@@ -194,6 +150,7 @@ if __name__ == '__main__':
     parser.add_argument("target", nargs='+', type=str, help='The target IP(s), range(s), CIDR(s) or hostname(s)')
     parser.add_argument("-p", "--ports", nargs='+', default=[80, 8080, 443, 8443], help="Ports")
     parser.add_argument('--threads', default=25, type=int, help='Number of concurrent threads')
+    parser.add_argument('--timeout', default=10, type=int, help='Timeout for each connection attempt in seconds')
     args = parser.parse_args()
 
     patch_pyppeteer() # https://github.com/miyakogi/pyppeteer/issues/62

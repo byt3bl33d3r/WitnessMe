@@ -10,3 +10,6 @@ ipython = "*"
 [packages]
 pyppeteer = "*"
 aiosqlite = "*"
+xmltodict = "*"
+terminaltables = "*"
+prompt-toolkit = "*"
