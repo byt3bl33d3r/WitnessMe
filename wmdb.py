@@ -72,7 +72,9 @@ class WMDBShell:
         async with ScanDatabase(connection=self.db) as db:
             entry = await db.get_service_by_id(int(*args[0]))
             _,_,screenshot_path,_,_,_,_,_,_ = entry
-            imgcat(open(screenshot_path))
+            imgcat(
+                open(db_path.parent.joinpath(screenshot_path).absolute())
+            )
 
     async def open(self, *args, **kwargs):
         """
@@ -81,7 +83,7 @@ class WMDBShell:
         async with ScanDatabase(connection=self.db) as db:
             entry = await db.get_service_by_id(int(*args[0]))
             _,_,screenshot_path,_,_,_,_,_,_ = entry
-            screenshot_path = str(pathlib.Path(screenshot_path).absolute())
+            screenshot_path = str(db_path.parent.joinpath(screenshot_path).absolute())
             webbrowser.open(screenshot_path.replace("/", "file:////", 1))
 
     async def hosts(self, *args, **kwargs):

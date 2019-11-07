@@ -10,7 +10,7 @@ import pyppeteer
 import pathlib
 import witnessme.stats as stats
 from time import sleep
-from witnessme.utils import patch_pyppeteer, resolve_host
+from witnessme.utils import patch_pyppeteer, resolve_host, is_ipaddress
 from witnessme.database import ScanDatabase
 from witnessme.parsers import AutomaticTargetGenerator
 from datetime import datetime
@@ -41,14 +41,15 @@ async def on_requestfinished(request):
 
 async def screenshot(url, page):
     #logging.info(f"Taking screenshot of {url}")
+
     parsed_url = urlparse(url)
 
-    hostname, ip = await resolve_host(parsed_url.hostname)
-    screenshot_path = str(
-        pathlib.Path(
-            f'./{report_folder}/{parsed_url.scheme}_{parsed_url.hostname}_{parsed_url.port}.png'
-        ).absolute()
-    )
+    hostname = parsed_url.hostname
+    if is_ipaddress(hostname):
+        hostname = await asyncio.wait_for(resolve_host(hostname), timeout=3)
+
+    screenshot = f'{parsed_url.scheme}_{parsed_url.hostname}_{parsed_url.port}.png'
+    screenshot_path = pathlib.Path(f'./{report_folder}/{screenshot}').absolute()
 
     """
         The page.goto() options might need to be tweaked depending on testing in real environments.
@@ -76,10 +77,10 @@ async def screenshot(url, page):
     )
 
     return {
-        "ip": ip,
-        "hostname": hostname,
+        "ip": response.remoteIPAddress,
+        "hostname": hostname if not is_ipaddress(hostname) else None,
         "url": url,
-        "screenshot_path": screenshot_path,
+        "screenshot": screenshot,
         "port": parsed_url.port,
         "scheme": parsed_url.scheme,
         "title": await page.title(), # await page.evaluate('document.title')
@@ -159,7 +160,7 @@ if __name__ == '__main__':
     parser.add_argument('--timeout', default=35, type=int, help='Timeout for each connection attempt in seconds')
     args = parser.parse_args()
 
-    patch_pyppeteer() # https://github.com/miyakogi/pyppeteer/issues/62
+    patch_pyppeteer()
 
     time = datetime.now().strftime("%Y_%m_%d_%H%M%S")
     report_folder = f"scan_{time}"
