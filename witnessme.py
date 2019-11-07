@@ -136,7 +136,7 @@ async def start_scan():
     t.setDaemon(True)
     t.start()
 
-    browser = await pyppeteer.launch(headless=True, ignoreHTTPSErrors=True)
+    browser = await pyppeteer.launch(headless=True, ignoreHTTPSErrors=True, args=['--no-sandbox']) # --no-sandbox is required to make Chrome/Chromium run under root.
     try:
         worker_threads = [asyncio.create_task(worker(browser, queue)) for n in range(args.threads)]
         logging.info(f"Using {len(worker_threads)} worker thread(s)")
