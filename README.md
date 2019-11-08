@@ -45,7 +45,7 @@ optional arguments:
                         (default: 35)
 ```
 
-Can accept a mix of .Nessus file(s), Nmap XML file(s), files containing URLs and/or IPs and just straigt IP addresses/ranges/CIDRs and URLs as targets:
+Can accept a mix of .Nessus file(s), Nmap XML file(s), files containing URLs and/or IPs, IP addresses/ranges/CIDRs and URLs. Long story short, should be able to handle anything you throw at it:
 
 ```bash
 python witnessme.py 192.168.1.0/24 192.168.1.10-20 https://bing.com ~/my_nessus_scan.nessus ~/my_nmap_scan.xml ~/myfilewithURLSandIPs
