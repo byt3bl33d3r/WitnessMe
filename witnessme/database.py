@@ -63,10 +63,10 @@ class ScanDatabase:
             result = await cursor.fetchone()
             return result[0]
     
-    async def get_services_on_host(self, host):
-        async with self.db.execute("SELECT count(*) FROM services WHERE  ") as cursor:
-            result = await cursor.fetchone()
-            return result[0]
+    async def get_services_on_host(self, host_id: int):
+        async with self.db.execute("SELECT * FROM services WHERE host_id=(?)", [host_id]) as cursor:
+            result = await cursor.fetchall()
+            return result
 
     async def get_service_by_id(self, service_id: int):
         async with self.db.execute("SELECT * FROM services WHERE id=(?)", [service_id]) as cursor:
@@ -84,12 +84,12 @@ class ScanDatabase:
         async with self.db.execute("SELECT * FROM services") as cursor:
             return await cursor.fetchall()
 
-    async def search_hosts(self, search):
-        async with self.db.execute("SELECT * FROM hosts WHERE ip LIKE (?) OR hostname LIKE (?)", [search, search]) as cursor:
+    async def search_hosts(self, search: str):
+        async with self.db.execute("SELECT * FROM hosts WHERE ip LIKE (?) OR hostname LIKE (?)", [f"%{search}%"] * 2) as cursor:
             return await cursor.fetchall()
 
-    async def search_services(self, search):
-        async with self.db.execute("SELECT * FROM services WHERE title LIKE (?) OR server LIKE (?)", [search, search]) as cursor:
+    async def search_services(self, search: str):
+        async with self.db.execute("SELECT * FROM services WHERE title LIKE (?) OR server LIKE (?)", [f"%{search}%"] * 2) as cursor:
             return await cursor.fetchall()
 
     async def __aenter__(self):

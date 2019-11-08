@@ -9,8 +9,8 @@ def _customOnResponseReceived(self, event: dict) -> None:
         """
         Pyppeteer doesn't expose the remoteIPAddress and remotePort attributes from the received
         Response object from Chrome. This is a hack that adds those attribute to it manually so that we can
-        access them in the screenshot function. This is a much more elegant approach to getting this info 
-        as calling socket.gethostbyaddr() is blocking so it would slow things down.
+        access them in the screenshot function. This is a much more elegant approach as socket.gethostbyaddr() 
+        is a blocking call so it would slow things down somewhat significantly.
 
         Let the browser handle everything! :)
 
@@ -58,7 +58,7 @@ async def resolve_host(host):
     try:
         return socket.gethostbyaddr(host)[0]
     except Exception as e:
-        logging.error(f"Error resolving IP {host}: {e}")
+        logging.debug(f"Error resolving IP {host}: {e}")
 
 def is_ipaddress(host):
     try:

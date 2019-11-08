@@ -45,12 +45,13 @@ optional arguments:
                         (default: 35)
 ```
 
-Can accept a mix of .Nessus file(s), Nmap XML file(s) and IP addresses/ranges/CIDRs as targets:
+Can accept a mix of .Nessus file(s), Nmap XML file(s), files containing URLs and/or IPs and just straigt IP addresses/ranges/CIDRs and URLs as targets:
 
 ```bash
-python witnessme.py 192.168.1.0/24 192.168.1.10-20 ~/my_nessus_scan.nessus ~/my_nmap_scan.xml
+python witnessme.py 192.168.1.0/24 192.168.1.10-20 https://bing.com ~/my_nessus_scan.nessus ~/my_nmap_scan.xml ~/myfilewithURLSandIPs
 ```
-*Note: as of writing, WitnessMe detects files by their extension so make sure Nessus files have a `.nessus` extension, NMap scans have a `.xml` extension etc..*   
+
+*Note: as of writing, WitnessMe detects .Nessus and NMap files by their extension so make sure Nessus files have a `.nessus` extension and NMap scans have a `.xml` extension*
 
 If an IP address/range/CIDR is specified as a target, WitnessMe will attempt to screenshot HTTP & HTTPS pages on ports 80, 8080, 443, 8443 by default. This is customizable with the `--port` argument.
 
@@ -66,14 +67,31 @@ Pressing tab will show you the available commands and a help menu:
   <img src="https://user-images.githubusercontent.com/5151193/68194972-3fe7f980-ff73-11e9-8b63-b75df6e47977.png" alt="ScreenPreview"/>
 </p>
 
-## Preview Screenshots Directly in the Terminal (ITerm2 on MacOSX)
+## Searching the Database
+
+The `servers` and `hosts` commands in the `wmdb.py` CLI accept 1 argument. WMDB is smart enough to know what you're trying to do with that argument
+
+### Server Command
+
+No arguments will show all discovered servers. Passing it an argument will search the `title` and `server` columns for that pattern (it's case insensitive).
+
+For example if you wanted to search for all discovered Apache Tomcat servers:
+- `servers tomcat` or `servers 'apache tomcat'`
+
+Similarly if you wanted to find servers with a 'login' in the title:
+- `servers login`
+
+### Hosts Command
+
+No arguments will show all discovered servers. Passing it an argument will search the `IP` and `Hostname` columns for that pattern (it's case insensitive). If the value corresponds to a Host ID it will show you the host information and all of the servers discovered on that host which is extremely useful for reporting purposes and/or when targeting specific hosts.
+
+# Preview Screenshots Directly in the Terminal (ITerm2 on MacOSX)
 
 If you're using ITerm2 on MacOSX, you can preview screenshots directly in the terminal using the `show` command:
 
 <p align="center">
   <img src="https://user-images.githubusercontent.com/5151193/68194496-5e012a00-ff72-11e9-9ccd-6a50aa384f3e.png" alt="ScreenPreview"/>
 </p>
-
 
 ## To Do
 
@@ -82,4 +100,5 @@ If you're using ITerm2 on MacOSX, you can preview screenshots directly in the te
 3. ~~Cmdline script to search database~~
 4. Support NMap & .nessus files as input *(Almost there, still some bugs but usable)*
 5. Web server categorization & signature support
-6. Accept URLs as targets (cmdline, files, stdin) *(Accepts files)*
+6. ~~Accept URLs as targets (cmdline, files)~~
+7. Add support for previewing screenshots in *nix terminals using w3m

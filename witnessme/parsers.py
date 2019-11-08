@@ -4,9 +4,9 @@ import logging
 from ipaddress import ip_address, ip_network, summarize_address_range
 from contextlib import ContextDecorator
 
-class IPTargetGenerator(ContextDecorator):
-    def __init__(self, ip_cidr_or_range, ports = [80, 8080, 443, 8443]):
-        self.ip_cidr_or_range = ip_cidr_or_range
+class TargetGenerator(ContextDecorator):
+    def __init__(self, target, ports = [80, 8080, 443, 8443]):
+        self.target = target
         self.ports = ports
 
     def expand_ip_cidr_or_range(self, target):
@@ -26,28 +26,34 @@ class IPTargetGenerator(ContextDecorator):
                     for ip in ip_range:
                         yield str(ip)
             else:
-                for ip in ip_network(target, strict=False): yield str(ip)
+                for ip in ip_network(target, strict=False):
+                    yield str(ip)
         except ValueError:
             yield str(target)
 
     def __enter__(self):
-        for host in self.expand_ip_cidr_or_range(self.ip_cidr_or_range):
-            for port in self.ports:
-                for scheme in ["http", "https"]:
-                    yield f"{scheme}://{host}:{port}"
-    
+        if self.target.startswith('http://') or self.target.startswith('https://'):
+            yield self.target
+        else:
+            for host in self.expand_ip_cidr_or_range(self.target):
+                for port in self.ports:
+                    for scheme in ["http", "https"]:
+                        yield f"{scheme}://{host}:{port}"
+
     def __exit__(self, *exc):
         pass
 
-class UrlFileParser(ContextDecorator):
+class GenericFileParser(ContextDecorator):
     def __init__(self, file_path):
         self.file_path = file_path
 
     def __enter__(self):
-        with open(self.file_path) as url_file:
-            for url in url_file:
-                yield url.strip()
-    
+        with open(self.file_path) as target_file:
+            for target in target_file:
+                with TargetGenerator(target.strip()) as target_generator:
+                    for url in target_generator:
+                        yield url
+
     def __exit__(self, *exc):
         pass
 
@@ -130,16 +136,15 @@ class AutomaticTargetGenerator(ContextDecorator):
                     logging.debug("Detected NMap XML file as a target")
                     file_parser = NmapParser(target)
                 else:
-                    logging.debug("Detected URL file as a target")
-                    file_parser = UrlFileParser(target)
+                    logging.debug("Detected file as a target")
+                    file_parser = GenericFileParser(target)
 
                 with file_parser as generated_urls:
                     for url in generated_urls:
                         yield url
-                
             else:
-                logging.debug("Detected IP Range or CIDR as a target")
-                with IPTargetGenerator(target) as generated_urls:
+                logging.debug("Detected IP Address/Range/CIDR, hostname or URL as a target")
+                with TargetGenerator(target) as generated_urls:
                     for url in generated_urls:
                         yield url
 

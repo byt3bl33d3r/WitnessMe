@@ -58,66 +58,111 @@ class WMDBShell:
             search_ignore_case=True
         )
 
-    async def exit(self, *args, **kwargs):
+    async def _print_services(self, services, table_title=None):
+        table_data = [["Id", "URL", "Title", "Server"]]
+        for entry in services:
+            service_id, url,_,_,_,title,server,_,_ = entry
+            table_data.append([
+                service_id,
+                url,
+                title,
+                server
+            ])
+
+        table = AsciiTable(table_data)
+        table.inner_row_border = True
+        table.title = table_title
+        print(table.table)
+
+    async def _print_hosts(self, hosts, table_title=None):
+        table_data = [["Id", "IP", "Hostname"]]
+
+        for entry in hosts:
+            host_id, hostname, ip = entry
+            table_data.append([host_id, ip, hostname])
+
+        table = AsciiTable(table_data)
+        table.inner_row_border = True
+        table.title = table_title
+        print(table.table)
+
+    async def exit(self, args):
         """
         Guess what this does
         """
 
         print("Ciao!")
 
-    async def show(self, *args, **kwargs):
+    async def show(self, args):
         """
         Preview screenshot in Terminal
         """
-        async with ScanDatabase(connection=self.db) as db:
-            entry = await db.get_service_by_id(int(*args[0]))
-            _,_,screenshot_path,_,_,_,_,_,_ = entry
-            imgcat(
-                open(db_path.parent.joinpath(screenshot_path).absolute())
-            )
 
-    async def open(self, *args, **kwargs):
+        try:
+            server_id = int(args[0])
+        except IndexError:
+            print("No server id given")
+        except ValueError:
+            print("Invalid server id")
+        else:
+            async with ScanDatabase(connection=self.db) as db:
+                entry  = await db.get_service_by_id(server_id)
+                _,_,screenshot_path,_,_,_,_,_,_ = entry
+                imgcat(
+                    open(db_path.parent.joinpath(screenshot_path).absolute())
+                )
+
+    async def open(self, args):
         """
         Open screenshot in browser/previewer
         """
-        async with ScanDatabase(connection=self.db) as db:
-            entry = await db.get_service_by_id(int(*args[0]))
-            _,_,screenshot_path,_,_,_,_,_,_ = entry
-            screenshot_path = str(db_path.parent.joinpath(screenshot_path).absolute())
-            webbrowser.open(screenshot_path.replace("/", "file:////", 1))
+        try:
+            server_id = int(args[0])
+        except IndexError:
+            print("No server id given")
+        except ValueError:
+            print("Invalid server id")
+        else:
+            async with ScanDatabase(connection=self.db) as db:
+                entry = await db.get_service_by_id(server_id)
+                _,_,screenshot_path,_,_,_,_,_,_ = entry
+                screenshot_path = str(db_path.parent.joinpath(screenshot_path).absolute())
+                webbrowser.open(screenshot_path.replace("/", "file:////", 1))
 
-    async def hosts(self, *args, **kwargs):
+    async def hosts(self, args):
         """
         Show hosts
         """
+
         async with ScanDatabase(connection=self.db) as db:
-            table_data = [["Id", "IP", "Hostname"]]
-            for entry in await db.get_hosts():
-                host_id, hostname, ip = entry
-                table_data.append([host_id, ip, hostname])
+            try:
+                filter_term = args[0]
+            except IndexError:
+                hosts = await db.get_hosts()
+                await self._print_hosts(hosts)
+            else:
+                try:
+                    host = await db.get_host_by_id(int(filter_term))
+                    if not host: raise ValueError(f"No host found with id: {filter_term}")
+                except ValueError:
+                    query_results = await db.search_hosts(filter_term)
+                    await self._print_hosts(query_results)
+                else:
+                    await self._print_hosts([host])
+                    services = await db.get_services_on_host(host[0])
+                    await self._print_services(services)
 
-            table = AsciiTable(table_data)
-            table.inner_row_border = True
-            print(table.table)
-
-    async def servers(self, *args, **kwargs):
+    async def servers(self, args):
         """
         Show discovered servers
         """
         async with ScanDatabase(connection=self.db) as db:
-            table_data = [["Id", "URL", "Title", "Server"]]
-            for entry in await db.get_services():
-                service_id, url,_,_,_,title,server,_,_ = entry
-                table_data.append([
-                    service_id,
-                    url,
-                    title,
-                    server
-                ])
+            if len(args):
+                query_results = await db.search_services(args[0])
+            else:
+                query_results = await db.get_services()
 
-            table = AsciiTable(table_data)
-            table.inner_row_border = True
-            print(table.table)
+            await self._print_services(query_results)
 
     async def cmdloop(self):
         use_asyncio_event_loop()

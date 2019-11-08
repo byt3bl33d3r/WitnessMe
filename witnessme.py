@@ -40,17 +40,6 @@ async def on_requestfinished(request):
     #logging.info(f"on_requestfinished() called, url: {request.url}")
 
 async def screenshot(url, page):
-    #logging.info(f"Taking screenshot of {url}")
-
-    parsed_url = urlparse(url)
-
-    hostname = parsed_url.hostname
-    if is_ipaddress(hostname):
-        hostname = await asyncio.wait_for(resolve_host(hostname), timeout=3)
-
-    screenshot = f'{parsed_url.scheme}_{parsed_url.hostname}_{parsed_url.port}.png'
-    screenshot_path = pathlib.Path(f'./{report_folder}/{screenshot}').absolute()
-
     """
         The page.goto() options might need to be tweaked depending on testing in real environments.
 
@@ -62,13 +51,25 @@ async def screenshot(url, page):
         networkidle2 - consider navigation to be finished when there are no more than 2 network connections for at least 500 ms.
     """
 
+    url = urlparse(url)
     response = await page.goto(
-        url,
+        url.geturl(),
         options={
             "waitUntil": "networkidle0"
         }
     )
 
+    hostname = None
+    if is_ipaddress(url.hostname):
+        hostname = await asyncio.wait_for(resolve_host(url.hostname), timeout=3)
+    else:
+        hostname = url.hostname
+
+    if not url.port:
+        url = url._replace(netloc=f"{url.hostname}:{response.remotePort}")
+
+    screenshot = f'{url.scheme}_{url.hostname}_{url.port}.png'
+    screenshot_path = pathlib.Path(f'./{report_folder}/{screenshot}').absolute()
     await page.screenshot(
         {
             'path': screenshot_path,
@@ -78,13 +79,13 @@ async def screenshot(url, page):
 
     return {
         "ip": response.remoteIPAddress,
-        "hostname": hostname if not is_ipaddress(hostname) else None,
-        "url": url,
+        "hostname": hostname,
+        "url": url.geturl(),
         "screenshot": screenshot,
-        "port": parsed_url.port,
-        "scheme": parsed_url.scheme,
+        "port": url.port,
+        "scheme": url.scheme,
         "title": await page.title(), # await page.evaluate('document.title')
-        "server": response.headers['server'] if 'server' in response.headers else None,
+        "server": response.headers.get('server'),
         "headers": response.headers,
     }
 
