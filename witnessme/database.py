@@ -28,6 +28,7 @@ class ScanDatabase:
                 "server" text,
                 "headers" text,
                 "host_id" integer,
+                "matched_sigs" text,
                 "body" text,
                 FOREIGN KEY(host_id) REFERENCES hosts(id),
                 UNIQUE(port, host_id, scheme)
@@ -54,6 +55,14 @@ class ScanDatabase:
 
         await self.add_service(url, screenshot, port, scheme, title, server, json.dumps(headers), body, host_id)
 
+    async def add_matched_sigs_to_service(self, service_id, matches):
+        if await self.get_service_by_id(service_id):
+            await self.db.execute("UPDATE services SET matched_sigs=(?) WHERE id=(?)", [matches, service_id])
+
+    async def get_matched_sigs_on_host(self, host_id: int):
+        async with self.db.execute("SELECT matched_sigs FROM services WHERE host_id=(?)", [host_id]) as cursor:
+            return await cursor.fetchall()
+
     async def get_service_count(self):
         async with self.db.execute("SELECT count(*) FROM services") as cursor:
             result = await cursor.fetchone()
@@ -63,7 +72,12 @@ class ScanDatabase:
         async with self.db.execute("SELECT count(*) FROM hosts") as cursor:
             result = await cursor.fetchone()
             return result[0]
-    
+
+    async def get_service_count_on_host(self, host_id: int):
+        async with self.db.execute("SELECT count(*) FROM services WHERE host_id=(?)", [host_id]) as cursor:
+            result = await cursor.fetchone()
+            return result[0]
+
     async def get_services_on_host(self, host_id: int):
         async with self.db.execute("SELECT * FROM services WHERE host_id=(?)", [host_id]) as cursor:
             result = await cursor.fetchall()

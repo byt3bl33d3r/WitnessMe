@@ -64,7 +64,7 @@ python wmdb.py scan_2019_11_05_021237/witnessme.db
 Pressing tab will show you the available commands and a help menu:
 
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/5151193/68194972-3fe7f980-ff73-11e9-8b63-b75df6e47977.png" alt="ScreenPreview"/>
+  <img width="534" src="https://user-images.githubusercontent.com/5151193/68552696-11d14200-03d7-11ea-828f-3c744e58df86.png" alt="ScreenPreview"/>
 </p>
 
 ## Searching the Database

@@ -44,7 +44,7 @@ class WMCompleter(Completer):
         except ValueError:
             pass
         else:
-            for cmd in ["exit", "show", "open", "hosts", "servers"]:
+            for cmd in ["exit", "show", "open", "hosts", "servers", "scan"]:
                 if cmd.startswith(word_before_cursor):
                     yield Completion(cmd, -len(word_before_cursor), display_meta=getattr(self.cli_menu, cmd).__doc__.strip())
 
@@ -66,26 +66,16 @@ class WMDBShell:
             search_ignore_case=True
         )
 
-    async def _scan(self):
-        logging.debug("Starting signature scan...")
-        start_time = time()
-        async with ScanDatabase(connection=self.db) as db:
-            tasks = [asyncio.create_task(self.signatures.find_match(service))for service in await db.get_services()]
-            r = await asyncio.gather(*tasks)
-
-            completed_time = strftime("%Mm%Ss", gmtime(time() - start_time))
-            matches = list(filter(lambda x: len(x[0]) > 0, r))
-            logging.debug(f"Signature scan completed, identified {len(matches)} service(s) in {completed_time}")
-
     async def _print_services(self, services, table_title=None):
-        table_data = [["Id", "URL", "Title", "Server"]]
+        table_data = [["Id", "URL", "Title", "Server", "Matched Signature(s)"]]
         for entry in services:
-            service_id, url,_,_,_,title,server,_,_,_ = entry
+            service_id, url,_,_,_,title,server,_,_,matched_sigs,_ = entry
             table_data.append([
                 service_id,
                 url,
                 title,
-                server
+                server,
+                matched_sigs
             ])
 
         table = AsciiTable(table_data)
@@ -94,18 +84,34 @@ class WMDBShell:
         print(table.table)
 
     async def _print_hosts(self, hosts, table_title=None):
-        table_data = [["Id", "IP", "Hostname"]]
+        table_data = [["Id", "IP", "Hostname", "Discovered Services", "Matched Signature(s)"]]
 
-        for entry in hosts:
-            host_id, hostname, ip = entry
-            table_data.append([host_id, ip, hostname])
+        async with ScanDatabase(connection=self.db) as db:
+            for entry in hosts:
+                host_id, hostname, ip = entry
+                service_count = await db.get_service_count_on_host(host_id)
+                matched_sigs = map(
+                    lambda x: x[0].split(','), 
+                    filter(
+                        lambda x: x[0] is not None, 
+                        await db.get_matched_sigs_on_host(host_id)
+                    )
+                )
+
+                table_data.append([
+                    host_id,
+                    ip,
+                    hostname,
+                    service_count,
+                    ','.join(set(sig_name for result in matched_sigs for sig_name in result))
+                ])
 
         table = AsciiTable(table_data)
         table.inner_row_border = True
         table.title = table_title
         print(table.table)
 
-    async def exit(self, args):
+    async def exit(self):
         """
         Guess what this does
         """
@@ -114,7 +120,7 @@ class WMDBShell:
 
     async def show(self, args):
         """
-        Preview screenshot in Terminal
+        Preview a screenshot in the terminal
         """
 
         try:
@@ -126,15 +132,15 @@ class WMDBShell:
         else:
             async with ScanDatabase(connection=self.db) as db:
                 entry  = await db.get_service_by_id(server_id)
-                _,_,screenshot_path,_,_,_,_,_,_,_ = entry
                 imgcat(
-                    open(db_path.parent.joinpath(screenshot_path).absolute())
+                    open(db_path.parent.joinpath(entry[2]).absolute())
                 )
 
     async def open(self, args):
         """
-        Open screenshot in browser/previewer
+        Open a screenshot in your default browser/previewer
         """
+
         try:
             server_id = int(args[0])
         except IndexError:
@@ -144,8 +150,7 @@ class WMDBShell:
         else:
             async with ScanDatabase(connection=self.db) as db:
                 entry = await db.get_service_by_id(server_id)
-                _,_,screenshot_path,_,_,_,_,_,_,_ = entry
-                screenshot_path = str(db_path.parent.joinpath(screenshot_path).absolute())
+                screenshot_path = str(db_path.parent.joinpath(entry[2]).absolute())
                 webbrowser.open(screenshot_path.replace("/", "file:////", 1))
 
     async def hosts(self, args):
@@ -175,6 +180,7 @@ class WMDBShell:
         """
         Show discovered servers
         """
+
         async with ScanDatabase(connection=self.db) as db:
             if len(args):
                 query_results = await db.search_services(args[0])
@@ -183,10 +189,31 @@ class WMDBShell:
 
             await self._print_services(query_results)
 
+    async def scan(self):
+        """
+        Peform a signature scan on all discovered servers
+        """
+
+        self.signatures.load()
+
+        logging.debug("Starting signature scan...")
+        start_time = time()
+        async with ScanDatabase(connection=self.db) as db:
+            tasks = [asyncio.create_task(self.signatures.find_match(service))for service in await db.get_services()]
+            matches = list(filter(lambda x: len(x[0]) > 0, await asyncio.gather(*tasks)))
+
+            for match in matches:
+                await db.add_matched_sigs_to_service(
+                    match[1][0],
+                    ",".join([sig['name'] for sig in match[0]])
+                )
+
+            completed_time = strftime("%Mm%Ss", gmtime(time() - start_time))
+            logging.debug(f"Signature scan completed, identified {len(matches)} service(s) in {completed_time}")
+
     async def cmdloop(self):
         use_asyncio_event_loop()
         self.db = await aiosqlite.connect(self.db_path)
-        await self._scan()
 
         try:
             while True:
@@ -194,11 +221,11 @@ class WMDBShell:
                 text = await self.prompt_session.prompt(async_=True)
                 command = shlex.split(text)
                 if len(command):
-                    # Apperently you can't call await on a method retrieved via getattr() ??
+                    # Apperently you can't call await on a coroutine retrieved via getattr() ??
                     # So this sucks now but thankfully we don't have a lot of commands
                     try:
                         if command[0] == 'exit':
-                            await self.exit(command[1:])
+                            await self.exit()
                             break
                         elif command[0] == 'show':
                             await self.show(command[1:])
@@ -208,6 +235,8 @@ class WMDBShell:
                             await self.hosts(command[1:])
                         elif command[0] == 'servers':
                             await self.servers(command[1:])
+                        elif command[0] == 'scan':
+                            await self.scan()
                     except Exception as e:
                         import traceback
                         traceback.print_exc()
