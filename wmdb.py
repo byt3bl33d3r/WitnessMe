@@ -3,17 +3,19 @@
 import asyncio
 import argparse
 import shlex
+import logging
 import sys
 import pathlib
-import logging
 #import json
 #import functools
 import aiosqlite
 import webbrowser
 from imgcat import imgcat
+from time import time, gmtime, strftime
+from argparse import ArgumentDefaultsHelpFormatter
 from terminaltables import AsciiTable
 from witnessme.database import ScanDatabase
-from argparse import ArgumentDefaultsHelpFormatter
+from witnessme.signatures import Signatures
 from prompt_toolkit import PromptSession
 from prompt_toolkit.completion import Completer, Completion
 from prompt_toolkit.eventloop import use_asyncio_event_loop
@@ -25,6 +27,11 @@ from prompt_toolkit.formatted_text import HTML
 from prompt_toolkit.styles import Style
 
 #from prompt_toolkit.document import Document
+logging.basicConfig(format="%(asctime)s [%(levelname)s] - %(filename)s: %(funcName)s - %(message)s", level=logging.DEBUG)
+logging.getLogger('asyncio').setLevel(logging.ERROR)
+logging.getLogger('sqlite3').setLevel(logging.ERROR)
+logging.getLogger('aiosqlite').setLevel(logging.ERROR)
+logging.getLogger('asyncio.coroutines').setLevel(logging.ERROR)
 
 class WMCompleter(Completer):
     def __init__(self, cli_menu):
@@ -44,8 +51,9 @@ class WMCompleter(Completer):
 class WMDBShell:
     def __init__(self, db_path):
         self.db_path = db_path
-        
+
         self.completer = WMCompleter(self)
+        self.signatures = Signatures()
         self.prompt_session = PromptSession(
             HTML("WMDB ≫ "),
             #bottom_toolbar=functools.partial(bottom_toolbar, ts=self.teamservers),
@@ -57,6 +65,17 @@ class WMDBShell:
             #style=example_style,
             search_ignore_case=True
         )
+
+    async def _scan(self):
+        logging.debug("Starting signature scan...")
+        start_time = time()
+        async with ScanDatabase(connection=self.db) as db:
+            tasks = [asyncio.create_task(self.signatures.find_match(service))for service in await db.get_services()]
+            r = await asyncio.gather(*tasks)
+
+            completed_time = strftime("%Mm%Ss", gmtime(time() - start_time))
+            matches = list(filter(lambda x: len(x[0]) > 0, r))
+            logging.debug(f"Signature scan completed, identified {len(matches)} service(s) in {completed_time}")
 
     async def _print_services(self, services, table_title=None):
         table_data = [["Id", "URL", "Title", "Server"]]
@@ -167,6 +186,7 @@ class WMDBShell:
     async def cmdloop(self):
         use_asyncio_event_loop()
         self.db = await aiosqlite.connect(self.db_path)
+        await self._scan()
 
         try:
             while True:
@@ -205,6 +225,6 @@ if __name__ == '__main__':
         print("Path to db doesn't appear to be valid")
         sys.exit(1)
 
-    dbcli = WMDBShell(str(db_path.expanduser()))
     print("[!] Press tab for autocompletion and available commands")
+    dbcli = WMDBShell(str(db_path.expanduser()))
     asyncio.run(dbcli.cmdloop())

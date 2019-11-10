@@ -3,7 +3,6 @@ credentials:
   username: admin
 name: Ricoh Printer
 signatures:
-- <title>
 - Web Image Monitor</title>
 - src="header.cgi"
 - title="Header Area"
