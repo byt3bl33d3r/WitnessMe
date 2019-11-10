@@ -17,7 +17,7 @@ from datetime import datetime
 from argparse import ArgumentDefaultsHelpFormatter
 from urllib.parse import urlparse
 
-logging.basicConfig(format="%(asctime)s [%(levelname)s] - %(filename)s: %(funcName)s - %(message)s", level=logging.DEBUG)
+logging.basicConfig(format="%(asctime)s [%(levelname)s] - %(filename)s: %(funcName)s - %(message)s", level=logging.INFO)
 logging.getLogger('asyncio').setLevel(logging.ERROR)
 logging.getLogger('sqlite3').setLevel(logging.ERROR)
 logging.getLogger('aiosqlite').setLevel(logging.ERROR)
@@ -109,7 +109,7 @@ async def worker(browser, queue):
 
         try:
             r = await asyncio.wait_for(screenshot(url, page), timeout=args.timeout)
-            logging.info(r)
+            logging.debug(r)
             async with ScanDatabase(report_folder) as db:
                 await db.add_host_and_service(**r)
             logging.info(f"Took screenshot of {url}")
