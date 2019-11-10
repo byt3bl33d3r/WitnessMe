@@ -61,7 +61,7 @@ class WMDBShell:
     async def _print_services(self, services, table_title=None):
         table_data = [["Id", "URL", "Title", "Server"]]
         for entry in services:
-            service_id, url,_,_,_,title,server,_,_ = entry
+            service_id, url,_,_,_,title,server,_,_,_ = entry
             table_data.append([
                 service_id,
                 url,
@@ -107,7 +107,7 @@ class WMDBShell:
         else:
             async with ScanDatabase(connection=self.db) as db:
                 entry  = await db.get_service_by_id(server_id)
-                _,_,screenshot_path,_,_,_,_,_,_ = entry
+                _,_,screenshot_path,_,_,_,_,_,_,_ = entry
                 imgcat(
                     open(db_path.parent.joinpath(screenshot_path).absolute())
                 )
@@ -125,7 +125,7 @@ class WMDBShell:
         else:
             async with ScanDatabase(connection=self.db) as db:
                 entry = await db.get_service_by_id(server_id)
-                _,_,screenshot_path,_,_,_,_,_,_ = entry
+                _,_,screenshot_path,_,_,_,_,_,_,_ = entry
                 screenshot_path = str(db_path.parent.joinpath(screenshot_path).absolute())
                 webbrowser.open(screenshot_path.replace("/", "file:////", 1))
 
