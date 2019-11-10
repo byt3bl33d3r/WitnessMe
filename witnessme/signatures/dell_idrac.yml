@@ -1,0 +1,10 @@
+credentials:
+- password: calvin
+  username: root
+name: Dell iDrac
+signatures:
+- <title id="titleLbl_id"></title>
+- var thisIDRACText = EntityDecode
+- var thisIDRACText
+- MAXUNLEN = 512
+# Dell iDrac root/calvin

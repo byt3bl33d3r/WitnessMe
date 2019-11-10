@@ -1,0 +1,11 @@
+credentials:
+- password: PASSW0RD
+  username: USERID
+name: IBM Integrated Management Module
+signatures:
+- <meta http-equiv="refresh" content="0
+- url=/designs/imm/noscript/noscript_en.php"
+- meta http-equiv="Content-Type" content="text/html
+- '@import "/designs/ibmdojo/dojo/resources/dojo.css"'
+- '@import "/designs/imm/login.css"'
+# IBM Integrated Management Module USERID\PASSW0RD

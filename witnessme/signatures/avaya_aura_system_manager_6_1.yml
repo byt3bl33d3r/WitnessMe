@@ -1,0 +1,10 @@
+credentials:
+- password: admin123
+  username: admin
+name: Avaya Aura System Manager 6.1
+signatures:
+- Avaya Aura
+- ' System manager 6.1'
+- div class="legalNoticeDiv"
+- div class="loginouterdiv"
+# (Avaya Aura System Manager 6.1) admin/admin123

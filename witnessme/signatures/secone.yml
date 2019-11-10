@@ -1,0 +1,9 @@
+credentials:
+- password: SevOne
+  username: Admin
+name: SecOne
+signatures:
+- <title>SevOne NMS - Network Manager</title>
+- isSevOneSecurityEnabled
+- initiateTitleBarCheck
+# SecOne Admin/SevOne

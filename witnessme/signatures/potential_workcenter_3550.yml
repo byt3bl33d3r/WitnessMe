@@ -1,0 +1,10 @@
+credentials:
+- password: '1111'
+  username: admin
+name: Potential Workcenter 3550
+signatures:
+- ChangeDefWebLanguage()
+- script/cookieCoke.js
+- script/Common_script.js
+- NOSCRIPT
+# (Potential Workcenter 3550) admin/1111

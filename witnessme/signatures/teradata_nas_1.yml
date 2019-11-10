@@ -1,0 +1,10 @@
+credentials:
+- password: password
+  username: admin
+name: TeraData NAS
+signatures:
+- TeraStation PRO
+- txtAuthLoginUser
+- name="frmNas"
+- View TeraStation manual
+# TeraData NAS - admin/password

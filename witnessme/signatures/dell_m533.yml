@@ -1,0 +1,9 @@
+credentials:
+- password: admin
+  username: administrator
+name: Dell M533
+signatures:
+- HP Color LaserJet M553
+- DeviceStatus/Index
+- /hp/device/GeneralSecurity/Index
+# Dell M533 administrator/admin

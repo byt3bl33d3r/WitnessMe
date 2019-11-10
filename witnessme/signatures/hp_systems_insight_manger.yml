@@ -1,0 +1,6 @@
+name: HP Systems Insight Manger
+signatures:
+- <title>HP Systems Insight Manager</title>
+- function preloadOne(url)
+- Obtain an exported HP Systems Insight Manager server certificate file from the administrator
+# HP Systems Insight Manger - Windows Auth

@@ -1,0 +1,11 @@
+credentials:
+- password: apc
+  username: apc
+name: Potential APC SmartUPS
+signatures:
+- APC
+- Log On
+- function isValidBrowser()
+- APC Website
+- var nAgt
+# (Potential APC SmartUPS) apc/apc

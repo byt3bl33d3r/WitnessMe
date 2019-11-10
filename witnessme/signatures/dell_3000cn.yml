@@ -1,0 +1,5 @@
+name: Dell 3000cn
+signatures:
+- Dell Laser Printer 3000cn
+- frame src="status/status.htm" name="RightFrame"
+# (Dell 3000cn) No default username or pass

@@ -1,0 +1,10 @@
+credentials:
+- password: <blank>
+  username: administrator
+name: HP Color LaserJet M653
+signatures:
+- isSignedIn
+- currentDecimalSeparator
+- currentThousandSeparator
+- HP Color LaserJet M653
+# HP Color LaserJet M653 administrator/<blank>

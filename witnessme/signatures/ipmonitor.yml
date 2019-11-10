@@ -1,0 +1,7 @@
+name: ipMonitor
+signatures:
+- <title>ipMonitor - Log In</title>
+- window.onload = function()
+- function go_to_secure_page()
+- SolarWinds. All Rights Reserved
+# ipMonitor - user and pass set at install

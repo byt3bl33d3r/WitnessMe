@@ -1,0 +1,9 @@
+credentials:
+- password: <Set at install>
+name: Datazen Server Login
+signatures:
+- <title>Server Login</title>
+- Viewer.unload()
+- page.init()
+- <div class="container" id="heading">
+# Datazen Server Login - password set at install

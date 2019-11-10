@@ -1,0 +1,9 @@
+name: Dell Generic
+signatures:
+- <frame src="framelogo.htm" name="TopLogo" title="logo" frameborder=0 scrolling=no
+  noresize>
+- <frame src="frameleft.htm" name="TopFrame" title="main" frameborder=0 scrolling=auto>
+- <frame src="frametop.htm" name="LeftFrame" title="header" frameborder=0 scrolling=no
+  noresize>
+- <frame src="status/status.htm" name="RightFrame" title="contents" frameborder=0>
+# (Dell Generic Signature)No default username or pass

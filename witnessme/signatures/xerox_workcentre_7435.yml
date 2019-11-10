@@ -1,0 +1,8 @@
+credentials:
+- password: '1111'
+  username: admin
+name: Xerox WorkCentre 7435
+signatures:
+- Xerox WorkCentre 7435
+- function restore_saved_params(form, key_html)
+# (Xerox WorkCentre 7435) admin/1111

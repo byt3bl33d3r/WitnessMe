@@ -1,0 +1,10 @@
+credentials:
+- password: '1234'
+  username: <nousername>
+name: Zyxel P-660HW-T1
+signatures:
+- Welcome to the Web-Based Configurator
+- function str2blks_MD5(str)
+- loginPassword.value = "ZyXEL ZyWALL Series"
+- Prestige_Login" value="Login"
+# Zyxel P-660HW-T1 <nousername>/1234

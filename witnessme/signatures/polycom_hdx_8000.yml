@@ -1,0 +1,8 @@
+credentials:
+- password: <SerialNumberofDevice>
+  username: admin
+name: Polycom HDX 8000
+signatures:
+- Polycom
+- HDX 8000 HD
+# (Polycom HDX 8000) admin/<SerialNumberofDevice>

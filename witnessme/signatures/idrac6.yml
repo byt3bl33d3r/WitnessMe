@@ -1,0 +1,9 @@
+credentials:
+- password: calvin
+  username: root
+name: IDRAC6
+signatures:
+- var tmpDracName = "iDRAC6"
+- idrac6 web GUI login fails with special character "\" in password
+- ''
+# IDRAC6 root/calvin

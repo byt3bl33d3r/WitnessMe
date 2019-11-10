@@ -1,0 +1,15 @@
+credentials:
+- password: '12345678'
+  username: ''
+- password: administrator
+- username: ''
+name: Olivetti Printer - Password 12345678 or administrator
+signatures:
+- <Title>ConfigSummary</Title>
+- <LangNo>En</LangNo>
+- DN71B7
+- DN73B1
+- DN88B2
+- EngType
+- IsAral65
+# Olivetti Printer - Password 12345678 or administrator

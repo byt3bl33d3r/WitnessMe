@@ -1,0 +1,12 @@
+credentials:
+- password: 06071992
+  username: SAP*
+- password: $1Pawd2&
+  username: TMSADM
+name: SAP Netweaver
+signatures:
+- <title>SAP NetWeaver Portal</title>
+- var webpath = "/caportallogon_new/
+- <script>var hash = document.location.hash
+- certLogonForm
+# SAP Netweaver - SAP*/06071992 or TMSADM/$1Pawd2&

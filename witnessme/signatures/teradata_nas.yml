@@ -1,0 +1,8 @@
+credentials:
+- password: teradata
+  username: admin
+name: TeraData NAS
+signatures:
+- Teradata Viewpoint V14.10.00.05-b47
+- if (new Date().getTime() - loginRenderMillis
+# TeraData NAS admin/teradata

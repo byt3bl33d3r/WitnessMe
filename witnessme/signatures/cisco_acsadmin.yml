@@ -1,0 +1,9 @@
+credentials:
+- password: default
+  username: ACSAdmin
+name: Cisco ACSAdmin
+signatures:
+- /acsadmin/cues_images/login_progress.gif
+- checkServerStatus
+- <label for="username"><nobr>Username:</nobr>
+# Cisco ACSAdmin - ACSAdmin/default

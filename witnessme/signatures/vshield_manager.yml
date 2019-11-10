@@ -1,0 +1,10 @@
+credentials:
+- password: default
+  username: admin
+name: vShield Manager
+signatures:
+- Login
+- The vShield Manager requires cookies
+- You must enable JavaScript in order to administer vShield Manager
+- VMware, Inc
+# vShield Manager - admin/default

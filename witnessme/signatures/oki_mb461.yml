@@ -1,0 +1,16 @@
+credentials:
+- password: aaaaaa
+  username: <nousername or root>
+- password: '000000'
+  username: <nousername or root>
+- password: '0000'
+  username: <nousername or root>
+- password: <last 6 of mac address uppercased>
+  username: root
+name: OKI MB461
+signatures:
+- MB461
+- okilogo
+- var pagename
+- var status_ad_flag
+# (OKI MB461) <nousername or root>/aaaaaa or 000000 or 0000 or root/(last 6 of mac address Uppercased)

@@ -1,0 +1,11 @@
+credentials:
+- password: admin
+  username: admin
+name: SuperMicro
+signatures:
+- ATEN International Co Ltd
+- LANG_LOGIN_INVALID_USERNAME
+- LANG_LOGIN_INVALID_PASSWORD
+- form1.pwd.focus()
+- LANG_LOGIN_PROMPT
+# SuperMicro admin/admin

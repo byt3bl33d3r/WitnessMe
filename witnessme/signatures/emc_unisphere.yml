@@ -1,0 +1,11 @@
+credentials:
+- password: Password123#
+  username: admin
+name: EMC Unisphere
+signatures:
+- <title>Unisphere</title>
+- onload="init()
+- Unisphere user name
+- BtnLoginStyle
+- buttonDivContainer
+# EMC Unisphere admin/Password123#

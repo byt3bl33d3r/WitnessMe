@@ -1,0 +1,12 @@
+credentials:
+- password: admin
+  username: admin
+- password: guest
+  username: guest
+name: ManageEngine EventLog Analyzer
+signatures:
+- <title>ManageEngine EventLog Analyzer
+- function userType(ADAuthEnabled)
+- function GetXmlHttpObject()
+- function loadLogin()
+# ManageEngine EventLog Analyzer - admin/admin or guest/guest

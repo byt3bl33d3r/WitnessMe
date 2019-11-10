@@ -1,0 +1,11 @@
+credentials:
+- password: admin
+  username: admin
+- password: user
+  username: user
+name: CA Performance Center
+signatures:
+- a class="login-page-logo" title="Go to
+- CA Performance Center
+- form id="frmSignIn" class="aui-form" method="post" action="sign-in-process.jsp"
+# CA Performance Center admin/admin or user/user

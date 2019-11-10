@@ -1,0 +1,11 @@
+credentials:
+- password: access
+  username: admin
+name: Brother QL-720
+signatures:
+- <title>Brother QL-720
+- getCookie(key)
+- /printer/ball.gif
+- Brother Industries, Ltd
+- END OFSELECT LANGUAGE
+# Brother QL-720 admin/access

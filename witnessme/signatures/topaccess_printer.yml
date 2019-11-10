@@ -1,0 +1,10 @@
+credentials:
+- password: '123456'
+  username: admin
+name: TopAccess Printer
+signatures:
+- <!--<title class="clsTitle1">TopAccess</title>-->
+- var gblTopWindow
+- var eFilingTitle
+- var gblTAUrl
+# TopAccess Printer admin/123456

@@ -1,0 +1,9 @@
+credentials:
+- password: admin
+  username: admin
+name: Checkpoint Gaia
+signatures:
+- <meta content="WEBUI LOGIN PAGE" name="others" /><title>Gaia</title>
+- var hostname=
+- /cgi-bin/home.tcl
+# Checkpoint Gaia - admin/admin

@@ -1,0 +1,10 @@
+credentials:
+- password: admin
+  username: admin
+name: Grafana
+signatures:
+- <title>Grafana</title>
+- grafana-app class="grafana-app"
+- grafanaBootData
+- /dashboard/snapshots
+# Grafana admin/admin

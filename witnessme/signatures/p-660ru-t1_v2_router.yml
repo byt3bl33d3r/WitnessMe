@@ -1,0 +1,12 @@
+credentials:
+- password: USB
+  username: Ethernet
+- password: '1234'
+  username: <nousername>
+name: P-660RU-T1 v2 Router
+signatures:
+- loginPassword.value = "ZyXEL ZyWALL Series"
+- P-660RU-T1 v2
+- function passwordMD5(str)
+- function LoginClick(hiddenPassword, loginPassword)
+# P-660RU-T1 v2 Ethernet/USB Router <nousername>/1234

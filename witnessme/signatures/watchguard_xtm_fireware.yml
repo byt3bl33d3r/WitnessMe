@@ -1,0 +1,12 @@
+credentials:
+- password: readwrite
+  username: admin
+- password: readonly
+  username: status
+name: WatchGuard XTM Fireware
+signatures:
+- <title>Fireware XTM User Authentication</title>
+- Fireware XTM User Authentication web page
+- var newloc
+- wgcgi.cgi?
+# WatchGuard XTM Fireware - admin/readwrite and status/readonly

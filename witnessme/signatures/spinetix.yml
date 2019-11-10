@@ -1,0 +1,11 @@
+credentials:
+- password: admin
+  username: admin
+name: Spinetix
+signatures:
+- login-container
+- form class="form-horizontal"
+- CSRF_TOKEN
+- h4 class="title">Login</h4>
+- SpinetiX</a></div>
+# Spinetix admin/admin

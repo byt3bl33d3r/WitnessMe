@@ -1,0 +1,13 @@
+credentials:
+- password: websn4
+  username: honeywell
+- password: webs
+  username: honeywell
+name: HoneyWell HVAC
+signatures:
+- <title>Honeywell Building Control</title>
+- printCardholderManagementSection
+- message-install_silverlight
+- checkIfDotNetIsInstalled
+- HMIWeb Browser links
+# HoneyWell HVAC honeywell/webs (passphrase is websn4)

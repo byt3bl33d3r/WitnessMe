@@ -1,0 +1,8 @@
+credentials:
+- password: <nopassword>
+  username: admin
+name: DVG-5402SP
+signatures:
+- D-Link VoIP Router
+- frameset framespacing="0" frameborder="0" rows="0,*"
+# DVG-5402SP admin/<nopassword>

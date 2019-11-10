@@ -1,0 +1,10 @@
+credentials:
+- password: admin
+  username: admin
+name: Oracle Commerce
+signatures:
+- <title>Workbench Login</title>
+- <div id="loginFormContainer">
+- Username</label>
+- Password</label>
+# Oracle Commerce admin/admin

@@ -1,0 +1,11 @@
+credentials:
+- password: admin
+  username: admin
+name: ntopng
+signatures:
+- <title>Welcome to ntopng</title
+- /js/rickshaw.js
+- container-narrow
+- form_add_user
+- makeUsernameLowercase
+# ntopng admin/admin

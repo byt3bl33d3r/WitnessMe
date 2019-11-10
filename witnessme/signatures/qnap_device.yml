@@ -1,0 +1,11 @@
+credentials:
+- password: admin
+  username: admin
+name: QNAP Device
+signatures:
+- var pageRandom=new Date().getTime()
+- var pageRandom=new Date().getTime()
+- <span>Are you sure you want to email an emergency security code?</span>
+- <div class="qnap-link show">
+- <div class="qts-tooltip">
+# QNAP Device admin/admin

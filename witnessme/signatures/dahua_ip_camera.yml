@@ -1,0 +1,11 @@
+credentials:
+- password: admin
+  username: admin
+name: Dahua IP Camera
+signatures:
+- fromWebChromeNACL
+- console.log(e.source)
+- var g_ocx = 0
+- g_backIvs
+- g_busernameEncrypt
+# Dahua IP Camera - New models require password at setup, old models admin/admin

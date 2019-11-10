@@ -1,0 +1,9 @@
+credentials:
+- password: password
+  username: admin
+name: Riverbed Steelhead
+signatures:
+- Riverbed Steelhead
+- Riverbed Technology, Inc. and/or its licensors
+- form id="loginForm" action="/mgmt/gui
+# Riverbed Steelhead - admin/password

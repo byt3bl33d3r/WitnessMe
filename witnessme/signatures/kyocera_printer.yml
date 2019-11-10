@@ -1,0 +1,10 @@
+credentials:
+- password: Admin
+  username: Admin
+name: Kyocera Printer (General)
+signatures:
+- KYOCERA
+- idxlang
+- opt_msg1_
+- startwlm
+# Kyocera Printer (General) Admin/Admin

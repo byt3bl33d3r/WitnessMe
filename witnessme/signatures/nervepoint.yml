@@ -1,0 +1,10 @@
+credentials:
+- password: administrator
+  username: administrator
+name: NervePoint
+signatures:
+- Password Reset - Self Service</title>
+- top.location = self.location
+- adminlogin.html
+- desc resetDesc
+# NervePoint administrator/administrator (unconfirmed)

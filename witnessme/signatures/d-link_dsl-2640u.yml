@@ -1,0 +1,9 @@
+credentials:
+- password: admin
+  username: admin
+name: D-Link DSL-2640U
+signatures:
+- DSL-2640U
+- input type="checkbox" class="remb"> <span class="remember">Remember me</span>
+- id="A2" name="A2" type="password" maxlength="30"
+# D-Link DSL-2640U admin/admin

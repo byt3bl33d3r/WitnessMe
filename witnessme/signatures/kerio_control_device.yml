@@ -1,0 +1,10 @@
+credentials:
+- password: <passwordofadminuseronbox>
+  username: admin
+name: Kerio Control Device
+signatures:
+- var kerio = {lib:{}
+- kerio.engine.acceptedLanguages
+- upper-message-container
+- action="/server/login" method="post" id="container"
+# Kerio Control Device admin/<passwordofadminuseronbox>

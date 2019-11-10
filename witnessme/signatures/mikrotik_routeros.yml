@@ -1,0 +1,10 @@
+credentials:
+- password: <nopassword>
+  username: admin
+name: Mikrotik Routeros
+signatures:
+- mikrotik routeros > administration
+- form name="loginForm" action="/cfg" method="post" onsubmit="doLogin()
+- mikrotik routeros
+- configuration page
+# Mikrotik Routeros admin/<nopassword>

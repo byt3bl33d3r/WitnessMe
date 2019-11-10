@@ -1,0 +1,9 @@
+credentials: []
+name: printer
+signatures:
+- <title>Web Connection</title>
+- function popupCopyright
+- font color="red"
+- Lang.cgi?LangSelect
+- i3ddgspc.gif
+# printer

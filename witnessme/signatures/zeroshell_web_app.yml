@@ -1,0 +1,9 @@
+credentials:
+- password: zeroshell
+  username: admin
+name: Zeroshell Web App
+signatures:
+- ZeroShell
+- cgi-bin/kerbynet?Action=Render
+- StartSession
+# (Zeroshell Web App) admin/zeroshell

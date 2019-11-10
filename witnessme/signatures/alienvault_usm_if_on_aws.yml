@@ -1,0 +1,11 @@
+credentials:
+- password: <PASSSENTBYALIENTVALUT>
+  username: ADMIN
+- password: <instance-id>
+  username: admin
+name: AlienVault USM if on AWS
+signatures:
+- <title>AlienVault USM
+- function save_hash()
+- To reset your password please login using ssh to your AlienVault device
+# AlienVault USM ADMIN/<PASSSENTBYALIENTVALUT> if on AWS admin/<instance-id>

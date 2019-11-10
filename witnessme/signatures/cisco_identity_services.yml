@@ -1,0 +1,10 @@
+credentials:
+- password: <set on install>
+  username: admin
+name: Cisco Identity Services
+signatures:
+- <title>Identity Services Engine</title>
+- login_action
+- idSrcCkVal
+- onEnterSubmitUnPwd
+# Cisco Identity Services admin/<pass set on install>

@@ -1,0 +1,6 @@
+name: HP BladeSystem Onboard Admin
+signatures:
+- <title>HP BladeSystem Onboard Administrator</title>
+- function getAlertManager()
+- name="MX_HIDDEN" id="MX_HIDDEN"
+# HP BladeSystem Onboard Admin - Uses username and pass specified on physical document

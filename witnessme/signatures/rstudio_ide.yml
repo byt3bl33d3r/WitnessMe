@@ -1,0 +1,8 @@
+credentials: []
+name: RStudio IDE
+signatures:
+- <title>RStudio Sign In</title>
+- function verifyMe()
+- payload
+- submitRealForm()
+# RStudio IDE (local authentication)

@@ -1,0 +1,9 @@
+credentials:
+- password: sec00000
+  username: admin
+name: Samsung Syncthrough Printer
+signatures:
+- <title> SyncThru Web Service </title>
+- sws_loading_wait
+- <span>SyncThru Web Service</span>
+# Samsung Syncthrough Printer admin / sec00000

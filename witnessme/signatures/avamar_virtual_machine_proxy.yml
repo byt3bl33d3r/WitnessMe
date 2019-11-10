@@ -1,0 +1,10 @@
+credentials:
+- password: avam@r
+  username: root
+name: Avamar Virtual Machine Proxy
+signatures:
+- Virtual Appliance Management
+- VAMI.css
+- vmware.vami.CoreWrapper.nocache.js
+- gwt_historyFrame
+# Avamar Virtual Machine Proxy root/avam@r

@@ -1,0 +1,8 @@
+credentials:
+- password: levi
+  username: admin
+name: Apache Lenya
+signatures:
+- Apache Lenya
+- lenya.action=introspect
+# (Apache Lenya) admin/levi

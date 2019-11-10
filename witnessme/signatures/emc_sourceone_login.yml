@@ -1,0 +1,6 @@
+name: EMC SourceOne Login
+signatures:
+- EMC SourceOne Search Logon
+- <div class="aspNetHidden">
+- function __doPostBack(eventTarget, eventArgument)
+# EMC SourceOne Login - Windows auth

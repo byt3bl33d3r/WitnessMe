@@ -1,0 +1,10 @@
+credentials:
+- password: password
+  username: admin
+name: Riverbed SteelHead
+signatures:
+- SteelHead WAN optimization
+- Bricked AWS SCSH Appliance Pane
+- rvbdLoginLogoContainer
+- usernameField
+# Riverbed SteelHead admin/password

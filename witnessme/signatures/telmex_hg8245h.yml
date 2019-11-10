@@ -1,0 +1,11 @@
+credentials:
+- password: admintelecom
+  username: telecomadmin
+name: Telmex HG8245H
+signatures:
+- <title>HG8245H</title>
+- this.UserName = UserName
+- this.HintPassword = HintPassword
+- var ProductName = 'HG8245H'
+- Username.focus()
+# Telmex HG8245H - telecomadmin/admintelecom

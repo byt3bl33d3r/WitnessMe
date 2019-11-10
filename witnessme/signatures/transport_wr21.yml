@@ -1,0 +1,10 @@
+credentials:
+- password: password
+  username: username
+name: TransPort WR21
+signatures:
+- <title>TransPort WR21
+- Configuration and Management</title>
+- function checkLoginInfo(form)
+- <div class="tile_templates_container">
+# TransPort WR21 - username/password

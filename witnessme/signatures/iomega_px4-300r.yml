@@ -1,0 +1,13 @@
+credentials:
+- password: ADMIN
+  username: root
+- password: ADMIN
+  username: admin
+- password: ADMIN
+  username: ADMIN
+name: Iomega px4-300r
+signatures:
+- LenovaEMC px4-300r
+- Enter administrator username and password
+- mngpwd
+# (Iomega px4-300r) root/ADMIN or admin/ADMIN or ADMIN/ADMIN

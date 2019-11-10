@@ -1,0 +1,11 @@
+credentials:
+- password: password
+  username: admin
+name: Bomgar Device
+signatures:
+- <title>Remote Support Portal
+- Powered by BOMGAR</title>
+- exitSurveyBox
+- Show Representatives Help Window
+- /content/access_key_input.js
+# Bomgar Device admin/password

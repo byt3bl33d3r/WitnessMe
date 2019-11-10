@@ -1,0 +1,9 @@
+credentials:
+- password: admin
+  username: admin
+name: KACE Remote Site Appliance
+signatures:
+- <title>KACE Remote Site Appliance</title>
+- k-main k-main-collapsed
+- msg_chat_unavailable
+# KACE Remote Site Appliance admin/admin

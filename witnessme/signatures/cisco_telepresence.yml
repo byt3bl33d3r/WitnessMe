@@ -1,0 +1,11 @@
+credentials:
+- password: cisco
+  username: admin
+name: Cisco Telepresence
+signatures:
+- <title>Login</title>
+- img src="/inc/errorbubble.gif
+- class="tt_form_row_peer" id='usernamePeer
+- class="tt_form_row_reqd" id="passwordRqd"
+- <legend>Administrator login</legend>
+# Cisco Telepresence admin/cisco

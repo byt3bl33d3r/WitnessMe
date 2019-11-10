@@ -1,0 +1,9 @@
+credentials:
+- password: admin
+  username: admin
+name: S2 Netbox
+signatures:
+- <title>S2 Netbox Login</title>
+- <!--License IFRAME HERE GOES HERE-->
+- div id="headerframe"
+# S2 Netbox admin/admin

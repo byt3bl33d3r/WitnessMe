@@ -1,0 +1,21 @@
+credentials:
+- password: <setduringinstall>
+  username: admin
+- password: <none>
+  username: admin
+name: Potential DNS-320L NAS
+signatures:
+- var re=/root
+- anonymous
+- nobody
+- administrator
+- ftp
+- guest
+- squeezecenter
+- sshd
+- messagebus
+- netdev/i
+- var cUName = $.cookie('uname')
+- var cPwd = $.cookie('password')
+- /cgi-bin/login_mgr.cgi
+# (Potential DNS-320L NAS) admin/<setduringinstall> or admin/<none>

@@ -1,0 +1,8 @@
+credentials:
+- password: <Set During Config>
+name: Cisco Wireless LAN Controller
+signatures:
+- <title>Cisco Systems Login</title>
+- <input type="button" onclick="loginAction()" name="bSubmit " value="Login" style="cursor:pointer
+- <meta name="GENERATOR" content=
+# Cisco Wireless LAN Controller password set during config

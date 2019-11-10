@@ -1,0 +1,12 @@
+credentials:
+- password: <service tag>
+  username: setup
+- password: default
+  username: setup
+name: ExtraHop
+signatures:
+- ExtraHop Login
+- /media/css/loginout.css
+- document.login.username.focus()
+- loginContainer
+# ExtraHop (Physical Device - setup/<service tag>) or (Virtual Device - setup/default)

@@ -1,0 +1,12 @@
+credentials:
+- password: '1111'
+  username: admin
+- password: '11111'
+  username: x-admin
+name: Potential Generic Xerox
+signatures:
+- Xerox Corporation
+- XEROX WORKCENTRE
+- Header Frame
+- inUriToMatch
+# (Potential Generic Xerox) admin/1111 or x-admin/11111

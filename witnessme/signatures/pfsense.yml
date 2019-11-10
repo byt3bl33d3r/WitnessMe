@@ -1,0 +1,11 @@
+credentials:
+- password: pfsense
+  username: admin
+name: PFSense
+signatures:
+- <title>Login</title>
+- body id="login" class="no-menu"
+- usernamefld
+- passwordfld
+- /css/pfSense.css
+# PFSense admin/pfsense (Changed at install)

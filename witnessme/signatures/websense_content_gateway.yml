@@ -1,0 +1,10 @@
+credentials:
+- password: <passwordsetatinstall>
+  username: admin
+name: WebSense Content Gateway
+signatures:
+- <title>Forcepoint Appliance</title>
+- For assistance with specific CLI commands, see the
+- Use the Content Gateway Manager
+- prodSelect_button
+# WebSense Content Gateway admin/<passwordsetatinstall>

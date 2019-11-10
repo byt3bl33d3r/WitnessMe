@@ -1,0 +1,9 @@
+credentials:
+- password: '1111'
+  username: admin
+name: Xerox Workstation M20i
+signatures:
+- Xerox Workstation M20i
+- var HEADER_FRAME
+- var BRANDING_FRAME
+# (Xerox Workstation M20i) admin/1111

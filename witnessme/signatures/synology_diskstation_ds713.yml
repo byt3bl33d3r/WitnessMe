@@ -1,0 +1,10 @@
+credentials:
+- password: <nopassword>
+  username: admin
+name: Synology Diskstation DS713
+signatures:
+- Synology
+- DiskStation
+- DS713
+- modules/AdminCenter/style.css
+# (Synology Diskstation DS713) admin/<nopassword>

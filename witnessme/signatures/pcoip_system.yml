@@ -1,0 +1,10 @@
+credentials:
+- password: 4400Dominion
+  username: teradici
+name: PCoIP System
+signatures:
+- <head><title>Log In</title>
+- Log in to begin an administrative session.
+- PCoIP
+- 'Idle Timeout:'
+# PCoIP System teradici/4400Dominion (possibly SSH Pass)

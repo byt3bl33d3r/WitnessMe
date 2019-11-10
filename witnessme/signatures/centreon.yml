@@ -1,0 +1,9 @@
+credentials:
+- password: centreon
+  username: admin
+name: Centreon
+signatures:
+- <title>Centreon - IT
+- body onload="document.login.useralias.focus()
+- input name="centreon_token" type="hidden"
+# Centreon admin/centreon

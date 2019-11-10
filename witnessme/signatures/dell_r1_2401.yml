@@ -1,0 +1,11 @@
+credentials:
+- password: calvin
+  username: root
+name: Dell R1 2401
+signatures:
+- <title>Log In</title>
+- SendLoginXML()
+- lblLoginErrMsg
+- checkURL()
+- get_statusString
+# Dell R1 2401 root/calvin

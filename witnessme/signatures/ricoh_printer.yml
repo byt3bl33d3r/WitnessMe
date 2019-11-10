@@ -1,0 +1,11 @@
+credentials:
+- password: <blank>
+  username: admin
+name: Ricoh Printer
+signatures:
+- <title>
+- Web Image Monitor</title>
+- src="header.cgi"
+- title="Header Area"
+- src="topPage.cgi"
+# Ricoh Printer admin/<blank>

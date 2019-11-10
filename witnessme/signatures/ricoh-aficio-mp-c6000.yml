@@ -1,0 +1,10 @@
+credentials:
+- password: <blank>
+  username: admin
+name: Ricoh-Aficio-MP-C6000
+signatures:
+- <title>RNPE5AA81
+- webArch/topPage.cgi
+- header.cgi
+- name="work"
+# Ricoh-Aficio-MP-C6000 admin/<blank>

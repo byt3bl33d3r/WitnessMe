@@ -1,0 +1,9 @@
+credentials:
+- password: admin123
+  username: admin
+name: SANScreen
+signatures:
+- <title>SANscreen by NetApp</title>
+- /branding/logo_head_fill.png
+- common/menu.do
+# SANScreen admin/admin123

@@ -1,0 +1,11 @@
+credentials:
+- password: admin
+  username: admin
+name: DX8100 Web DVR
+signatures:
+- WebDVR
+- var ip
+- var pwd
+- login.sitecode.value
+- DX8100
+# (DX8100 Web DVR) admin/admin

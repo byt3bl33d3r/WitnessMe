@@ -1,0 +1,10 @@
+credentials:
+- password: admin
+  username: admin
+name: My Book World Edition
+signatures:
+- My Book World Edition
+- Network Storage Manager
+- Copy Manager
+- Downloader
+# (My Book World Edition) admin/admin

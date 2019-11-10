@@ -1,0 +1,6 @@
+name: Dell OpenManage
+signatures:
+- <title>Dell OpenManage </title>
+- <frame src="/servlet/Login?omacmd=getlogin&amp
+- page=Login"
+# Dell OpenManage windows auth

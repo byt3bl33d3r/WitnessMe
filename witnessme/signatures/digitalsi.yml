@@ -1,0 +1,11 @@
+credentials:
+- password: DVR
+  username: HVR
+- password: <nopassword>
+  username: administrator
+name: DigitalSI
+signatures:
+- <title>DigitalSi HVR / NVR Gateway</title>
+- form method="post" action="/login.cgi"
+- Namo WebEditor
+# DigitalSI HVR/DVR - administrator/<nopassword>

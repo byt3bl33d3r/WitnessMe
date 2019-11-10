@@ -87,6 +87,7 @@ async def screenshot(url, page):
         "title": await page.title(), # await page.evaluate('document.title')
         "server": response.headers.get('server'),
         "headers": response.headers,
+        "body": await response.text()
     }
 
 def task_watch(queue):

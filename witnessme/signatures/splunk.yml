@@ -1,0 +1,10 @@
+credentials:
+- password: changeme
+  username: admin
+name: Splunk
+signatures:
+- <p>If you've forgotten your username or password, please contact your Splunk administrator.<br
+  /><br />username <span>admin</span><br />password <span>changeme</span></p><p></p>
+- MRSPARKLE
+- <meta content="Splunk Inc." name="author" />
+# Splunk admin/changeme

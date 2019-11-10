@@ -1,0 +1,12 @@
+credentials:
+- password: symmetricom
+  username: admin
+name: Symmetricom SyncServer S100
+signatures:
+- Symmetricom SyncServer S100
+- var serverName
+- function usernameKey
+- function answerKey
+- loginPasswordTable
+- passedit
+# Symmetricom SyncServer S100 admin/symmetricom

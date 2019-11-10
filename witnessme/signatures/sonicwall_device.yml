@@ -1,0 +1,10 @@
+credentials:
+- password: password
+  username: admin
+name: SonicWall Device
+signatures:
+- meta name="SonicWALL Administrator" content
+- <title>SonicWALL - Authentication</title>
+- window.onunload=onPageUnload
+- '"auth1.html" name="authFrm"'
+# SonicWall Device admin/password

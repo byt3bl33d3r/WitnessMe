@@ -1,0 +1,7 @@
+name: ESXi System
+signatures:
+- body ng-app="esxUiApp"
+- img src="images/esxi.png
+- class="esx-icon-help-new-window
+- ng-app="esxUiApp"
+# ESXi System pass set on install

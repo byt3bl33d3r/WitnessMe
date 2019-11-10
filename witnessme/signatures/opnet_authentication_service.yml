@@ -1,0 +1,10 @@
+credentials:
+- password: opnet
+  username: admin
+name: OPNET Authentication Service
+signatures:
+- <title>OPNET Authentication Service Login</title>
+- function onDocumentLoad()
+- function checkVersion()
+- Riverbed Technology. All rights reserved
+# OPNET Authentication Service - admin/opnet

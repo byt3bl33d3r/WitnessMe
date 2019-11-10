@@ -1,0 +1,10 @@
+credentials:
+- password: <nopassword>
+  username: admin
+name: Mikrotik Router
+signatures:
+- a href="http://mikrotik.com"><img src="mikrotik_logo.png"
+- You have connected to a router. Administrative access only. If this device is not
+  in your possession, please contact your local network administrator
+- <td colspan="3"><h2>WebFig Login:</h2>
+# Mikrotik Router admin/<nopassword>

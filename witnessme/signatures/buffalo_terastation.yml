@@ -1,0 +1,13 @@
+credentials:
+- password: password
+  username: admin
+- password: <nopassword>
+  username: guest
+name: Buffalo TeraStation
+signatures:
+- content="BUFFALO INC."
+- <title>TeraStation
+- id="frmNas" name="frmNas"
+- C) BUFFALO INC
+- divAuthSubmitItem
+# Buffalo TeraStation admin/password && guest/<nopassword>

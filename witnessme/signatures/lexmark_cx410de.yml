@@ -1,0 +1,9 @@
+credentials:
+- password: '00000'
+  username: <nousermane>
+name: Lexmark CX410de
+signatures:
+- <title>Lexmark CX410de</title>
+- cgi-bin/dynamic/printer/langbar.html
+- frame name="Directory"
+# Lexmark CX410de <nousermane>/00000

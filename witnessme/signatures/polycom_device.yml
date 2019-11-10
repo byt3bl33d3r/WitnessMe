@@ -1,0 +1,11 @@
+credentials:
+- password: '456'
+  username: admin
+- password: '123'
+  username: user
+name: Polycom Device
+signatures:
+- <body onload="document.login.password.focus()">
+- <span id="headerLabel">Polycom Web Configuration Utility</span>
+- Welcome to Polycom Web Configuration Utility
+# Polycom Device - admin/456 user/123

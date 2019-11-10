@@ -1,0 +1,12 @@
+credentials:
+- password: password
+  username: admin
+- password: sp-admin
+  username: super
+name: Ruckus Wireless
+signatures:
+- <p id="powered">Powered by <a href="http://www.ruckuswireless.com">Ruckus Wireless</a></p>
+- <tr><th>Admin Name</th><td><input class="login_input"
+- <tr><th>Password</th><td><input class="login_input"
+- <title>Log In</title>
+# Ruckus Wireless admin/password or super/sp-admin

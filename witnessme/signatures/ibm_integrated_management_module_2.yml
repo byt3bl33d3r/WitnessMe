@@ -1,0 +1,11 @@
+credentials:
+- password: PASSW0RD
+  username: USERID
+name: IBM Integrated Management Module
+signatures:
+- WSMAN library is loaded here as
+- FRAMEHEADER
+- function loadFrames
+- top.remoteSelection = "radioJava"
+- src="lib/eLang.js"
+# IBM Integrated Management Module USERID / PASSW0RD

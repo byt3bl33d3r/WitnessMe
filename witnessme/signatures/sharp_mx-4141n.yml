@@ -1,0 +1,10 @@
+credentials:
+- password: admin
+  username: administrator
+name: Sharp MX-4141N
+signatures:
+- <title>Top Page - MX-4141N</title>
+- delta_close
+- mainwebchange
+- ggt_select(2)
+# Sharp MX-4141N administrator/admin

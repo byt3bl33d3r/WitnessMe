@@ -1,0 +1,11 @@
+credentials:
+- password: admin
+  username: admin
+name: ManageEngine ADAudit Plus
+signatures:
+- <title>ManageEngine - ADAudit Plus</title>
+- .greentxtbold1
+- var isPasswordChanged
+- function searchKeyPress(event)
+- password = decryptPassword(encPassword)
+# admin/admin

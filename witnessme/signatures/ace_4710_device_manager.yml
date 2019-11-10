@@ -1,0 +1,8 @@
+credentials:
+- password: admin
+  username: admin
+name: ACE 4710 Device Manager
+signatures:
+- ACE 4710 Device Manager
+- Cisco
+# (ACE 4710 Device Manager) admin/admin

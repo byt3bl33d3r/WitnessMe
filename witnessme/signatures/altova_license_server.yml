@@ -1,0 +1,10 @@
+credentials:
+- password: default
+  username: <nousername>
+name: Altova License Server
+signatures:
+- <title>Altova LicenseServer</title>
+- <span>Please wait...</span>
+- <div id="statusErrorMessage"
+- <p class="legalese">
+# Altova License Server <nousername>/default

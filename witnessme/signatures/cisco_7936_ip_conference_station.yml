@@ -1,0 +1,9 @@
+credentials:
+- password: '**#'
+name: Cisco 7936 IP Conference Station
+signatures:
+- framebreakout
+- <title>Cisco Web Accessible Phone Settings</title>
+- sym_Password
+- sym_DPBPwd
+# Cisco 7936 Cisco IP Conference Station password **#

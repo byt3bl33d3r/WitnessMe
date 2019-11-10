@@ -1,0 +1,10 @@
+credentials: []
+name: Polycom HDX
+signatures:
+- g_direction = "rtl"
+- forceReloadNav
+- kAllowDirectHTMLFileAccess
+- getUTF8Name
+- hdaccelerator
+- sipuseadcred
+# Polycom HDX password is 14 digit serial number

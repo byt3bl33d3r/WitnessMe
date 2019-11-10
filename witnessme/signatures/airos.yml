@@ -1,0 +1,10 @@
+credentials:
+- password: ubnt
+  username: ubnt
+name: AirOS
+signatures:
+- airos_logo.png
+- form enctype="multipart/form-data" id="loginform" method="post"
+- align="center" class="loginsubtable"
+- function onLangChange()
+# AirOS ubnt/ubnt

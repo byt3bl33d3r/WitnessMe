@@ -1,0 +1,8 @@
+credentials:
+- password: <random 8 characters>
+  username: Administrator
+name: HP iLo
+signatures:
+- Hewlett-Packard Development Company
+- iLO.init
+# (HP iLo) Administrator/<random 8 characters>

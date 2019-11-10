@@ -1,0 +1,11 @@
+credentials:
+- password: admin
+  username: <nouser>
+- password: '123'
+  username: <nouser>
+name: GrandStream Device
+signatures:
+- Grandstream Device Configuration
+- action="dologin" method="post" name="loginForm"
+- All Rights Reserved Grandstream Networks
+# GrandStream Device Admin User: <nouser>/admin  End User: <nouser>/123

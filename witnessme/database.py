@@ -28,6 +28,7 @@ class ScanDatabase:
                 "server" text,
                 "headers" text,
                 "host_id" integer,
+                "body" text,
                 FOREIGN KEY(host_id) REFERENCES hosts(id),
                 UNIQUE(port, host_id, scheme)
             )''')
@@ -37,13 +38,13 @@ class ScanDatabase:
     async def add_host(self, ip, hostname):
         return await self.db.execute("INSERT OR IGNORE INTO hosts (ip, hostname) VALUES (?,?)", [ip, hostname])
 
-    async def add_service(self, url, screenshot, port, scheme, title, server, headers, host_id):
+    async def add_service(self, url, screenshot, port, scheme, title, server, headers, body, host_id):
         return await self.db.execute(
-            "INSERT OR IGNORE INTO services (url, screenshot, port, scheme, title, server, headers, host_id) VALUES (?,?,?,?,?,?,?,?)",
-            [url, screenshot, port, scheme, title, server, headers, host_id]
+            "INSERT OR IGNORE INTO services (url, screenshot, port, scheme, title, server, headers, body, host_id) VALUES (?,?,?,?,?,?,?,?,?)",
+            [url, screenshot, port, scheme, title, server, headers, body, host_id]
         )
 
-    async def add_host_and_service(self, ip, hostname, url, screenshot, port, scheme, title, server, headers):
+    async def add_host_and_service(self, ip, hostname, url, screenshot, port, scheme, title, server, headers, body):
         cursor = await self.add_host(ip, hostname)
         host_id = cursor.lastrowid
         if host_id == 0:
@@ -51,7 +52,7 @@ class ScanDatabase:
                 row = await cursor.fetchone()
                 host_id = row[0]
 
-        await self.add_service(url, screenshot, port, scheme, title, server, json.dumps(headers), host_id)
+        await self.add_service(url, screenshot, port, scheme, title, server, json.dumps(headers), body, host_id)
 
     async def get_service_count(self):
         async with self.db.execute("SELECT count(*) FROM services") as cursor:

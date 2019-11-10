@@ -1,0 +1,11 @@
+credentials:
+- password: admin
+  username: admin
+name: TP-Link EAP100
+signatures:
+- <title>Login</title
+- label id="login-username-label"
+- label id="login-password-label
+- /data/managedMode.json
+- id="devname">EAP110</span>
+# TP-Link EAP100 admin/admin

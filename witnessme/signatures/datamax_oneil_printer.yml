@@ -1,0 +1,13 @@
+credentials:
+- password: sysadm
+  username: ''
+- password: system
+  username: ''
+- password: access
+  username: ''
+name: Datamax O'Neil Printer
+signatures:
+- <title>Datamax-O'Neil Printer Page</title>
+- scrolling="auto" src="info.html">
+- meta name="ProgId"
+# Datamax O'Neil Printer password is "sysadm", "system", or "access"

@@ -1,0 +1,7 @@
+credentials: []
+name: HP MFP M521dn
+signatures:
+- HP LaserJet Pro MFP M521dn
+- setupUrls[index++]
+- manageUrls
+# (HP MFP M521dn) No default username or pass

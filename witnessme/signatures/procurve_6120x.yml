@@ -1,0 +1,7 @@
+credentials: []
+name: ProCurve 6120X Blade Switch
+signatures:
+- ProCurve 6120XG Blade Switch
+- openRegistrationWindow()
+- var dws = new Array()
+# ProCurve 6120X Blade Switch <no password by default>

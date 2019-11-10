@@ -1,0 +1,12 @@
+credentials:
+- password: ADMIN
+  username: ADMIN
+name: Possible SuperMicro IPMI
+signatures:
+- ATEN International Co Ltd
+- body onload='PageInit()
+- form name="form1" action="/cgi/login.cgi" method="post"
+- img src="../images/logo.gif" style="margin
+- alert(lang.LANG_LOGIN_INVALID_USERNAME)
+- document.getElementById("login_word")
+# Possible SuperMicro IPMI ADMIN/ADMIN (Creds need confirming)

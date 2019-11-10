@@ -1,0 +1,8 @@
+credentials:
+- password: admin
+  username: admin
+name: DYMO LabelWriter Print Server
+signatures:
+- DYMO LabelWriter Print Server
+- InternetExplorer3.0(or later)
+# (DYMO LabelWriter Print Server) admin/admin

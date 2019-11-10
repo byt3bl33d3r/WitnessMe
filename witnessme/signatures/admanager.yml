@@ -1,0 +1,10 @@
+credentials:
+- password: admin
+  username: admin
+name: ADManager
+signatures:
+- ADManager Plus Authentication
+- sel.options[i].text == 'ADManager Plus Authentication'
+- ManageEngine
+- js/framework/Hashtable.js
+# ADManager - admin/admin (ADManager Plus Authentication in dropdown)

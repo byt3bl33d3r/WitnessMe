@@ -1,0 +1,10 @@
+credentials:
+- password: admin
+  username: admin
+name: Intelbras WOM 5000
+signatures:
+- <title>Intelbras - Configura
+- form method="post" action="/cgi-bin/firmware.cgi" name="f"
+- <table class="tbLoginCenter">
+- td class="tdLoginLeft"
+# Intelbras WOM 5000 - admin/admin

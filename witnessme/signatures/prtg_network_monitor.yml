@@ -1,0 +1,8 @@
+credentials:
+- password: ptrgadmin
+  username: ptrgadmin
+name: PRTG Network Monitor
+signatures:
+- <span class="prtgversion">&nbsp
+- PRTG Network Monitor
+# PRTG Network Monitor ptrgadmin/ptrgadmin

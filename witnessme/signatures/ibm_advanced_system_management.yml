@@ -1,0 +1,11 @@
+credentials:
+- password: general
+  username: general
+- password: admin
+  username: admin
+name: IBM Advanced System Management
+signatures:
+- <title>Advanced System Management</title>
+- <frame name="toc_frame" src="cgi?form=2">
+- <frame name="form_frame" src="cgi?form=4">
+# IBM Advanced System Management - general/general or admin/admin

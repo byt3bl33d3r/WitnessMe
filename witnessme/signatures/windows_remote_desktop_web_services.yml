@@ -1,0 +1,12 @@
+credentials:
+- password: <password>
+  username: <username>
+name: Windows Remote Desktop Web Services
+signatures:
+- RD Web Access
+- WorkSpaceID
+- PublicModeTimeout
+- RedirectorName
+- tdClaimsDomainUserNameLable
+- trPasswordExpiredNoChange
+# Windows Remote Desktop Web Services <username>/<password>

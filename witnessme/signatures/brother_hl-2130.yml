@@ -1,0 +1,9 @@
+credentials:
+- password: access
+  username: admin
+name: Brother HL-2130
+signatures:
+- <title>Brother HL-2130 series</title>
+- function setCookie(key, val)
+- getCookie('webLang')
+# Brother HL-2130 - admin/access

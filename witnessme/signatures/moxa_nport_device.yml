@@ -1,0 +1,9 @@
+credentials:
+- password: <nopassword>
+  username: admin
+name: Moxa NPort Device
+signatures:
+- <head><title>NPort Web Console</title>
+- function option_up(sel)
+- theform.MD5Password.value = md5_pass
+# Moxa NPort Device - admin/<nopassword>

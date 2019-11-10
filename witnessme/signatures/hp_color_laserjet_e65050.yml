@@ -1,0 +1,11 @@
+credentials:
+- password: <blank>
+  username: administrator
+name: HP Color LaserJet E65050
+signatures:
+- isSignedIn
+- signinUrl
+- PageDeviceStatus
+- CSRFToken
+- HP Color LaserJet E65050
+# HP Color LaserJet E65050 administrator/<blank>

@@ -1,0 +1,10 @@
+credentials:
+- password: password
+  username: admin
+name: Buffalo PCast Media NAS Server
+signatures:
+- HTTP
+- refresh:/cgi-bin/pcast.cgi
+- url=/cgi-bin/pcast.cgi
+- <title>PCast</title>
+# Buffalo PCast Media NAS Server admin/password

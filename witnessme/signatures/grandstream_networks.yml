@@ -1,0 +1,12 @@
+credentials:
+- password: admin
+  username: <nouser>
+- password: '123'
+  username: <nouser>
+name: Grandstream Networks
+signatures:
+- Grandstream Device Configuration
+- form action="/cgi-bin/dologin" method="post" name="loginForm"
+- All Rights Reserved Grandstream Networks
+- input name="P2" type=password size=30 maxlength=30
+# Grandstream Networks: <nouser>/admin or <nouser>/123

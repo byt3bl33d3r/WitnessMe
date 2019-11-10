@@ -1,0 +1,10 @@
+credentials:
+- password: POLYCOM
+  username: POLYCOM
+name: Polycom RMX 1000
+signatures:
+- Polycom RMX 1000
+- ondragstart
+- cfg_ui_hide
+- proxy_log_ip
+# (Polycom RMX 1000) POLYCOM/POLYCOM

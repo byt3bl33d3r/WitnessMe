@@ -1,0 +1,12 @@
+credentials:
+- password: admin
+  username: admin
+name: Barracuda Web Filter
+signatures:
+- <title></title>
+- <span>Barracuda</span>
+- base64_encode
+- passwords over HTTP are what they are. Use HTTPS
+- Barracuda Networks
+- function obfuscatePassword
+# Barracuda Web Filter - admin/admin

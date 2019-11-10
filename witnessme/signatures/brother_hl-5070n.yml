@@ -1,0 +1,9 @@
+credentials:
+- password: access
+  username: admin
+name: Brother HL-5070N
+signatures:
+- <title>Brother HL-5070N series
+- http://solutions.brother.com/cgi-bin/solutions.cgi
+- /printer/online.html?
+# Brother HL-5070N - admin/access

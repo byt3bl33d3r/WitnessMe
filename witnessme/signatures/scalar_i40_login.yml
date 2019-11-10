@@ -1,0 +1,9 @@
+credentials:
+- password: password
+  username: admin
+name: Scalar i40 Login
+signatures:
+- QUANTUM - Scalar i40 Login Screen
+- var bLoggingin = false
+- enterKey(event)
+# (Scalar i40 Login) admin/password

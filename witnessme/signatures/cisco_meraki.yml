@@ -1,0 +1,9 @@
+credentials:
+- password: <noPass>
+  username: <SERIALNUMBER all uppercase with dashes>
+name: Cisco Meraki
+signatures:
+- <img src="images/cisco-meraki.png" width="120">
+- <a class="device_noun">access point
+- <label for="site_survey_select">
+# Cisco Meraki <SERIALNUMBER all uppercase with dashes>/<noPass>

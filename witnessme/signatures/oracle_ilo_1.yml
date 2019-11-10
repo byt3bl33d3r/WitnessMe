@@ -1,0 +1,9 @@
+credentials:
+- password: changeme
+  username: root
+name: Oracle ILO
+signatures:
+- alt="Oracle(R) Integrated Lights Out Manager"
+- Log In - Oracle(R) Integrated Lights Out Manager
+- Log In to Oracle(R) Integrated Lights Out Manager
+# Oracle ILO - root/changeme

@@ -1,0 +1,15 @@
+credentials:
+- password: admin,
+  username: admin
+- password: paradox,
+  username: admin
+- password: paradox
+  username: paradox
+name: Rainwise IP-100) o
+signatures:
+- Rainwise IP-100
+- Relative Humidity
+- Solar Rad
+- Leaf Wetness
+- var exdate=new Date()
+# (Rainwise IP-100) admin/admin, admin/paradox, or paradox/paradox

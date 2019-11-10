@@ -1,0 +1,9 @@
+credentials:
+- password: admin
+  username: admin
+name: Sony SNC-RZ50
+signatures:
+- <TITLE>Sony Network Camera SNC-RZ50</TITLE>
+- ViewerSelect
+- Sony Corporation
+# Sony SNC-RZ50 admin/admin

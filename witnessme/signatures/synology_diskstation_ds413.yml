@@ -1,0 +1,11 @@
+credentials:
+- password: <nopassword>
+  username: admin
+name: Synology Diskstation DS413
+signatures:
+- Synology
+- DiskStation
+- DS413
+- modules/BackupReplicationApp/style.css
+- ''
+# (Synology Diskstation DS413) admin/<nopassword>

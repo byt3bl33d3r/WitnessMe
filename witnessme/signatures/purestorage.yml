@@ -1,0 +1,11 @@
+credentials:
+- password: pureuser
+  username: pureuser
+name: PureStorage
+signatures:
+- <title>Pure Storage Login</title>
+- pure-help
+- pure-header-links-action
+- type="password" style="float
+- groupOption
+# PureStorage pureuser/pureuser

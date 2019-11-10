@@ -1,0 +1,11 @@
+credentials:
+- password: <nopassword>
+  username: admin
+name: Synology DS212J
+signatures:
+- Synology
+- DiskStation
+- DS212J
+- modules/PersonalSettings/style.css
+- script type="text/javascript">SYNO.SDS.Session
+# (Synology DS212J) admin/<nopassword>

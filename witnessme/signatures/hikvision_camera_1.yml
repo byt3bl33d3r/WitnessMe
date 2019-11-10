@@ -1,0 +1,10 @@
+credentials:
+- password: '12345'
+  username: admin
+name: Hikvision Cameras
+signatures:
+- <meta http-equiv="Content-Type" content="text/html
+- <label id="lapassword" name="lapassword"></label>
+- Hikvision Digital Technology Co., Ltd
+- span class="loginbtn" onclick="doLogin()" onmousemove="this.className='loginbtnon'
+# Hikvision Cameras admin/12345

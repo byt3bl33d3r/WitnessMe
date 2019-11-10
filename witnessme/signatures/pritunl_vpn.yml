@@ -1,0 +1,11 @@
+credentials:
+- password: pritunl
+  username: pritunl
+name: Pritunl VPN
+signatures:
+- <title>Pritunl</title>
+- <link rel="icon" type="image/x-icon" href
+- onSubmit()
+- login-form
+- var duoUserInput = document.getElementById('duo-username')
+# Pritunl VPN pritunl/pritunl

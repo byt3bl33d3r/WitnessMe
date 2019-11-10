@@ -1,0 +1,9 @@
+credentials:
+- password: passw0rd
+name: IBM FlashSystem 900
+signatures:
+- <title>Welcome to Service Assistant</title>
+- var clusterAddressLabel
+- showIPDiv()
+- svcProductMtm
+# IBM FlashSystem 900 passw0rd

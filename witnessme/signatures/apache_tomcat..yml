@@ -1,0 +1,12 @@
+credentials:
+- password: tomcat
+  username: tomcat
+- password: admin
+  username: admin
+name: Apache Tomcat
+signatures:
+- <h1>Apache Tomcat
+- Manager Application HOW-TO
+- <span>Manager App</span></a>
+- For security, access to the
+# Apache Tomcat tomcat/tomcat admin/admin etc.

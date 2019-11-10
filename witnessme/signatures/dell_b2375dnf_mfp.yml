@@ -1,0 +1,9 @@
+credentials:
+- password: admin
+  username: admin
+name: Dell B2375dnf MFP
+signatures:
+- <title> Dell B2375dnf Mono MFP </title>
+- css/sws-all-dell.css
+- sws_redirect_location
+# Dell B2375dnf MFP - admin/admin

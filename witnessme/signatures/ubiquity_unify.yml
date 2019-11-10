@@ -1,0 +1,9 @@
+credentials:
+- password: ubnt
+  username: ubnt
+name: Ubiquity Unify
+signatures:
+- <title ng-bind="manageCtrl.system.getName()
+- UniFi'" class="ng-binding">UniFi</title>
+- translate="ACCOUNT_TITLE_HOTSPOT_MANAGER"
+# Ubiquity Unify - ubnt/ubnt

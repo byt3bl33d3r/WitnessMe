@@ -1,0 +1,8 @@
+name: Xerox C70 Printer
+credentials:
+- username: admin
+  password: '1111'
+signatures:
+- <title>WebTools | Home</title>
+- <td align="left" valign="middle" class="name">XeroxC70
+- set_status_refresh_interval

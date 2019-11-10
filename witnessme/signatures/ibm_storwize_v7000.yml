@@ -1,0 +1,8 @@
+credentials:
+- password: passw0rd
+name: IBM Storwize V7000
+signatures:
+- <title>Welcome to Service Assistant</title>
+- var clusterAddressLabel = "System Address"
+- 'BM Storwize V7000 Service Assistant Tool '
+# IBM Storwize V7000 superuser password = passw0rd

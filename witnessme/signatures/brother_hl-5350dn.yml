@@ -1,0 +1,8 @@
+credentials:
+- password: access
+  username: admin
+name: Brother HL-5350DN
+signatures:
+- <title>Brother HL-5350DN series</title>
+- src="/pbio/key_admin.gif"
+# Brother HL-5350DN - admin/access

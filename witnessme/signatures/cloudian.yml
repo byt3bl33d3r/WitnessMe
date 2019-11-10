@@ -1,0 +1,11 @@
+credentials:
+- password: public
+  username: admin
+name: Cloudian
+signatures:
+- Management Console</title>
+- <title>Cloud
+- setGMToffset
+- updateGroupInput
+- groupid
+# Cloudian admin/public

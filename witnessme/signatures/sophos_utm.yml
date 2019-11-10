@@ -1,0 +1,12 @@
+credentials:
+- password: <pass set at install>
+  username: admin
+name: Sophos UTM
+signatures:
+- <title>User Portal</title>
+- Date
+- Expression
+- necessary files to set up SSL VPN on Linux
+- jape/jape_prereq_10_prototype.js
+- Cfg.app=
+# Sophos UTM admin/<pass set at install>

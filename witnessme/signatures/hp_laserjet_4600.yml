@@ -1,0 +1,7 @@
+credentials: []
+name: HP LaserJet 4600
+signatures:
+- hp color LaserJet 4600
+- images/hp_invent_logo.gif
+- jsfiles/formatting.css
+# (HP LaserJet 4600) <no default username or password>

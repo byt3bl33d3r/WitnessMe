@@ -1,0 +1,9 @@
+credentials:
+- password: <blank>
+  username: admin
+name: Synology Diskstation
+signatures:
+- Synology DiskStation
+- content="Multitasking,Web Application,Personal Cloud"
+- Don't contain any text node to avoid IE insertBefore bug
+# Synology Diskstation - admin/<blank>

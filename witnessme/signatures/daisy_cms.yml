@@ -1,0 +1,11 @@
+credentials:
+- password: admin
+  username: admin
+- password: user
+  username: user
+name: Daisy CMS
+signatures:
+- var daisy
+- daisy.site
+- daisy.site.name
+# (Daisy CMS) admin/admin or user/user

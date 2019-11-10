@@ -1,0 +1,11 @@
+credentials:
+- password: prtgadmin
+  username: prtgadmin
+name: PRTG
+signatures:
+- Paessler AG - The Network Monitoring Company
+- /images/prtg_network_monitor.png
+- You can not access all features of PRTG with this browser!
+- label for="loginpassword">Password</label>
+- input type="radio" name="loginurl"
+# PRTG - prtgadmin/prtgadmin

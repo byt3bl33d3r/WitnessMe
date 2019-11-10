@@ -1,0 +1,10 @@
+credentials:
+- password: changeme
+  username: admin
+name: EMV ViPR
+signatures:
+- <a href="/" class="navbar-brand">EMC ViPR</a>
+- <title>Internal Server Error</title>
+- HTTPS Connection Required
+- <div class="well">
+# EMV ViPR admin/changeme

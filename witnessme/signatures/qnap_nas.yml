@@ -1,0 +1,9 @@
+credentials:
+- password: admin
+  username: admin
+name: QNAP NAS
+signatures:
+- qnap-lib
+- myqnapcloud.com
+- logo-img x-abs-layout
+# QNAP NAS admin/admin

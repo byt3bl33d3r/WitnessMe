@@ -1,0 +1,10 @@
+credentials:
+- password: prtgadmin
+  username: prtgadmin
+name: PRTG Network Monitor
+signatures:
+- /images/prtg_network_monitor.png
+- PRTG Network Monitor
+- loginpassword
+- This may considerably slow down
+# PRTG Network Monitor - prtgadmin/prtgadmin

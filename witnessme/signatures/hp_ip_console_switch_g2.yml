@@ -1,0 +1,7 @@
+credentials:
+- password: <nopassword>
+  username: Admin
+name: HP IP Console Switch G2
+signatures:
+- HP IP Console Switch G2
+# (HP IP Console Switch G2) Admin/<nopassword>

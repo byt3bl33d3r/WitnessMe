@@ -1,0 +1,9 @@
+credentials:
+- password: password
+  username: admin
+name: JFrog Artifactory
+signatures:
+- ng-click="jfSidebar.pinMenu()
+- '-- end ngRepeat: item in jfSidebar.menuItems --'
+- div id="home-disclaimer" class="ng-scope"
+# JFrog Artifactory admin/password

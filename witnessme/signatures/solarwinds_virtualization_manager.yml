@@ -1,0 +1,9 @@
+credentials:
+- password: admin
+  username: admin
+name: SolarWinds Virtualization Manager
+signatures:
+- <title>SolarWinds Virtualization Manager</title>
+- var message = "{action:'setFrameStatus',status:'loaded'}"
+- link href="history/history.css" type="text/css"
+# SolarWinds Virtualization Manager - admin/admin

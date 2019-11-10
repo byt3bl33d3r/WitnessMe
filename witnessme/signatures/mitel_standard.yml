@@ -1,0 +1,11 @@
+credentials:
+- password: <setatinstall>
+  username: admin
+- password: <setatinstall>
+  username: root
+name: Mitel Standard
+signatures:
+- <title>Mitel Standard
+- var urlbits = window.location.href.
+- td class="inputLabel">Username:Mitel Networks Corporation
+# Mitel Standard - admin/<setatinstall> or root/<setatinstall>

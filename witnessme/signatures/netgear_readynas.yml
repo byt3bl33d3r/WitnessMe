@@ -1,0 +1,10 @@
+credentials:
+- password: password
+  username: admin
+name: NETGEAR ReadyNAS
+signatures:
+- <title>NETGEAR ReadyNAS</title>
+- fostmedm-webfont.eot
+- link_remote_access_policy
+- ExtJs
+# NETGEAR ReadyNAS admin/password

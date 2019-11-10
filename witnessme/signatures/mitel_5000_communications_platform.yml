@@ -1,0 +1,13 @@
+credentials:
+- password: itpassw
+  username: admin
+- password: support
+  username: admin
+name: Mitel 5000 Communications Platform
+signatures:
+- <title>Mitel 5000 Communications Platform</title>
+- username_vis
+- encodeURIComponent
+- login_form
+- authhash_hidden
+# Mitel 5000 Communications Platform - admin/itpassw or admin/support

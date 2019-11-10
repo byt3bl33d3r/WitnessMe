@@ -1,0 +1,10 @@
+credentials:
+- password: access
+  username: admin
+name: Brother QL-710W
+signatures:
+- <title>Brother QL-710W</title>
+- href="/printer/main.html?refresh=on
+- Network Firmware Version
+- name="webLang" onchange="changeLanguage()
+# Brother QL-710W admin/access

@@ -1,0 +1,8 @@
+credentials:
+- password: access
+  username: admin
+name: Brother HL-2270DW
+signatures:
+- <title>Brother HL-2270DW series</title>
+- /printer/main.html?weblang='+ wlang
+# Brother HL-2270DW - admin/access

@@ -1,0 +1,10 @@
+credentials:
+- password: <nopassword>
+  username: admin
+name: DNS-323 or DNS-343
+signatures:
+- dlink
+- document.login_form.f_LOGIN_NAME.value!="admin"
+- document.login_form.f_login_type.value=0
+- function checkID()
+# (DNS-323 or DNS-343) admin/<nopassword>

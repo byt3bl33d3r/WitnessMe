@@ -1,0 +1,9 @@
+credentials:
+- password: admin
+  username: admin
+name: F5 Load Balancer
+signatures:
+- content="F5 Networks, Inc."
+- doesn't have a BIGIPAuthCookie
+- F5 Networks Logo
+# F5 Load Balancer - admin/admin

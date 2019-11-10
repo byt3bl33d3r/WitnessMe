@@ -1,0 +1,12 @@
+credentials:
+- password: welcome
+  username: admin@example.com
+name: Load Dynamix
+signatures:
+- <title>
+- Load Dynamix Enterprise
+- ember1218
+- home/whatsnew
+- apidocs
+- user_remember_me
+# Load Dynamix admin@example.com/welcome

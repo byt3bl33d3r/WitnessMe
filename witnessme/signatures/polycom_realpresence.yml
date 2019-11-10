@@ -1,0 +1,12 @@
+credentials:
+- password: <deviceserialnumberofgroupsystem>
+  username: admin
+name: Polycom RealPresence
+signatures:
+- Polycom
+- Media Suite
+- You are using an
+- LOGIN.USER_ID
+- inputPassword3
+- LOGIN.PASSWORD
+# Polycom RealPresence admin/<deviceserialnumberofgroupsystem>

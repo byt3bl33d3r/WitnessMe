@@ -1,0 +1,11 @@
+credentials:
+- password: '1111'
+  username: admin
+- password: x-admin
+  username: '11111'
+name: Xerox WorkCentre 7345
+signatures:
+- Xerox WorkCentre 7345
+- var nvTree
+- var csItms
+# (Xerox WorkCentre 7345) admin/1111 or 11111/x-admin

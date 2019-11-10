@@ -1,0 +1,11 @@
+credentials:
+- password: admin
+  username: admin
+- password: instructor
+  username: instructor
+name: ATutor Web CMS
+signatures:
+- ATutor
+- form_login_action
+- /gad_search.php
+# (ATutor Web CMS) admin/admin or instructor:instructor

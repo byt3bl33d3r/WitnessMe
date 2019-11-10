@@ -1,0 +1,12 @@
+credentials:
+- password: admin
+  username: admin
+- password: '1234'
+  username: admin
+name: OX253P Router
+signatures:
+- function hex_md5(s) { return binl2hex(core_md5(str2binl(s), s.length * chrsz))
+- bit_rol(
+- Welcome to the  Web Configurator
+- OX253P
+# OX253P Router admin/admin admin/1234

@@ -1,0 +1,9 @@
+credentials:
+- password: admin
+  username: admin
+name: CA Network Flow Analysis
+signatures:
+- <title>Log In</title>
+- title="Go to CA Network Flow Analysis" class="login-page-logo"
+- Network Flow Analysis</span>
+# CA Network Flow Analysis admin/admin

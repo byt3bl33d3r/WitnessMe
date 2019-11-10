@@ -1,0 +1,11 @@
+credentials:
+- password: <nopassword>
+  username: admin
+name: Synology DS1513
+signatures:
+- Synology
+- DiskStation
+- DS1513
+- Multitasking,Web Application,Personal Cloud
+- SynohdpackStatus
+# (Synology DS1513) admin/<nopassword>

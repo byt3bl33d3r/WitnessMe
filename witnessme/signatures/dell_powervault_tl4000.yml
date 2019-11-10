@@ -1,0 +1,8 @@
+credentials:
+- password: secure
+  username: admin
+name: Dell PowerVault TL4000
+signatures:
+- <title>Dell PowerVault TL4000 Tape Library</title>
+- '"login_form" action="/RMULogin"'
+# Dell PowerVault TL4000 admin/secure

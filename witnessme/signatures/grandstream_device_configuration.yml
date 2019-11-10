@@ -1,0 +1,9 @@
+credentials:
+- password: admin
+  username: administrator
+name: Grandstream Device Configuration
+signatures:
+- <title>Grandstream Device Configuration</title>
+- /cgi-bin/dologin
+- loginForm
+# Grandstream Device Configuration administrator/admin

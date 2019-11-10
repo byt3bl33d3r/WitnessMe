@@ -1,0 +1,10 @@
+credentials:
+- password: <blank>
+  username: root
+name: Juniper Web Device Manager
+signatures:
+- <title>Log In - Juniper Web Device Manager</title>
+- document.getElementById("antiClickjack")
+- Juniper Networks, Inc.
+- document.getElementById('errorMsgId')
+# Juniper Web Device Manager root/<blank>

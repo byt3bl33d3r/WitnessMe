@@ -1,0 +1,12 @@
+credentials:
+- password: PS
+  username: PS
+- password: VP1
+  username: VP1
+name: Oracle Peoplesoft Enterprise
+signatures:
+- Oracle
+- PeopleSoft Enterprise Sign-in
+- function setFocus
+- pslogincopyright
+# (Oracle Peoplesoft Enterprise) PS/PS or VP1/VP1

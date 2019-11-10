@@ -1,0 +1,9 @@
+credentials:
+- password: root
+  username: calvin
+name: Dell OpenManage Switch
+signatures:
+- <title>Dell OpenManage Switch Administrator</title>
+- window.top.location.href = "dell_login.html"
+- login_text
+# Dell OpenManage Switch root / calvin

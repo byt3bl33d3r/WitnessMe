@@ -1,0 +1,11 @@
+credentials:
+- password: admin
+  username: admin
+name: HP Intelligent Management Center
+signatures:
+- <title>Log In</title>
+- <div class="imc_ui_log_box_top bg_hpe">
+- loadErrForm_SUBMIT
+- centerContentIframeHref
+- PrimeFaces
+# HP Intelligent Management Center - admin/admin

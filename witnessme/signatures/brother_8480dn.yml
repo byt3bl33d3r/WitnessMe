@@ -1,0 +1,11 @@
+credentials:
+- password: access
+  username: <no username>
+- password: access
+  username: admin
+name: Brother 8480DN
+signatures:
+- Brother MFC-8480DN
+- Brother Industries
+- OpenConfirmWindow
+# (Brother 8480DN) <no username>/access or admin/access

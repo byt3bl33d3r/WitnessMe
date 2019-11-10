@@ -1,0 +1,10 @@
+credentials:
+- password: infoblox
+  username: admin
+name: InfoBlox
+signatures:
+- <meta content="Infoblox WebUI Login Page ID" />
+- <title>Infoblox Grid Manager</title>
+- Wicket.Event.add(window, "domready", function(event) { document.getElementById('timezone').value
+  = IB.getBrowserTimezone()
+# InfoBlox admin/infoblox

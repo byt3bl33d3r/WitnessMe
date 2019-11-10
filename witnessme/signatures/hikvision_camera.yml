@@ -1,0 +1,11 @@
+credentials:
+- password: '12345'
+  username: admin
+name: Hikvision Camera
+  included -
+signatures:
+- document.write("<link rel='stylesheet'
+- Hikvision Digital Technology Co.
+- divAskAgain
+- laNoAskToChange
+# Hikvision Camera firmware > 5.3.0 unique password, firmware < 5.3.0 admin/12345 - backdoor included - http://seclists.org/fulldisclosure/2017/Sep/23

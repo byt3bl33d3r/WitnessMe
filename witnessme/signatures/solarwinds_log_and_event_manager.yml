@@ -1,0 +1,11 @@
+credentials:
+- password: password
+  username: manager
+name: SolarWinds Log and Event Manager
+signatures:
+- <title>SolarWinds Log &amp
+- ' Event Manager</title>'
+- var requiredMajorVersion
+- var MMredirectURL = window.location
+- allowMultipleConsoleSessions
+# SolarWinds Log and Event Manager - manager/password

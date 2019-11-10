@@ -1,0 +1,7 @@
+credentials:
+- password: <assigned at install>
+  username: admin
+name: Drupal
+signatures:
+- Drupal.settings
+# (Drupal) admin/<assigned at install>

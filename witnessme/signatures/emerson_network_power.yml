@@ -1,0 +1,15 @@
+credentials:
+- password: admin
+  username: admin
+name: Emerson Network Power
+signatures:
+- siteAuthReqd
+- loginReqdChkd
+- loginFailed
+- getUnityInfo
+- updReturnPageChgMode
+- document.getElementById('loginMsg')
+- Please enable the browser cookie before login RPC2K
+- RPC2</font></b></p></th>
+- document.cookie="testcookie"
+# Emerson Network Power - (possibly admin/admin)

@@ -1,0 +1,9 @@
+credentials:
+- password: default
+  username: ACSAdmin
+name: Cisco ACS Login
+signatures:
+- <title>Cisco Secure ACS Login</title>
+- function checkBroserCompatability()
+- Cisco Secure ACS
+# Cisco ACS Login - ACSAdmin/default (changed at config)

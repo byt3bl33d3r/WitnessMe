@@ -1,0 +1,10 @@
+credentials:
+- password: foglight
+  username: foglight
+name: Dell Foglight
+signatures:
+- <title>Foglight</title>
+- <td><label for="user">User Name:</label></td>
+- <td><label for="password">Password:</label></td>
+- Dell Inc. ALL RIGHTS RESERVED
+# Dell Foglight - foglight/foglight

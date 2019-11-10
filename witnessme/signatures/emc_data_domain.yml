@@ -1,0 +1,9 @@
+credentials:
+- password: <serialnumber>
+  username: admin
+name: EMC Data Domain
+signatures:
+- '"companyName":"Data Domain"'
+- '"productName":"System Manager"'
+- EMC Corporation. All Rights Reserved.
+# EMC Data Domain admin/<serialnumber>

@@ -1,0 +1,10 @@
+credentials:
+- password: Sharp
+  username: admin
+name: Sharp AR-M550U
+signatures:
+- <title>AR-M550U</title>
+- frame SRC="link_user.html"
+- frame SRC="logo.html"
+- frame SRC="main_user.html"
+# Sharp AR-M550U admin/Sharp

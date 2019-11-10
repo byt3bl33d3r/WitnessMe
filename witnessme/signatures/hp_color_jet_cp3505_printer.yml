@@ -1,0 +1,6 @@
+name: HP Color Jet CP3505 Printer
+signatures:
+- HP Color LaserJet CP3505
+- input name="btnContinue"  type="image"
+- img class="hpPageImage" src="images/question.gif" alt="On-line help
+# HP Color Jet CP3505 Printer <no admin username or password>

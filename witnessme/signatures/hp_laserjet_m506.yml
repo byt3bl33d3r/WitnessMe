@@ -1,0 +1,10 @@
+credentials:
+- password: <blank>
+  username: administrator
+name: HP LaserJet M506
+signatures:
+- HP LaserJet M506
+- HomeDeviceName
+- OpenFromUsb/Index
+- WelcomeHeader
+# HP LaserJet M506 administrator/<blank>

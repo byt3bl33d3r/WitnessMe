@@ -1,0 +1,9 @@
+credentials:
+- password: <nopass>
+  username: admin
+name: Synology
+signatures:
+- Synology DiskStation - Monego
+- DiskMessageHandler
+- VideoPlayer
+# (Synology) admin/<nopass>

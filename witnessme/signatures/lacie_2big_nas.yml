@@ -1,0 +1,10 @@
+credentials:
+- password: admin
+  username: admin
+name: Lacie 2Big NAS
+signatures:
+- a id="id_LaCie" target="_blanck" href= "http://www.lacie.com">
+- LaCie
+- Dashboard
+- body class="bodynormaldashboard"
+# (Lacie 2Big NAS) admin/admin (changed at first login though)

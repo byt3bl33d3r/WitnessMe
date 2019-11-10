@@ -1,0 +1,10 @@
+credentials:
+- password: <nopassword>
+  username: admin
+name: Netgear GSM7352S
+signatures:
+- <title>NETGEAR GSM7352SV2</title>
+- <script src="/base/js/ng_tabs_Layer2.js"
+- function pausecomp(millis)
+- function DisplayErrorMsg()
+# Netgear GSM7352S - admin/<nopassword>

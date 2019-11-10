@@ -1,0 +1,7 @@
+credentials:
+- password: polycom
+  username: Administrator
+name: Polycom RSS 2000
+signatures:
+- Polycom RSS 2000
+# (Polycom RSS 2000) Administrator/polycom

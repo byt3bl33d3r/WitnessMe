@@ -1,0 +1,10 @@
+credentials:
+- password: <OS administrator account>
+  username: <os admin password>
+name: HP System Management Homepage
+signatures:
+- parse the RedirectUrl
+- RedirectQueryString
+- nameArray
+- nameArray["RedirectQueryString"]
+# HP System Management Homepage <OS administrator account>/<os admin password>

@@ -1,0 +1,11 @@
+credentials:
+- password: password
+  username: admin
+name: Buffalo Linkstation
+signatures:
+- <!-- BUFFALO LIBS -->
+- if (success) {
+- create_features_obj()
+- var rawData = result.responseText
+- var data = response.data
+# Buffalo Linkstation - admin/password

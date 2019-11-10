@@ -1,0 +1,10 @@
+credentials:
+- password: administrator
+  username: administrator
+name: ServiceDesk
+signatures:
+- ManageEngine ServiceDesk Plus
+- Local Authentication
+- alt="ManageEngine ServiceDesk Plus"
+- loginDiv
+# ServiceDesk - administrator/administrator (Local Authentication)

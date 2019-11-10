@@ -1,0 +1,11 @@
+credentials:
+- password: Fiery.1
+  username: admin
+name: Fiery Printer
+signatures:
+- <title>Webtools</title>
+- URL=wt2parser.cgi?home_en
+- selectedIndex
+- textsmall
+- name="inside" src="wt2parser.cgi?status_en.htm"
+# Fiery Printer admin/Fiery.1

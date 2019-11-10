@@ -1,0 +1,11 @@
+credentials:
+- password: 7654321
+  username: admin
+- password: 7654321
+  username: 7654321
+name: Canon ImageRunner
+signatures:
+- 'Default Authentication : iR-ADV C5030 : iR-ADV C5030'
+- login/image/favicon.ico
+- <span id="deviceName">iR-ADV C5030
+# Canon ImageRunner admin - 7654321   or   admin - 7654321/7654321

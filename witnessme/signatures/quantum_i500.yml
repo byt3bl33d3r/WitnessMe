@@ -1,0 +1,9 @@
+credentials:
+- password: ser001
+  username: service
+name: Quantum i500 -
+signatures:
+- <title>QUANTUM - Scalar i500 Login Screen - scgqtape</title>
+- var bLoggingin = false
+- function comboKey(idEdit, idSel)
+# Quantum i500 - service/ser001

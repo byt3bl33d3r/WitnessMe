@@ -1,0 +1,10 @@
+credentials:
+- password: apc
+  username: apc
+name: Schneider Electric UPS
+signatures:
+- <title>Log On</title>
+- <body id="logonbg" onload="placeFocus()">
+- User Name</dt>
+- <a href="http://www.apc.com"
+# Schneider Electric UPS apc/apc

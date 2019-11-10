@@ -1,0 +1,12 @@
+credentials:
+- password: nsroot
+  username: nsroot
+- password: nsroot
+  username: nsrecover
+name: Cisco Netscaler
+signatures:
+- <title>Citrix Login</title>
+- function checkform
+- if (form.username.value === "")
+- if (form.password.value === "")
+# Cisco Netscaler - nsroot/nsroot or nsrecover/nsroot

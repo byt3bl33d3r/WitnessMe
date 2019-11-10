@@ -1,0 +1,9 @@
+credentials:
+- password: <Windows Auth>
+name: Citrix Receiver
+signatures:
+- <title class="_ctxstxt_AppStore">
+- receiver/css/ctxs.no
+- aboutphoneBackBtn
+- citrixReceiverLogoAboutBox
+# Citrix Receiver <Windows Auth most likely>

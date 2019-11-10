@@ -1,0 +1,7 @@
+name: HP System Management
+signatures:
+- HP System Management Homepage Login
+- FramesAreThere
+- inNimbus
+- imageFromStatus(
+# (HP System Management) username and pass of OS or domain account

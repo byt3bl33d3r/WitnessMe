@@ -1,0 +1,9 @@
+credentials:
+- password: tech
+  username: administrator
+name: AxisTV Login
+signatures:
+- var slControl = new ActiveXObject('AgControl.AgControl')
+- form name="Form1" method="post" action="Default.aspx" id="Form1"
+- <title>AxisTV</title>
+# AxisTV Login administrator/tech

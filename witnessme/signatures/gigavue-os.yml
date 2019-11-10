@@ -1,0 +1,12 @@
+credentials:
+- password: admin123A!
+  username: admin
+name: Gigavue-OS
+signatures:
+- <title>GigaVUE-OS</title>
+- checkIfMasterIp
+- response.localClusterMode
+- encodeURIComponent
+- httpUserName
+- httpUserPwd
+# Gigavue-OS admin/admin123A!

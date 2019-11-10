@@ -1,0 +1,10 @@
+credentials:
+- password: sspassword
+  username: ssadmin
+name: Liquidware Labs
+signatures:
+- <title>Sign in
+- Stratusphere</title>
+- var gProduct = 'ADMINISTRATION'
+- var activePage = 'IManagerLoginPage'
+# Liquidware Labs - ssadmin/sspassword

@@ -1,0 +1,9 @@
+credentials:
+- password: '1234'
+  username: admin
+name: ZyXEL P-660HN-51 Modem
+signatures:
+- <title>.::Welcome to ZyXEL P-660HN-51::.</title>
+- if ( loginrandom == '1' ) {
+- function framLoad () {
+# ZyXEL P-660HN-51 Modem - admin/1234

@@ -1,0 +1,11 @@
+credentials:
+- password: pass
+  username: admin
+name: EasyCoder PM4i
+signatures:
+- EasyCoder PM4i
+- navframe
+- FRAME src
+- FRAMESET
+- noresize scrolling
+# EasyCoder PM4i admin/pass

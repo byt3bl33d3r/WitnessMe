@@ -1,0 +1,9 @@
+credentials:
+- password: '12345678'
+- password: '1234567812345678'
+name: Konica Minolta Bizhub c368
+signatures:
+- <Title>ConfigSummary</Title>
+- <AuthUserName>Public</AuthUserName>
+- <ProductName>bizhub C368</ProductName>
+# Konica Minolta bizhub c368 default pass is either 12345678 or 1234567812345678

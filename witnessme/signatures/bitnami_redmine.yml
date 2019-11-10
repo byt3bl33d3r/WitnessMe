@@ -1,0 +1,9 @@
+credentials:
+- password: <Set during Install>
+  username: <Set during Install>
+name: Bitnami Redmine Stack
+signatures:
+- <h1><a id="bitnami-link" href="redmine/">Access BitNami Redmine Stack</a></h1>
+- The BitNami Project was created to help spread
+- To enter the application please click on the link at the top of the page
+# Bitnami Redmine Stack <user>/<pass> Set during Install

@@ -1,0 +1,9 @@
+credentials:
+- password: calvin
+  username: root
+name: iDRAC
+signatures:
+- var thisIDRACText = EntityDecode(
+- '// Dell''s limit on the maximum # of char in a username'
+- /images/Ttl_2_iDRAC7_Base_ML.png
+# iDRAC root/calvin

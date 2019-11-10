@@ -1,0 +1,9 @@
+credentials:
+- password: password
+  username: <nousername>
+name: NetGear GS748Tv5
+signatures:
+- <title>NETGEAR GS748Tv5</title>
+- function DisplayErrorMsg()
+- <td class="font10Bold padding4Top">Password</td>
+# NetGear GS748Tv5 <nousername>/password

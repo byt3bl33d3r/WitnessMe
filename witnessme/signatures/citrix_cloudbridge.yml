@@ -1,0 +1,9 @@
+credentials:
+- password: password
+  username: admin
+name: Citrix CloudBridge
+signatures:
+- <title>Citrix CloudBridge - Login</title>
+- 'var err_map = { "SESS_CORRUPTED": "Session expired or killed. Please login."}'
+- function checkHTTP()
+# Citrix CloudBridge - admin/password

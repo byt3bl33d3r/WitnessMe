@@ -1,0 +1,10 @@
+credentials:
+- password: admin
+  username: admin
+name: Nimble Storage
+signatures:
+- Copyright 2010-2012, Nimble Storage
+- LoginPage.generation
+- com.nimblestorage.nimbus.NimbusEntryPoint.nocache.js
+- base64
+# Nimble Storage admin/admin

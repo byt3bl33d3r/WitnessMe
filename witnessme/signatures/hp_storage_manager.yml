@@ -1,0 +1,12 @@
+credentials:
+- password: '!manage'
+  username: manage
+- password: '!monitor'
+  username: monitor
+name: HP Storage Manager
+signatures:
+- var applicationLoadingMessage = function ()
+- var applicationLoadingMessage = function ()
+- var views = {}
+- var panels = {}
+# HP Storage Manager manage/!manage or monitor/!monitor

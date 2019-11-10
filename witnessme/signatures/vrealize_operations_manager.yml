@@ -1,0 +1,6 @@
+name: vRealize Operations Manager
+signatures:
+- <title>vRealize Operations Manager</title>
+- Ext.onReady(function()
+- var userNameField = new Ext.form.TextField
+# vRealize Operations Manager - user and pass set at console during install

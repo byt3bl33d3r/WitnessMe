@@ -1,0 +1,13 @@
+credentials:
+- password: <nopass>
+  username: admin
+- password: changeit
+  username: admin
+- password: admin
+  username: admin
+name: Oracle Glassfish Server
+signatures:
+- Login
+- Sun GlassFish Enterprise Server
+- onmouseover
+# (Oracle Glassfish Server) admin/<nopass> admin/changeit admin/admin

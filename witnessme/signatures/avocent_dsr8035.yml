@@ -1,0 +1,10 @@
+credentials:
+- password: <nopass>
+  username: admin
+name: Avocent DSR8035
+signatures:
+- <title>Avocent DSR8035 Explorer
+- iframe id="status-source"
+- td class="app-title" id="app-title"
+- setRootNavNode
+# Avocent DSR8035 admin/<nopass>

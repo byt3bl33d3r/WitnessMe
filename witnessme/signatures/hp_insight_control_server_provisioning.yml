@@ -1,0 +1,9 @@
+credentials:
+- password: admin
+  username: administrator
+name: HP Insight Control Server Provisioning
+signatures:
+- <title>HP Insight Control server provisioning</title>
+- Hewlett-Packard Development Company
+- hp-authn-provider-name
+# HP Insight Control Server Provisioning - administrator/admin

@@ -1,0 +1,10 @@
+credentials:
+- password: calvin
+  username: root
+name: Dell CMC
+signatures:
+- /cmc/css/loginmaster
+- strMaxSessions
+- strNotLicensed
+- blackpage_button_emphasized
+# Dell CMC root/calvin

@@ -1,0 +1,6 @@
+name: VisualSVN
+signatures:
+- <h1>Welcome to VisualSVN Server!</h1>
+- <title>VisualSVN Server</title>
+- <a href="/svn/">Repositories</a>
+# VisualSVN - Accounts created after install or Windows Auth

@@ -1,0 +1,9 @@
+credentials:
+ - password: <pass on label on physical device>
+ - username: ''
+name: HP Virtual Connect Manager
+signatures:
+- Hewlett-Packard Development Company
+- HP Virtual Connect Manager
+- <title>HP Virtual Connect Manager</title>
+# HP Virtual Connect Manager <pass on label on physical device>

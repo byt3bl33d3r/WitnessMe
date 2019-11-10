@@ -1,0 +1,7 @@
+credentials: []
+name: HP LaserJet 1320 series
+signatures:
+- hp LaserJet 1320 series
+- var ieVSupported = "MSIE 5.0"
+- hp/device/banner.html
+# (HP LaserJet 1320 series) <no default username or password>

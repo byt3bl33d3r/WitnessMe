@@ -1,0 +1,10 @@
+credentials:
+- password: admin
+  username: admin
+name: Cisco Phone Adapter Configuration Utility
+signatures:
+- <title>Login Page</title>
+- function to_submit()
+- function init()
+- action="/login.cgi" method="post" name="login" id="frm"
+# Cisco Phone Adapter Configuration Utility - admin/admin

@@ -1,0 +1,8 @@
+credentials: []
+name: NetScout nGenius
+signatures:
+- <title>Login - NetScout Systems, Inc
+- loadClientLocale()
+- popUpBlockingActive()
+- setPassword()
+# NetScout nGenius <password set at install>

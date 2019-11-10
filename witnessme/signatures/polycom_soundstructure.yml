@@ -1,0 +1,12 @@
+credentials:
+- password: '456'
+  username: admin
+- password: '123'
+  username: user
+name: Polycom SoundStructure
+signatures:
+- Polycom Web Configuration Utility
+- Welcome to Polycom Web Configuration Utility
+- Enter Login Information
+- submitLoginInfo()
+# Polycom SoundStructure admin/456 user/123

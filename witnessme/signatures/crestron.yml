@@ -1,0 +1,7 @@
+credentials:
+- password: admin
+  username: admin
+name: Crestron
+signatures:
+- <title>HD-MD4x1-4K-E</title>
+# Crestron admin/admin

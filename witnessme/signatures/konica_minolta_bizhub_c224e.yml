@@ -1,0 +1,12 @@
+credentials:
+- password: '12345678'
+  username: admin
+- password: '1234567812345678'
+  username: admin
+name: Konica Minolta Bizhub C224e - or
+signatures:
+- <title>Configuration Summary - PageScope Web Connection</title>
+- <div class="devicename-layout" cellpadding="0" cellspacing="0">Model Name:bizhub
+  C224e</div>
+- onmouseover="ContentsDragDropRegist('MC_OutputTray')
+# Konica Minolta Bizhub C224e - admin/12345678 or admin/1234567812345678

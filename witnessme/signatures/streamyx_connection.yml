@@ -1,0 +1,10 @@
+credentials:
+- password: Adm@<last4ofmacaddress>
+  username: tmadmin
+name: Streamyx Connection
+signatures:
+- TM2AuthLogin_Form.LoginPasswordValue
+- TM2AuthLogin_Form.LoginNameValue
+- function SubmitForm()
+- Streamyx Connection
+# Streamyx Connection - tmadmin/Adm@<last4ofmacaddress>

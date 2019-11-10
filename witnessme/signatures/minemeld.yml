@@ -1,0 +1,9 @@
+credentials:
+- password: minemeld
+  username: admin
+name: Minemeld
+signatures:
+- <title>MineMeld</title>
+- ng-app="minemeldWebui"
+- ng-disabled="login.checking"
+# Minemeld admin/minemeld
