@@ -23,6 +23,26 @@ pip3 install --user pipenv && pipenv install --three
 pipenv shell # Enter the virtualenv
 ```
 
+## Call for Signatures!
+
+If you run into a new webapp write a signature for it! It's beyond simple and they're all in YAML!
+
+Don't believe me? Here's the AirOS signature (you can find them all in the [signatures directory](https://github.com/byt3bl33d3r/WitnessMe/tree/master/witnessme/signatures)):
+```yaml
+credentials:
+- password: ubnt
+  username: ubnt
+name: AirOS
+signatures:
+- airos_logo.png
+- form enctype="multipart/form-data" id="loginform" method="post"
+- align="center" class="loginsubtable"
+- function onLangChange()
+# AirOS ubnt/ubnt
+```
+
+Yup that's it. Just plop it in the signatures folder and POW! Done.
+
 ## Usage & Examples
 
 `witnessme.py` is what takes the screenshots, `wmdb.py` allows you to browse the database created on each scan.
@@ -83,7 +103,11 @@ Similarly if you wanted to find servers with a 'login' in the title:
 
 ### Hosts Command
 
-No arguments will show all discovered servers. Passing it an argument will search the `IP` and `Hostname` columns for that pattern (it's case insensitive). If the value corresponds to a Host ID it will show you the host information and all of the servers discovered on that host which is extremely useful for reporting purposes and/or when targeting specific hosts.
+No arguments will show all discovered hosts. Passing it an argument will search the `IP` and `Hostname` columns for that pattern (it's case insensitive). If the value corresponds to a Host ID it will show you the host information and all of the servers discovered on that host which is extremely useful for reporting purposes and/or when targeting specific hosts.
+
+### Signature Scan
+
+You can perform a signature scan on all discovered services using the `scan` command.
 
 # Preview Screenshots Directly in the Terminal (ITerm2 on MacOSX)
 
