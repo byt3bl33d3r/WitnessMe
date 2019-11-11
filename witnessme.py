@@ -140,8 +140,9 @@ async def start_scan():
     t.start()
 
     browser = await pyppeteer.launch(headless=True, ignoreHTTPSErrors=True, args=['--no-sandbox']) # --no-sandbox is required to make Chrome/Chromium run under root.
+    context = await browser.createIncognitoBrowserContext()
     try:
-        worker_threads = [asyncio.create_task(worker(browser, queue)) for n in range(args.threads)]
+        worker_threads = [asyncio.create_task(worker(context, queue)) for n in range(args.threads)]
         logging.info(f"Using {len(worker_threads)} worker thread(s)")
 
         await queue.join()
@@ -152,6 +153,7 @@ async def start_scan():
         await asyncio.gather(*worker_threads, return_exceptions=True)
 
     finally:
+        await context.close()
         await browser.close()
 
 if __name__ == '__main__':
