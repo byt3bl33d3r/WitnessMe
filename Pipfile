@@ -8,10 +8,10 @@ pylint = "*"
 ipython = "*"
 
 [packages]
-pyppeteer = "*"
 aiosqlite = "*"
 xmltodict = "*"
 terminaltables = "*"
 prompt-toolkit = "*"
 imgcat = "*"
 pyyaml = "*"
+pyppeteer-dev = {editable = true,git = "https://github.com/miyakogi/pyppeteer.git",ref = "dev"}

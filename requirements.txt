@@ -1,15 +1,15 @@
 -i https://pypi.org/simple
+-e git+https://github.com/miyakogi/pyppeteer.git@56f87106473fdedda47828934f8a1c035960bc73#egg=pyppeteer-dev
 aiosqlite==0.10.0
 appdirs==1.4.3
 imgcat==0.4.0
 prompt-toolkit==2.0.10
-pyee==6.0.0
-pyppeteer==0.0.25
+pyee==5.0.0
 pyyaml==5.1.2
 six==1.13.0
 terminaltables==3.1.0
 tqdm==4.38.0
-urllib3==1.25.6
+urllib3==1.24.3
 wcwidth==0.1.7
 websockets==8.1
 xmltodict==0.12.0

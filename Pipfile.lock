@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "e8801fd9090c558188c5b7e1091bd77c814c6b3abfd6fc0f3844a29c77fe924e"
+            "sha256": "524c2c6e085e92b0fcae951746af70863eb64929470c7b76518115484deb8fa0"
         },
         "pipfile-spec": 6,
         "requires": {},
@@ -46,17 +46,15 @@
         },
         "pyee": {
             "hashes": [
-                "sha256:a9c9b60e8693a260dd942ef5a71358cfcbba15792d5e72caf0e3c891c4e91c3b",
-                "sha256:dbe44f61c40a995d2bdfd83d9fcb87ae025882d2c7f366513325e3daa09d7ede"
+                "sha256:47f8fa96d6dee61c82001831e1fbba55f3f808003a322d0e6653aa01c59f6b9e",
+                "sha256:4ec22817297b7024f89721cc34f790ee2767c5b5ca44284c565ee643abafbe32"
             ],
-            "version": "==6.0.0"
+            "version": "==5.0.0"
         },
-        "pyppeteer": {
-            "hashes": [
-                "sha256:51fe769b722a1718043b74d12c20420f29e0dd9eeea2b66652b7f93a9ad465dd"
-            ],
-            "index": "pypi",
-            "version": "==0.0.25"
+        "pyppeteer-dev": {
+            "editable": true,
+            "git": "https://github.com/miyakogi/pyppeteer.git",
+            "ref": "56f87106473fdedda47828934f8a1c035960bc73"
         },
         "pyyaml": {
             "hashes": [
@@ -100,10 +98,10 @@
         },
         "urllib3": {
             "hashes": [
-                "sha256:3de946ffbed6e6746608990594d08faac602528ac7015ac28d33cee6a45b7398",
-                "sha256:9a107b99a5393caf59c7aa3c1249c16e6879447533d0887f4336dde834c7be86"
+                "sha256:2393a695cd12afedd0dcb26fe5d50d0cf248e5a66f75dbd89a3d4eb333a61af4",
+                "sha256:a637e5fae88995b256e3409dc4d52c2e2e0ba32c42a6365fee8bbd2238de3cfb"
             ],
-            "version": "==1.25.6"
+            "version": "==1.24.3"
         },
         "wcwidth": {
             "hashes": [
