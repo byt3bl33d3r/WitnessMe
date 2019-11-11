@@ -58,7 +58,7 @@ positional arguments:
 
 optional arguments:
   -h, --help            show this help message and exit
-  -p PORTS [PORTS ...], --ports PORTS [PORTS ...]lk
+  -p PORTS [PORTS ...], --ports PORTS [PORTS ...]
                         Ports to scan if IP Range/CIDR is provided (default:
                         [80, 8080, 443, 8443])
   --threads THREADS     Number of concurrent threads (default: 25)
