@@ -61,6 +61,8 @@ class XmlParser(ContextDecorator):
     def __init__(self, file_path):
         self.xml_file_path = file_path
         self.item_depth = 4
+        self.https_ports = [443, 8443]
+        self.http_ports = [80, 8080]
         self.urls = set()
 
     def parser_callback(self, path, item):
@@ -92,33 +94,24 @@ class NessusParser(XmlParser):
         https://github.com/FortyNorthSecurity/EyeWitness/blob/master/modules/helpers.py#L100-L106
         https://github.com/FortyNorthSecurity/EyeWitness/blob/master/modules/helpers.py#L225-L230
         """
+        entry = dict(path)
+        if entry.get("ReportItem"):
+            report_item = entry['ReportItem']
 
-        try:
-            entry = dict(path)
-            """
-            TO DO: There' a bug here, fix it
-            It seems to be putting http:// instead of https:// on ports with TLS
-            """
-            if entry['ReportItem']['svc_name'] == 'https?':
-                self.urls.add(f"https://{entry['ReportHost']['name']}:{entry['ReportItem']['port']}")
-            elif entry['ReportItem']['pluginID'] == "22964" and entry['ReportItem']['svc_name'] == 'www':
-                if int(entry['ReportItem']['port']) == 443:
-                    self.urls.add(f"https://{entry['ReportHost']['name']}:{entry['ReportItem']['port']}")
-                elif int(entry['ReportItem']['port']) == 80:
-                    self.urls.add(f"http://{entry['ReportHost']['name']}:{entry['ReportItem']['port']}")
-                else:
-                    if dict(item)['plugin_output'].lower().find("a web server is running on this port through") != -1:
-                        self.urls.add(f"https://{entry['ReportHost']['name']}:{entry['ReportItem']['port']}")
-                    else:
-                        self.urls.add(f"https://{entry['ReportHost']['name']}:{entry['ReportItem']['port']}")
-                        self.urls.add(f"http://{entry['ReportHost']['name']}:{entry['ReportItem']['port']}")
-                        #logging.error("Unable to process Nessus entry")
+            if report_item.get('port') and report_item.get('svc_name') and report_item.get('pluginName'):
 
-            elif entry['ReportItem']['svc_name'] in ['http?', 'www']:
-                self.urls.add(f"http://{entry['ReportHost']['name']}:{entry['ReportItem']['port']}")
-        except KeyError:
-            pass
+                if report_item['svc_name'] == 'https?' or int(report_item['port']) in self.https_ports:
+                    self.urls.add(f"https://{entry['ReportHost']['name']}:{report_item['port']}")
 
+                elif report_item['pluginID'] == '22964' and report_item['svc_name'] == "www":
+                    plugin_output = item.get("plugin_output")
+                    if plugin_output.lower() in ["a web server is running on this port.", "a web server is running on the remote host."]:
+                        self.urls.add(f"http://{entry['ReportHost']['name']}:{report_item['port']}")
+                    elif plugin_output.lower().startswith("a web server is running on this port through"):
+                        self.urls.add(f"https://{entry['ReportHost']['name']}:{report_item['port']}")
+
+                elif report_item['svc_name'] in ["www", "http?"]:
+                    self.urls.add(f"http://{entry['ReportHost']['name']}:{report_item['port']}")
         return True
 
 class AutomaticTargetGenerator(ContextDecorator):
