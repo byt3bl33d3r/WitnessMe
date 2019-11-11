@@ -96,11 +96,11 @@ def task_watch(queue):
         #total_tasks = queue.qsize()
         logging.info(f"total: {stats.inputs}, done: {stats.execs}, pending: {stats.inputs - stats.execs}")
 
-async def worker(browser, queue):
+async def worker(context, queue):
     while True:
         url = await queue.get()
 
-        page = await browser.newPage()
+        page = await context.newPage()
         page.setDefaultNavigationTimeout(args.timeout * 1000) # setDefaultNavigationTimeout() accepts milliseconds
 
         #page.on('request', lambda req: asyncio.create_task(on_request(req)))
@@ -142,7 +142,7 @@ async def start_scan():
     browser = await pyppeteer.launch(headless=True, ignoreHTTPSErrors=True, args=['--no-sandbox']) # --no-sandbox is required to make Chrome/Chromium run under root.
     context = await browser.createIncognitoBrowserContext()
     try:
-        worker_threads = [asyncio.create_task(worker(context, queue)) for n in range(args.threads)]
+        worker_threads = [asyncio.create_task(worker(context, queue)) for _ in range(args.threads)]
         logging.info(f"Using {len(worker_threads)} worker thread(s)")
 
         await queue.join()
