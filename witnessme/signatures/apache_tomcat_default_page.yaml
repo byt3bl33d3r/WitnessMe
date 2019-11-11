@@ -1,0 +1,5 @@
+name: Apache Tomcat Default Page
+signatures:
+- <title>Apache Tomcat</title>
+- <h1>It works !</h1>
+# Apache Tomcat tomcat/tomcat admin/admin etc.

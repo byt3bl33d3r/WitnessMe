@@ -22,7 +22,7 @@ class Signatures:
     async def find_match(self, service):
         matches = []
         for sig in self.signatures:
-            if len(list(filter(lambda x: x > 0, map(lambda s: service[-1].find(s), sig['signatures'])))):
+            if all(i > 0 for i in map(lambda s: service[-1].find(s), sig['signatures'])):
                 logging.debug(f"Matched {service[1]} for signature \'{sig['name']}\'")
                 matches.append(sig)
         return matches, service

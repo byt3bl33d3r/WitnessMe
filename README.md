@@ -28,6 +28,7 @@ pipenv shell # Enter the virtualenv
 If you run into a new webapp write a signature for it! It's beyond simple and they're all in YAML!
 
 Don't believe me? Here's the AirOS signature (you can find them all in the [signatures directory](https://github.com/byt3bl33d3r/WitnessMe/tree/master/witnessme/signatures)):
+
 ```yaml
 credentials:
 - password: ubnt
@@ -57,7 +58,7 @@ positional arguments:
 
 optional arguments:
   -h, --help            show this help message and exit
-  -p PORTS [PORTS ...], --ports PORTS [PORTS ...]
+  -p PORTS [PORTS ...], --ports PORTS [PORTS ...]lk
                         Ports to scan if IP Range/CIDR is provided (default:
                         [80, 8080, 443, 8443])
   --threads THREADS     Number of concurrent threads (default: 25)
