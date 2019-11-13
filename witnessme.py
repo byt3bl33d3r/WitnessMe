@@ -69,7 +69,7 @@ async def screenshot(url, page):
         url = url._replace(netloc=f"{url.hostname}:{response.remotePort}")
 
     screenshot = f'{url.scheme}_{url.hostname}_{url.port}.png'
-    screenshot_path = pathlib.Path(f'./{report_folder}/{screenshot}').absolute()
+    screenshot_path = str(pathlib.Path(f'./{report_folder}/{screenshot}').absolute())
     await page.screenshot(
         {
             'path': screenshot_path,
