@@ -19,8 +19,8 @@ Supports Python >= 3.7, uses Asyncio and has some extra bells & whistles that ma
 
 ```bash
 git clone https://github.com/byt3bl33d3r/WitnessMe && cd WitnessMe
-pip3 install --user pipenv && pipenv install --three
-pipenv shell # Enter the virtualenv
+docker build -t WitnessMe .
+docker run -it witnessme /bin/bash -c "cd /WitnessMe; pipenv shell"
 ```
 
 ## Call for Signatures!
