@@ -20,7 +20,7 @@ Supports Python >= 3.7, uses Asyncio and has some extra bells & whistles that ma
 ```bash
 git clone https://github.com/faun88/WitnessMe.git && cd WitnessMe
 docker build -t WitnessMe .
-docker run -it witnessme /bin/bash -c "cd /WitnessMe; pipenv shell"
+docker run -it WitnessMe /bin/bash -c "cd /WitnessMe; pipenv shell"
 ```
 
 ## Call for Signatures!
