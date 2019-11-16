@@ -139,7 +139,8 @@ async def start_scan():
     t.setDaemon(True)
     t.start()
 
-    browser = await pyppeteer.launch(headless=True, ignoreHTTPSErrors=True, args=['--no-sandbox']) # --no-sandbox is required to make Chrome/Chromium run under root.
+    browser = await pyppeteer.launch(headless=True, executablePath="/usr/bin/chromium-browser", ignoreHTTPSErrors=True, args=['--no-sandbox']) # --no-sandbox is required to make Chrome/Chromium run under root.
+    #Had to add executablepath to get it to work on Docker Alpine
     context = await browser.createIncognitoBrowserContext()
     try:
         worker_threads = [asyncio.create_task(worker(context, queue)) for _ in range(args.threads)]
