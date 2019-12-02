@@ -34,6 +34,10 @@ class TargetGenerator(ContextDecorator):
     def __enter__(self):
         if self.target.startswith('http://') or self.target.startswith('https://'):
             yield self.target
+        elif self.target.startswith('http-simple-new://'):
+            yield self.target.replace('http-simple-new://', 'http://')
+        elif self.target.startswith('https-simple-new://'):
+            yield self.target.replace('https-simple-new://', 'https://')
         else:
             for host in self.expand_ip_cidr_or_range(self.target):
                 for port in self.ports:

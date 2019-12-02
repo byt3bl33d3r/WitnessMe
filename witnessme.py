@@ -90,38 +90,37 @@ async def screenshot(url, page):
         "body": await response.text()
     }
 
-def task_watch(queue):
+def task_watch():
     while True:
         sleep(5)
-        #total_tasks = queue.qsize()
         logging.info(f"total: {stats.inputs}, done: {stats.execs}, pending: {stats.inputs - stats.execs}")
 
 async def worker(context, queue):
-    while True:
-        url = await queue.get()
+    #while True:
+    url = await queue.get()
 
-        page = await context.newPage()
-        page.setDefaultNavigationTimeout(args.timeout * 1000) # setDefaultNavigationTimeout() accepts milliseconds
+    page = await context.newPage()
+    page.setDefaultNavigationTimeout(args.timeout * 1000) # setDefaultNavigationTimeout() accepts milliseconds
 
-        #page.on('request', lambda req: asyncio.create_task(on_request(req)))
-        #page.on('requestfinished', lambda req: asyncio.create_task(on_requestfinished(req)))
-        #page.on('response', lambda resp: asyncio.create_task(on_response(resp)))
+    #page.on('request', lambda req: asyncio.create_task(on_request(req)))
+    #page.on('requestfinished', lambda req: asyncio.create_task(on_requestfinished(req)))
+    #page.on('response', lambda resp: asyncio.create_task(on_response(resp)))
 
-        try:
-            r = await asyncio.wait_for(screenshot(url, page), timeout=args.timeout)
-            logging.debug(r)
-            async with ScanDatabase(report_folder) as db:
-                await db.add_host_and_service(**r)
-            logging.info(f"Took screenshot of {url}")
-        except asyncio.TimeoutError:
-            logging.info(f"Task for url {url} timed out")
-        except Exception as e:
-            #if not any(err in str(e) for err in ['ERR_ADDRESS_UNREACHABLE', 'ERR_CONNECTION_REFUSED', 'ERR_CONNECTION_TIMED_OUT']):
-            logging.error(f"Error taking screenshot: {e}")
-        finally:
-            stats.execs += 1
-            await page.close()
-            queue.task_done()
+    try:
+        r = await asyncio.wait_for(screenshot(url, page), timeout=args.timeout)
+        logging.debug(r)
+        async with ScanDatabase(report_folder) as db:
+            await db.add_host_and_service(**r)
+        logging.info(f"Took screenshot of {url}")
+    except asyncio.TimeoutError:
+        logging.info(f"Task for url {url} timed out")
+    except Exception as e:
+        #if not any(err in str(e) for err in ['ERR_ADDRESS_UNREACHABLE', 'ERR_CONNECTION_REFUSED', 'ERR_CONNECTION_TIMED_OUT']):
+        logging.error(f"Error taking screenshot: {e}")
+    finally:
+        stats.execs += 1
+        await page.close()
+        queue.task_done()
 
 async def producer(queue):
     with AutomaticTargetGenerator(args.target) as generated_targets:
@@ -129,32 +128,39 @@ async def producer(queue):
             stats.inputs += 1
             await queue.put(url)
 
-async def start_scan():
+async def start_scan(queue, n_urls: int):
+    logging.info("Starting headless browser")
+    browser = await pyppeteer.launch(headless=True, ignoreHTTPSErrors=True, args=['--no-sandbox']) # --no-sandbox is required to make Chrome/Chromium run under root.
+    context = await browser.createIncognitoBrowserContext()
+
+    try:
+        worker_threads = [asyncio.create_task(worker(context, queue)) for _ in range(n_urls)]
+        logging.info(f"Using {len(worker_threads)} worker thread(s)")
+        await asyncio.gather(*worker_threads, return_exceptions=True)
+    finally:
+        await context.close()
+        logging.info("Killing headless browser")
+        await browser.close()
+
+async def main():
     await ScanDatabase.create_db_and_schema(report_folder)
 
     queue = asyncio.Queue()
     asyncio.create_task(producer(queue))
 
-    t = threading.Thread(target=task_watch, args=(queue,))
+    logging.info("Waiting for queue to populate...")
+    while queue.qsize() == 0:
+        await asyncio.sleep(0.1)
+
+    t = threading.Thread(target=task_watch)
     t.setDaemon(True)
     t.start()
 
-    browser = await pyppeteer.launch(headless=True, ignoreHTTPSErrors=True, args=['--no-sandbox']) # --no-sandbox is required to make Chrome/Chromium run under root.
-    context = await browser.createIncognitoBrowserContext()
-    try:
-        worker_threads = [asyncio.create_task(worker(context, queue)) for _ in range(args.threads)]
-        logging.info(f"Using {len(worker_threads)} worker thread(s)")
-
-        await queue.join()
-
-        for task in worker_threads:
-            task.cancel()
-        # Wait until all worker tasks are cancelled.
-        await asyncio.gather(*worker_threads, return_exceptions=True)
-
-    finally:
-        await context.close()
-        await browser.close()
+    while queue.qsize() > 0:
+        await start_scan(
+                queue=queue,
+                n_urls=args.threads if queue.qsize() > args.threads else queue.qsize(),
+            )
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(formatter_class=ArgumentDefaultsHelpFormatter)
@@ -170,4 +176,4 @@ if __name__ == '__main__':
     report_folder = f"scan_{time}"
     os.mkdir(report_folder)
 
-    asyncio.run(start_scan())
+    asyncio.run(main())
