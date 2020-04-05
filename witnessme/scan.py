@@ -21,6 +21,7 @@ log = logging.getLogger("witnessme")
 class ScanStats:
     inputs: int = 0
     execs: int = 0
+    started: bool = False
     done: bool = False
 
     @property
@@ -40,7 +41,8 @@ class WitnessMeScan:
         self.report_folder = f"scan_{time}"
 
         self._queue = asyncio.Queue()
-        self._task_watch_event = asyncio.Event()
+        self._scan_done = asyncio.Event()
+        self._scan_task = None
 
     async def _on_request(self, request):
         pass
@@ -55,7 +57,7 @@ class WitnessMeScan:
         #log.info(f"on_requestfinished() called, url: {request.url}")
 
     async def _task_watch(self):
-        while not self._task_watch_event.is_set():
+        while not self._scan_done.is_set():
             await asyncio.sleep(5)
             log.info(f"total: {self.stats.inputs}, done: {self.stats.execs}, pending: {self.stats.pending}")
 
@@ -152,6 +154,8 @@ class WitnessMeScan:
             worker_threads = [asyncio.create_task(self.worker(context)) for _ in range(n_urls)]
             log.info(f"Using {len(worker_threads)} worker thread(s)")
             await asyncio.gather(*worker_threads)
+        except asyncio.CancelledError:
+            log.info(f"Stopping scan {self.id}")
         finally:
             await context.close()
             log.info("Killing headless browser")
@@ -170,10 +174,22 @@ class WitnessMeScan:
 
         asyncio.create_task(self._task_watch())
 
-        while self._queue.qsize() > 0:
+        while self._queue.qsize() > 0 and not self._scan_done.is_set():
             await self.scan(
                     n_urls=self.threads if self._queue.qsize() > self.threads else self._queue.qsize(),
                 )
 
-        self._task_watch_event.set()
+        self._scan_done.set()
+
+    async def start(self):
+        #self.stats = ScanStats()
+        self.stats.started = True
+        log.info(f"Starting scan {self.id}")
+        self._scan_task = asyncio.create_task(self.run())
+        await self._scan_task
         self.stats.done = True
+
+    async def stop(self):
+        if self._scan_task:
+            self._scan_done.set()
+            self._scan_task.cancel()

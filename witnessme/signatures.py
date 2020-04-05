@@ -19,7 +19,7 @@ class Signatures:
         log.debug(f"Loaded {len(self.signatures)} signature(s)")
 
     def get_sig(self, name: str):
-        return list(filter(lambda sig: sig['name'] == name, self.signatures))[0]
+        return next(filter(lambda s: s['name'] == name, self.signatures), None)
 
     async def find_match(self, service):
         matches = []

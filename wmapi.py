@@ -1,5 +1,4 @@
 import asyncio
-import tempfile
 import zipfile
 import json
 import logging
@@ -8,18 +7,14 @@ import functools
 import concurrent.futures
 import os
 from witnessme.scan import WitnessMeScan
-from witnessme.utils import patch_pyppeteer
-from quart import Quart, request, jsonify
-from quart.logging import default_handler
+from witnessme.utils import patch_pyppeteer, gen_random_string
+from quart import Quart, request, jsonify, Response
+from quart.logging import LocalQueueHandler
 
 handler = logging.StreamHandler()
 handler.setFormatter(
-    logging.Formatter("%(asctime)s [%(levelname)s] - %(filename)s: %(funcName)s - %(message)s")
+    logging.Formatter("%(asctime)s [%(levelname)s] %(name)s - %(filename)s: %(funcName)s - %(message)s")
 )
-
-quart_app_logger = logging.getLogger('quart.app')
-quart_app_logger.removeHandler(default_handler)
-quart_app_logger.addHandler(handler)
 
 log = logging.getLogger("witnessme")
 log.setLevel(logging.INFO)
@@ -35,28 +30,35 @@ class ActiveScans:
         self.scans.append(scan)
 
     def get(self, scan_id: uuid.UUID):
-        return next(filter(lambda  s: s.id == scan_id, self.scans), {})
+        return next(filter(lambda  s: s.id == scan_id, self.scans), None)
 
 class CustomJSONEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, ActiveScans):
             return {
                 str(scan.id): {
-                    'target': scan.target,
                     'inputs': scan.stats.inputs,
                     'execs': scan.stats.execs,
                     'pending': scan.stats.pending,
-                    'done': scan.stats.done
+                    'started': scan.stats.started,
+                    'done': scan.stats.done,
+                    'target': len(scan.target)
                 } for scan in obj.scans
             }
 
         if isinstance(obj, WitnessMeScan):
             return {
+                'id': str(obj.id),
                 'target': obj.target,
+                'ports': obj.ports,
+                'timeout': obj.timeout,
+                'threads': obj.threads,
+                'report_folder': obj.report_folder,
                 'inputs': obj.stats.inputs,
                 'execs': obj.stats.execs,
                 'pending': obj.stats.pending,
-                'done': obj.stats.done
+                'done': obj.stats.done,
+                'started': obj.stats.started
             }
 
         if isinstance(obj, uuid.UUID):
@@ -65,77 +67,122 @@ class CustomJSONEncoder(json.JSONEncoder):
         return super().default(obj)
 
 app = Quart(__name__)
+app.url_map.strict_slashes = False
+app.json_encoder = CustomJSONEncoder
 app.config.update({
     'SCANS': ActiveScans()
-    #'DATABASE': app.root_path / 'blog.db'
+    #'DATABASE': app.root_path / 'wmapi.db'
 })
-app.json_encoder = CustomJSONEncoder
 
-async def zip_scan_folder(tmp_file: tempfile.NamedTemporaryFile,  scan_folder: str):
-    app.logger.info(f"Compressing scan folder {scan_folder} to {tmp_file.name}...")
-    with zipfile.ZipFile(tmp_file, "w", compresslevel=9, compression=zipfile.ZIP_DEFLATED) as zf:
+def zip_scan_folder(scan_folder: str):
+    zip_file_path = f"{scan_folder}.zip"
+
+    app.logger.info(f"Compressing scan folder {scan_folder} to {zip_file_path}...")
+    with zipfile.ZipFile(zip_file_path, "w", compresslevel=9, compression=zipfile.ZIP_DEFLATED) as zf:
         for dirname, _, files in os.walk(scan_folder):
             zf.write(dirname)
             for filename in files:
                 zf.write(os.path.join(dirname, filename))
 
-@app.route('/scan/', methods=['POST'])
-async def start_scan():
+    return zip_file_path
+
+@app.route('/scan', methods=['POST'])
+async def create_scan():
     r = await request.get_json()
 
     if not r.get("target"):
         return {"error": "target is required"}, 400
     
-    if not type(r.get("target")) == list:
+    if type(r.get("target")) != list:
         return {"error": "target must be an array"}, 400
+
+    app.logger.info("Testing")
+    r['target'] = list(
+        map(lambda t: f"{t}:{gen_random_string()}" if t.startswith("file:") else t, r['target'])
+    )
 
     scan = WitnessMeScan(**r)
     app.config['SCANS'].add(scan)
 
-    if 'file' in r['target']:
+    file_targets = list(filter(lambda t: t.startswith('file:'), r['target']))
+    if file_targets:
         return {
             "id": scan.id,
-            "upload": f"http://127.0.0.0.1:5000/scan/{scan.id}/upload"
+            "upload": {
+                ft.split(':')[1]: f"{request.url_root}{scan.id}/upload/{ft.split(':')[2]}" 
+                for ft in file_targets
+            }
         }
 
-    asyncio.create_task(scan.run())
     return {'id': scan.id}
 
-@app.route('/scan/', methods=['GET'])
+@app.route('/scan', methods=['GET'])
 async def get_scans():
     return jsonify(app.config['SCANS'])
 
 @app.route('/scan/<uuid:scan_id>', methods=['GET'])
 async def get_scan_by_id(scan_id):
-    return jsonify(app.config['SCANS'].get(scan_id))
+    scan = app.config['SCANS'].get(scan_id)
+    if not scan:
+        return {"error": "specified scan id does not exist"}, 400
+    return jsonify(scan)
+
+@app.route('/scan/<uuid:scan_id>/start', methods=['GET'])
+async def start_scan(scan_id):
+    scan = app.config['SCANS'].get(scan_id)
+    if not scan:
+        return {"error": "specified scan id does not exist"}, 400
+
+    asyncio.create_task(scan.start())
+    return '', 200
+
+@app.route('/scan/<uuid:scan_id>/stop', methods=['GET'])
+async def stop_scan(scan_id):
+    scan = app.config['SCANS'].get(scan_id)
+    if not scan:
+        return {"error": "specified scan id does not exist"}, 400
+
+    asyncio.create_task(scan.stop())
+    return '', 200
 
 @app.route('/scan/<uuid:scan_id>/result', methods=['GET'])
 async def get_scan_result(scan_id):
     scan = app.config['SCANS'].get(scan_id)
     if not scan:
-        return {"error": "specified scan id does not exist"}
+        return {"error": "specified scan id does not exist"}, 400
     if not scan.stats.done:
         return {"error": "scan has not finished"}, 400
 
     loop = asyncio.get_running_loop()
-    with tempfile.NamedTemporaryFile() as tmp_file:
-        await loop.run_in_executor(
-            functools.partial(zip_scan_folder, tmp_file, scan.report_folder)
+    zip_file = await loop.run_in_executor(
+            None, functools.partial(zip_scan_folder, scan.report_folder)
         )
 
-        async def async_file_reader():
-            data_chunk = None
-            with open(tmp_file ,"rb") as report:
-                data_chunk = report.read(4096)
-                while data_chunk is not None:
-                    yield data_chunk
-                    data_chunk = report.read(4096)
+    async def async_file_reader():
+        with open(zip_file, 'rb') as report_zip:
+            data_chunk = report_zip.read(4096)
+            while len(data_chunk) > 0:
+                yield data_chunk
+                data_chunk = report_zip.read(4096)
 
-        return async_file_reader(), 200, {'Transfer-Encoding': 'chunked'}
+    return Response(async_file_reader(), status=200, mimetype="application/zip")
 
-@app.route('/scan/<uuid:scan_id>/upload', methods=['POST'])
-async def upload_scan_target_file(scan_id):
-    return {}
+@app.route('/scan/<uuid:scan_id>/upload/<string:file_id>', methods=['POST'])
+async def upload_scan_target_file(scan_id, file_id):
+    scan = app.config['SCANS'].get(scan_id)
+    if not scan:
+        return {"error": "specified scan id does not exist"}, 400
+
+    for i, t in enumerate(scan.target):
+        if t.startswith("file:"):
+            _,f_name,f_id = t.split(':')
+            if f_id == file_id:
+                with open(f_name, 'wb') as uploaded_scan_file:
+                    async for data in request.body:
+                        uploaded_scan_file.write(data)
+                    scan.target.append(upload_scan_target_file.path)
+                scan.target[i] = f_name
+                return '', 200
 
 if __name__ == '__main__':
     app.run(debug=True)

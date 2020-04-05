@@ -2,6 +2,8 @@ import asyncio
 import socket
 import pyppeteer.connection
 import logging
+import string
+import random
 from ipaddress import ip_address
 from pyppeteer.network_manager import NetworkManager, Response
 
@@ -70,3 +72,6 @@ def is_ipaddress(host):
         return True
     except ValueError:
         return False
+
+def gen_random_string(length=6):
+    return ''.join([random.choice(string.ascii_letters) for n in range(length)])
