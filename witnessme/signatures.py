@@ -3,6 +3,8 @@ import logging
 import yaml
 import pathlib
 
+log = logging.getLogger("witnessme")
+
 class Signatures:
     def __init__(self, sig_folder='./witnessme/signatures'):
         self.sig_folder = pathlib.Path(sig_folder)
@@ -14,7 +16,7 @@ class Signatures:
             with open(self.sig_folder.joinpath(sig_file).absolute()) as sig:
                 self.signatures.append(yaml.load(sig, Loader=yaml.CLoader))
 
-        logging.debug(f"Loaded {len(self.signatures)} signature(s)")
+        log.debug(f"Loaded {len(self.signatures)} signature(s)")
 
     def get_sig(self, name: str):
         return list(filter(lambda sig: sig['name'] == name, self.signatures))[0]
@@ -23,6 +25,6 @@ class Signatures:
         matches = []
         for sig in self.signatures:
             if all(i > 0 for i in map(lambda s: service[-1].find(s), sig['signatures'])):
-                logging.debug(f"Matched {service[1]} for signature \'{sig['name']}\'")
+                log.debug(f"Matched {service[1]} for signature \'{sig['name']}\'")
                 matches.append(sig)
         return matches, service

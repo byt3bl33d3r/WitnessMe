@@ -5,6 +5,8 @@ import logging
 from ipaddress import ip_address
 from pyppeteer.network_manager import NetworkManager, Response
 
+log = logging.getLogger("witnessme")
+
 def _customOnResponseReceived(self, event: dict) -> None:
         """
         Pyppeteer doesn't expose the remoteIPAddress and remotePort attributes from the received
@@ -43,6 +45,8 @@ def patch_pyppeteer():
 
     Additionally this hooks the _onResponseReceived method with our own above.
     """
+    log.debug("Patching pyppeteer...")
+
     original_method = pyppeteer.connection.websockets.client.connect
 
     def new_method(*args, **kwargs):
@@ -58,7 +62,7 @@ async def resolve_host(host):
     try:
         return socket.gethostbyaddr(host)[0]
     except Exception as e:
-        logging.debug(f"Error resolving IP {host}: {e}")
+        log.debug(f"Error resolving IP {host}: {e}")
 
 def is_ipaddress(host):
     try:

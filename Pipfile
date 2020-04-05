@@ -6,6 +6,9 @@ verify_ssl = true
 [dev-packages]
 pylint = "*"
 ipython = "*"
+pytest = "*"
+pytest-asyncio = "*"
+flake8 = "*"
 
 [packages]
 aiosqlite = "*"
@@ -14,4 +17,5 @@ terminaltables = "*"
 prompt-toolkit = "*"
 imgcat = "*"
 pyyaml = "*"
-pyppeteer = "*"
+quart = "*"
+pyppeteer2 = "*"

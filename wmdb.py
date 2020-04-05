@@ -18,7 +18,6 @@ from witnessme.database import ScanDatabase
 from witnessme.signatures import Signatures
 from prompt_toolkit import PromptSession
 from prompt_toolkit.completion import Completer, Completion
-from prompt_toolkit.eventloop import use_asyncio_event_loop
 from prompt_toolkit.patch_stdout import patch_stdout
 #from prompt_toolkit.history import InMemoryHistory
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
@@ -27,11 +26,14 @@ from prompt_toolkit.formatted_text import HTML
 from prompt_toolkit.styles import Style
 
 #from prompt_toolkit.document import Document
-logging.basicConfig(format="%(asctime)s [%(levelname)s] - %(filename)s: %(funcName)s - %(message)s", level=logging.DEBUG)
-logging.getLogger('asyncio').setLevel(logging.ERROR)
-logging.getLogger('sqlite3').setLevel(logging.ERROR)
-logging.getLogger('aiosqlite').setLevel(logging.ERROR)
-logging.getLogger('asyncio.coroutines').setLevel(logging.ERROR)
+handler = logging.StreamHandler()
+handler.setFormatter(
+    logging.Formatter("%(asctime)s [%(levelname)s] - %(filename)s: %(funcName)s - %(message)s")
+)
+log = logging.getLogger("witnessme")
+log.setLevel(log.DEBUG)
+log.addHandler(handler)
+
 
 class WMCompleter(Completer):
     def __init__(self, cli_menu):
@@ -196,7 +198,7 @@ class WMDBShell:
 
         self.signatures.load()
 
-        logging.debug("Starting signature scan...")
+        log.debug("Starting signature scan...")
         start_time = time()
         async with ScanDatabase(connection=self.db) as db:
             tasks = [asyncio.create_task(self.signatures.find_match(service))for service in await db.get_services()]
@@ -209,16 +211,15 @@ class WMDBShell:
                 )
 
             completed_time = strftime("%Mm%Ss", gmtime(time() - start_time))
-            logging.debug(f"Signature scan completed, identified {len(matches)} service(s) in {completed_time}")
+            log.debug(f"Signature scan completed, identified {len(matches)} service(s) in {completed_time}")
 
     async def cmdloop(self):
-        use_asyncio_event_loop()
         self.db = await aiosqlite.connect(self.db_path)
 
         try:
             while True:
                 #with patch_stdout():
-                text = await self.prompt_session.prompt(async_=True)
+                text = await self.prompt_session.prompt_async()
                 command = shlex.split(text)
                 if len(command):
                     # Apperently you can't call await on a coroutine retrieved via getattr() ??

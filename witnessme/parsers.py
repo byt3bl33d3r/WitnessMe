@@ -4,6 +4,8 @@ import logging
 from ipaddress import ip_address, ip_network, summarize_address_range
 from contextlib import ContextDecorator
 
+log = logging.getLogger("witnessme")
+
 class TargetGenerator(ContextDecorator):
     def __init__(self, target, ports = [80, 8080, 443, 8443]):
         self.target = target
@@ -127,20 +129,20 @@ class AutomaticTargetGenerator(ContextDecorator):
             if pathlib.Path(target).exists():
                 target = str(pathlib.Path(target).expanduser())
                 if target.lower().endswith(".nessus"):
-                    logging.debug("Detected .nessus file as a target")
+                    log.debug("Detected .nessus file as a target")
                     file_parser = NessusParser(target)
                 elif target.lower().endswith(".xml"):
-                    logging.debug("Detected NMap XML file as a target")
+                    log.debug("Detected NMap XML file as a target")
                     file_parser = NmapParser(target)
                 else:
-                    logging.debug("Detected file as a target")
+                    log.debug("Detected file as a target")
                     file_parser = GenericFileParser(target)
 
                 with file_parser as generated_urls:
                     for url in generated_urls:
                         yield url
             else:
-                logging.debug("Detected IP Address/Range/CIDR, hostname or URL as a target")
+                log.debug("Detected IP Address/Range/CIDR, hostname or URL as a target")
                 with TargetGenerator(target) as generated_urls:
                     for url in generated_urls:
                         yield url
