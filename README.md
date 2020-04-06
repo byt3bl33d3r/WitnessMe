@@ -46,7 +46,7 @@ Yup that's it. Just plop it in the signatures folder and POW! Done.
 
 ## Usage & Examples
 
-`witnessme.py` is what takes the screenshots, `wmdb.py` allows you to browse the database created on each scan.
+`witnessme.py` is what takes the screenshots, `wmcli.py` allows you to browse the database created on each scan.
 
 ```
 usage: witnessme.py [-h] [-p PORTS [PORTS ...]] [--threads THREADS]
@@ -76,10 +76,10 @@ python witnessme.py 192.168.1.0/24 192.168.1.10-20 https://bing.com ~/my_nessus_
 
 If an IP address/range/CIDR is specified as a target, WitnessMe will attempt to screenshot HTTP & HTTPS pages on ports 80, 8080, 443, 8443 by default. This is customizable with the `--port` argument.
 
-Once a scan is completed, a folder with all the screenshots and a database will be in the current directory, point `wmdb.py` to the database in order to see the results.
+Once a scan is completed, a folder with all the screenshots and a database will be in the current directory, point `wmcli.py` to the database in order to see the results.
 
 ```bash
-python wmdb.py scan_2019_11_05_021237/witnessme.db
+python wmcli.py scan_2019_11_05_021237/witnessme.db
 ```
 
 Pressing tab will show you the available commands and a help menu:
@@ -90,7 +90,7 @@ Pressing tab will show you the available commands and a help menu:
 
 ## Searching the Database
 
-The `servers` and `hosts` commands in the `wmdb.py` CLI accept 1 argument. WMDB is smart enough to know what you're trying to do with that argument
+The `servers` and `hosts` commands in the `wmcli.py` CLI accept 1 argument. WMCLI is smart enough to know what you're trying to do with that argument
 
 ### Server Command
 
