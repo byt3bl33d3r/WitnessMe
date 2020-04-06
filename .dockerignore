@@ -1,1 +1,10 @@
 tests
+Dockerfile
+README.md
+*.pyc
+*.pyo
+*.pyd
+__pycache__
+scan_*
+.vscode
+.venv
