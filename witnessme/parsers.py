@@ -1,6 +1,7 @@
 import xmltodict
 import pathlib
 import logging
+from collections import OrderedDict
 from ipaddress import ip_address, ip_network, summarize_address_range
 from contextlib import ContextDecorator
 
@@ -90,7 +91,23 @@ class XmlParser(ContextDecorator):
         self.urls = set()
 
 class NmapParser(XmlParser):
+    def __init__(self, file_path):
+        super().__init__(file_path)
+        self.item_depth = 2
+
     def parser_callback(self, path, item):
+        if isinstance(item, OrderedDict):
+            if 'address' in item.keys() and 'ports' in item.keys():
+                address = item['address']['@addr']
+                ports = item['ports']['port']
+                for port in ports:
+                    if port['@protocol'] == 'tcp' and port['state']['@state'] == 'open':
+                        service = port['service'].get('@name')
+                        port_number = port['@portid']
+                        if 'ssl' in service or service == 'https':
+                            self.urls.add(f"https://{address}:{port_number}")
+                        elif service == 'http-alt' or service == 'http':
+                            self.urls.add(f"http://{address}:{port_number}")
         return True
 
 class NessusParser(XmlParser):
