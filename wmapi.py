@@ -92,11 +92,10 @@ async def create_scan():
 
     if not r.get("target"):
         return {"error": "target is required"}, 400
-    
+
     if type(r.get("target")) != list:
         return {"error": "target must be an array"}, 400
 
-    app.logger.info("Testing")
     r['target'] = list(
         map(lambda t: f"{t}:{gen_random_string()}" if t.startswith("file:") else t, r['target'])
     )
@@ -185,4 +184,4 @@ async def upload_scan_target_file(scan_id, file_id):
                 return '', 200
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0')

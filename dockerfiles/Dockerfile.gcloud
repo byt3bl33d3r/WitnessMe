@@ -1,0 +1,20 @@
+FROM python:3-alpine
+
+ENV LANG=C.UTF-8
+ENV LC_ALL=C.UTF-8
+ENV CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium-browser
+
+WORKDIR /app
+
+COPY requirements.txt ./
+
+RUN apk update && \
+    apk add --no-cache openssl chromium && \
+    pip3 install hypercorn && \
+    pip3 install -r requirements.txt && \
+    openssl req -new -x509 -keyout key.pem -out cert.pem -days 365 -nodes -subj "/C=US" > /dev/null 2>&1
+
+COPY . .
+
+EXPOSE 8080 8443
+CMD ["hypercorn", "--certfile", "cert.pem" , "--keyfile", "key.pem", "--bind", "0.0.0.0:8443", "--insecure-bind", "0.0.0.0:8080", "wmapi:app"]

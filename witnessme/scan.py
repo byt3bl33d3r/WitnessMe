@@ -147,7 +147,14 @@ class WitnessMeScan:
 
     async def scan(self, n_urls: int):
         log.info("Starting headless browser")
-        browser = await pyppeteer.launch(headless=True, ignoreHTTPSErrors=True, autoClose=False, args=['--no-sandbox']) # --no-sandbox is required to make Chrome/Chromium run under root.
+        # --no-sandbox is required to make Chrome/Chromium run under root.
+        browser = await pyppeteer.launch(headless=True,
+            ignoreHTTPSErrors=True,
+            autoClose=False,
+            args=["--no-sandbox", "--disable-gpu"],
+            executablePath=os.environ.get("CHROMIUM_EXECUTABLE_PATH")
+        ) 
+
         context = await browser.createIncognitoBrowserContext()
 
         try:
@@ -179,6 +186,7 @@ class WitnessMeScan:
                     n_urls=self.threads if self._queue.qsize() > self.threads else self._queue.qsize(),
                 )
 
+        log.info(f"Saved scan to {self.report_folder}/")
         self._scan_done.set()
 
     async def start(self):

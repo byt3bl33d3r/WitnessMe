@@ -50,14 +50,14 @@ class WMCompleter(Completer):
                 if cmd.startswith(word_before_cursor):
                     yield Completion(cmd, -len(word_before_cursor), display_meta=getattr(self.cli_menu, cmd).__doc__.strip())
 
-class WMCLIShell:
+class WMDBShell:
     def __init__(self, db_path):
         self.db_path = db_path
 
         self.completer = WMCompleter(self)
         self.signatures = Signatures()
         self.prompt_session = PromptSession(
-            HTML("WMCLI ≫ "),
+            HTML("WMDB ≫ "),
             #bottom_toolbar=functools.partial(bottom_toolbar, ts=self.teamservers),
             completer=self.completer,
             complete_in_thread=True,
@@ -256,5 +256,5 @@ if __name__ == '__main__':
         sys.exit(1)
 
     print("[!] Press tab for autocompletion and available commands")
-    dbcli = WMCLIShell(str(db_path.expanduser()))
+    dbcli = WMDBShell(str(db_path.expanduser()))
     asyncio.run(dbcli.cmdloop())
