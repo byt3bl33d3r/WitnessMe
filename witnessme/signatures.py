@@ -5,8 +5,9 @@ import pathlib
 
 log = logging.getLogger("witnessme")
 
+
 class Signatures:
-    def __init__(self, sig_folder='./witnessme/signatures'):
+    def __init__(self, sig_folder="./witnessme/signatures"):
         self.sig_folder = pathlib.Path(sig_folder)
         self.signatures = []
 
@@ -19,12 +20,14 @@ class Signatures:
         log.debug(f"Loaded {len(self.signatures)} signature(s)")
 
     def get_sig(self, name: str):
-        return next(filter(lambda s: s['name'] == name, self.signatures), None)
+        return next(filter(lambda s: s["name"] == name, self.signatures), None)
 
     async def find_match(self, service):
         matches = []
         for sig in self.signatures:
-            if all(i > 0 for i in map(lambda s: service[-1].find(s), sig['signatures'])):
-                log.debug(f"Matched {service[1]} for signature \'{sig['name']}\'")
+            if all(
+                i > 0 for i in map(lambda s: service[-1].find(s), sig["signatures"])
+            ):
+                log.debug(f"Matched {service[1]} for signature '{sig['name']}'")
                 matches.append(sig)
         return matches, service

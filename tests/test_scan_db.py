@@ -1,19 +1,10 @@
 import pytest
 import shutil
-import logging
 import os
 from witnessme.database import ScanDatabase
 
-handler = logging.StreamHandler()
-handler.setFormatter(
-    logging.Formatter("%(asctime)s [%(levelname)s] - %(message)s")
-)
-
-log = logging.getLogger("witnessme")
-log.setLevel(logging.DEBUG)
-log.addHandler(handler)
-
 report_folder = "./scan_db_test_folder"
+
 
 @pytest.mark.asyncio
 async def test_scan_db_creation():
@@ -22,6 +13,7 @@ async def test_scan_db_creation():
         await ScanDatabase.create_db_and_schema(report_folder)
     finally:
         shutil.rmtree(report_folder, ignore_errors=True)
+
 
 @pytest.mark.asyncio
 async def test_scan_db():
@@ -40,7 +32,7 @@ async def test_scan_db():
                 "title": "Test page",
                 "server": "Test server",
                 "headers": {"Wat": "Test"},
-                "body": "<html><body> Test </body></html>"
+                "body": "<html><body> Test </body></html>",
             }
             await db.add_host_and_service(**fake_data)
 

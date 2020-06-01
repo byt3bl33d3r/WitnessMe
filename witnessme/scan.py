@@ -7,7 +7,6 @@ import pyppeteer
 import pathlib
 import contextvars
 import uuid
-from dataclasses import dataclass
 from typing import List
 from datetime import datetime
 from urllib.parse import urlparse
@@ -17,7 +16,7 @@ from witnessme.parsers import AutomaticTargetGenerator
 
 log = logging.getLogger("witnessme")
 
-@dataclass
+
 class ScanStats:
     inputs: int = 0
     execs: int = 0
@@ -25,11 +24,18 @@ class ScanStats:
     done: bool = False
 
     @property
-    def pending(self):
+    def pending(self) -> int:
         return self.inputs - self.execs
 
-class WitnessMeScan:
-    def __init__(self, target: List[str], ports: List[int] = [80, 8080, 443, 8443], threads: int = 25, timeout: int = 35) -> None:
+
+class WitnessMe:
+    def __init__(
+        self,
+        target: List[str],
+        ports: List[int] = [80, 8080, 443, 8443],
+        threads: int = 25,
+        timeout: int = 35,
+    ) -> None:
         self.id = uuid.uuid4()
         self.target = target
         self.ports = ports
@@ -46,20 +52,22 @@ class WitnessMeScan:
 
     async def _on_request(self, request):
         pass
-        #log.info(f"on_request() called: url: {request.url}")
+        # log.info(f"on_request() called: url: {request.url}")
 
     async def _on_response(self, response):
         pass
-        #log.info(f"on_response() called, url: {response.url}")
+        # log.info(f"on_response() called, url: {response.url}")
 
     async def _on_requestfinished(self, request):
         pass
-        #log.info(f"on_requestfinished() called, url: {request.url}")
+        # log.info(f"on_requestfinished() called, url: {request.url}")
 
     async def _task_watch(self):
         while not self._scan_done.is_set():
             await asyncio.sleep(5)
-            log.info(f"total: {self.stats.inputs}, done: {self.stats.execs}, pending: {self.stats.pending}")
+            log.info(
+                f"total: {self.stats.inputs}, done: {self.stats.execs}, pending: {self.stats.pending}"
+            )
 
     async def screenshot(self, url, page):
         """
@@ -74,12 +82,7 @@ class WitnessMeScan:
         """
 
         url = urlparse(url)
-        response = await page.goto(
-            url.geturl(),
-            options={
-                "waitUntil": "networkidle0"
-            }
-        )
+        response = await page.goto(url.geturl(), options={"waitUntil": "networkidle0"})
 
         hostname = None
         if is_ipaddress(url.hostname):
@@ -90,14 +93,11 @@ class WitnessMeScan:
         if not url.port:
             url = url._replace(netloc=f"{url.hostname}:{response.remotePort}")
 
-        screenshot = f'{url.scheme}_{url.hostname}_{url.port}.png'
-        screenshot_path = str(pathlib.Path(f'./{self.report_folder}/{screenshot}').absolute())
-        await page.screenshot(
-            {
-                'path': screenshot_path,
-                'fullPage': True
-            }
+        screenshot = f"{url.scheme}_{url.hostname}_{url.port}.png"
+        screenshot_path = str(
+            pathlib.Path(f"./{self.report_folder}/{screenshot}").absolute()
         )
+        await page.screenshot({"path": screenshot_path, "fullPage": True})
 
         return {
             "ip": response.remoteIPAddress,
@@ -106,22 +106,24 @@ class WitnessMeScan:
             "screenshot": screenshot,
             "port": url.port,
             "scheme": url.scheme,
-            "title": await page.title(), # await page.evaluate('document.title')
-            "server": response.headers.get('server'),
+            "title": await page.title(),  # await page.evaluate('document.title')
+            "server": response.headers.get("server"),
             "headers": response.headers,
-            "body": await response.text()
+            "body": await response.text(),
         }
 
     async def worker(self, context):
-        #while True:
+        # while True:
         url = await self._queue.get()
 
         page = await context.newPage()
-        page.setDefaultNavigationTimeout(self.timeout * 1000) # setDefaultNavigationTimeout() accepts milliseconds
+        page.setDefaultNavigationTimeout(
+            self.timeout * 1000
+        )  # setDefaultNavigationTimeout() accepts milliseconds
 
-        #page.on('request', lambda req: asyncio.create_task(self._on_request(req)))
-        #page.on('requestfinished', lambda req: asyncio.create_task(self._on_requestfinished(req)))
-        #page.on('response', lambda resp: asyncio.create_task(self._on_response(resp)))
+        # page.on('request', lambda req: asyncio.create_task(self._on_request(req)))
+        # page.on('requestfinished', lambda req: asyncio.create_task(self._on_requestfinished(req)))
+        # page.on('response', lambda resp: asyncio.create_task(self._on_response(resp)))
 
         try:
             r = await asyncio.wait_for(self.screenshot(url, page), timeout=self.timeout)
@@ -132,7 +134,7 @@ class WitnessMeScan:
         except asyncio.TimeoutError:
             log.info(f"Task for url {url} timed out")
         except Exception as e:
-            #if not any(err in str(e) for err in ['ERR_ADDRESS_UNREACHABLE', 'ERR_CONNECTION_REFUSED', 'ERR_CONNECTION_TIMED_OUT']):
+            # if not any(err in str(e) for err in ['ERR_ADDRESS_UNREACHABLE', 'ERR_CONNECTION_REFUSED', 'ERR_CONNECTION_TIMED_OUT']):
             log.error(f"Error taking screenshot: {e}")
         finally:
             self.stats.execs += 1
@@ -141,24 +143,27 @@ class WitnessMeScan:
 
     async def producer(self):
         with AutomaticTargetGenerator(self.target) as generated_targets:
-            for url in generated_targets: 
+            for url in generated_targets:
                 self.stats.inputs += 1
                 await self._queue.put(url)
 
     async def scan(self, n_urls: int):
         log.info("Starting headless browser")
         # --no-sandbox is required to make Chrome/Chromium run under root.
-        browser = await pyppeteer.launch(headless=True,
+        browser = await pyppeteer.launch(
+            headless=True,
             ignoreHTTPSErrors=True,
             autoClose=False,
             args=["--no-sandbox", "--disable-gpu"],
-            executablePath=os.environ.get("CHROMIUM_EXECUTABLE_PATH")
-        ) 
+            executablePath=os.environ.get("CHROMIUM_EXECUTABLE_PATH"),
+        )
 
         context = await browser.createIncognitoBrowserContext()
 
         try:
-            worker_threads = [asyncio.create_task(self.worker(context)) for _ in range(n_urls)]
+            worker_threads = [
+                asyncio.create_task(self.worker(context)) for _ in range(n_urls)
+            ]
             log.info(f"Using {len(worker_threads)} worker thread(s)")
             await asyncio.gather(*worker_threads)
         except asyncio.CancelledError:
@@ -183,14 +188,16 @@ class WitnessMeScan:
 
         while self._queue.qsize() > 0 and not self._scan_done.is_set():
             await self.scan(
-                    n_urls=self.threads if self._queue.qsize() > self.threads else self._queue.qsize(),
-                )
+                n_urls=self.threads
+                if self._queue.qsize() > self.threads
+                else self._queue.qsize(),
+            )
 
         log.info(f"Saved scan to {self.report_folder}/")
         self._scan_done.set()
 
     async def start(self):
-        #self.stats = ScanStats()
+        # self.stats = ScanStats()
         self.stats.started = True
         log.info(f"Starting scan {self.id}")
         self._scan_task = asyncio.create_task(self.run())

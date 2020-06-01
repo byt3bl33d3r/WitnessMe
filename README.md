@@ -71,7 +71,7 @@ This repository includes the `cloudbuild.yaml` file necessary to get this setup 
 
 **Unfortunetely, it seems like Cloud Run doesn't allow outbound internet access to containers, if anybody knows of a way to get around this please get in touch**
 
-From the repositories root folder (after you authenticated and setup a project), these two commands will automatically build the Docker image, publish it to the Gcloud Container Registry and deploy a workging container to Cloud Run:
+From the repositories root folder (after you authenticated and setup a project), these two commands will automatically build the Docker image, publish it to the Gcloud Container Registry and deploy a working container to Cloud Run:
 
 ```bash
 gcloud builds submit --config cloudbuild.yaml

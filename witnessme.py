@@ -5,29 +5,43 @@ import logging
 import asyncio
 from argparse import ArgumentDefaultsHelpFormatter
 from witnessme.utils import patch_pyppeteer
-from witnessme.scan import WitnessMeScan
+from witnessme.scan import WitnessMe
 
 # logging.Formatter("%(asctime)s [%(levelname)s] - %(filename)s: %(funcName)s - %(message)s")
 
 handler = logging.StreamHandler()
-handler.setFormatter(
-    logging.Formatter("%(asctime)s [%(levelname)s] - %(message)s")
-)
+handler.setFormatter(logging.Formatter("%(asctime)s [%(levelname)s] - %(message)s"))
 log = logging.getLogger("witnessme")
 log.setLevel(logging.INFO)
 log.addHandler(handler)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     parser = argparse.ArgumentParser(formatter_class=ArgumentDefaultsHelpFormatter)
-    parser.add_argument("target", nargs='+', type=str, help='The target IP(s), range(s), CIDR(s) or hostname(s)')
-    parser.add_argument("-p", "--ports", nargs='+', default=[80, 8080, 443, 8443], help="Ports to scan if IP Range/CIDR is provided")
-    parser.add_argument('--threads', default=25, type=int, help='Number of concurrent threads')
-    parser.add_argument('--timeout', default=35, type=int, help='Timeout for each connection attempt in seconds')
+    parser.add_argument(
+        "target",
+        nargs="+",
+        type=str,
+        help="The target IP(s), range(s), CIDR(s) or hostname(s)",
+    )
+    parser.add_argument(
+        "-p",
+        "--ports",
+        nargs="+",
+        default=[80, 8080, 443, 8443],
+        help="Ports to scan if IP Range/CIDR is provided",
+    )
+    parser.add_argument(
+        "--threads", default=25, type=int, help="Number of concurrent threads"
+    )
+    parser.add_argument(
+        "--timeout",
+        default=35,
+        type=int,
+        help="Timeout for each connection attempt in seconds",
+    )
     args = parser.parse_args()
 
     patch_pyppeteer()
 
-    scan = WitnessMeScan(**vars(args))
-    asyncio.run(
-        scan.run()
-    )
+    scan = WitnessMe(**vars(args))
+    asyncio.run(scan.run())
