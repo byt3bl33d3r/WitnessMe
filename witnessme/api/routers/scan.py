@@ -64,7 +64,7 @@ async def stop_scan(scan_id: uuid.UUID, request: Request):
     return Response(status_code=status.HTTP_200_OK)
 
 
-@router.post("/{scan_id}/result")
+@router.get("/{scan_id}/result")
 async def get_scan_result(scan_id: uuid.UUID, request: Request):
     scan = request.app.state.SCANS.get(scan_id)
     if not scan:
