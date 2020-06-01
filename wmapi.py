@@ -18,6 +18,10 @@ log.setLevel(logging.DEBUG)
 log.addHandler(handler)
 
 
+class ScanNotFoundError(Exception):
+    pass
+
+
 class ActiveScans:
     def __init__(self):
         self.scans = []
@@ -26,10 +30,13 @@ class ActiveScans:
         self.scans.append(scan)
 
     def get(self, scan_id):
-        return next(filter(lambda s: s.id == scan_id, self.scans), None)
+        try:
+            return list(filter(lambda s: s.id == scan_id, self.scans))[0]
+        except IndexError:
+            raise ScanNotFoundError
 
 
-app = FastAPI(debug=True, title=__name__)
+app = FastAPI(title="WitnessMe API")
 app.state.SCANS = ActiveScans()
 app.include_router(scan.router, prefix="/scan", tags=["scan"])
 
@@ -39,6 +46,14 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
     return JSONResponse(
         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
         content=jsonable_encoder({"detail": exc.errors(), "body": exc.body}),
+    )
+
+
+@app.exception_handler(ScanNotFoundError)
+async def scan_not_found_exception_handler(request: Request, exc: ScanNotFoundError):
+    return JSONResponse(
+        status_code=status.HTTP_404_NOT_FOUND,
+        content={"error": "specified scan id does not exist"},
     )
 
 

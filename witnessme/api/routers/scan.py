@@ -30,23 +30,12 @@ async def get_scans(request: Request):
 @router.get("/{scan_id}")
 async def get_scan_by_id(scan_id: uuid.UUID, request: Request):
     scan = request.app.state.SCANS.get(scan_id)
-    if not scan:
-        return JSONResponse(
-            {"error": "specified scan id does not exist"},
-            status_code=status.HTTP_404_NOT_FOUND,
-        )
     return Scan.from_orm(scan)
 
 
 @router.get("/{scan_id}/start")
 async def start_scan(scan_id: uuid.UUID, request: Request):
     scan = request.app.state.SCANS.get(scan_id)
-    if not scan:
-        return JSONResponse(
-            {"error": "specified scan id does not exist"},
-            status_code=status.HTTP_400_BAD_REQUEST,
-        )
-
     asyncio.create_task(scan.start())
     return Response(status_code=status.HTTP_200_OK)
 
@@ -54,12 +43,6 @@ async def start_scan(scan_id: uuid.UUID, request: Request):
 @router.get("/{scan_id}/stop")
 async def stop_scan(scan_id: uuid.UUID, request: Request):
     scan = request.app.state.SCANS.get(scan_id)
-    if not scan:
-        return JSONResponse(
-            {"error": "specified scan id does not exist"},
-            status_code=status.HTTP_400_BAD_REQUEST,
-        )
-
     asyncio.create_task(scan.stop())
     return Response(status_code=status.HTTP_200_OK)
 
@@ -67,11 +50,6 @@ async def stop_scan(scan_id: uuid.UUID, request: Request):
 @router.get("/{scan_id}/result")
 async def get_scan_result(scan_id: uuid.UUID, request: Request):
     scan = request.app.state.SCANS.get(scan_id)
-    if not scan:
-        return JSONResponse(
-            {"error": "specified scan id does not exist"},
-            status_code=status.HTTP_400_BAD_REQUEST,
-        )
     if not scan.stats.done:
         return JSONResponse(
             {"error": "scan has not finished"}, status_code=status.HTTP_400_BAD_REQUEST
@@ -88,11 +66,6 @@ async def get_scan_result(scan_id: uuid.UUID, request: Request):
 @router.post("/{scan_id}/upload/{file_id}")
 async def upload_scan_target_file(scan_id: uuid.UUID, file_id: str, request: Request):
     scan = request.app.state.SCANS.get(scan_id)
-    if not scan:
-        return JSONResponse(
-            {"error": "specified scan id does not exist"},
-            status_code=status.HTTP_400_BAD_REQUEST,
-        )
 
     for i, t in enumerate(scan.target):
         if t.startswith("file:"):

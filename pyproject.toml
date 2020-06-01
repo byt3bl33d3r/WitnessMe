@@ -17,9 +17,9 @@ imgcat = "^0.5.0"
 pyyaml = "^5.3.1"
 aiosqlite = "^0.13.0"
 prompt-toolkit = "^3.0.5"
-pyppeteer2 = "^0.2.2"
 pydantic = "^1.5.1"
 uvicorn = "^0.11.5"
+pyppeteer = "^0.2.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.4.2"

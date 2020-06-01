@@ -5,6 +5,7 @@ from witnessme.parsers import AutomaticTargetGenerator
 TO DO: add tests for parsing .nessus files
 """
 
+
 def test_ip_network_target_parsing():
     with AutomaticTargetGenerator(
         ["192.168.0.1/28", "172.16.0.1-10", "http-simple-new://google.com:443/"]
@@ -20,6 +21,7 @@ def test_ip_network_target_parsing():
             == True
         )
         assert "http://google.com:443/" in urls
+
 
 def test_nmap_xml_target_parsing():
     with AutomaticTargetGenerator(["tests/nmap_example.xml"]) as gen:
