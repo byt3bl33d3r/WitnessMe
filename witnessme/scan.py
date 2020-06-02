@@ -7,6 +7,7 @@ import pyppeteer
 import pathlib
 import contextvars
 import uuid
+from enum import Enum
 from typing import List
 from datetime import datetime
 from urllib.parse import urlparse
@@ -17,11 +18,19 @@ from witnessme.parsers import AutomaticTargetGenerator
 log = logging.getLogger("witnessme")
 
 
+class ScanState(str, Enum):
+    STARTED = 'started'
+    STOPPED = 'stopped'
+    #CANCELLED = 'cancelled'
+    DONE = 'done'
+    #PAUSED = 'paused'
+    CONFIGURED = 'configured'
+
+
 class ScanStats:
     inputs: int = 0
     execs: int = 0
-    started: bool = False
-    done: bool = False
+    state: ScanState = ScanState.CONFIGURED
 
     @property
     def pending(self) -> int:
@@ -47,7 +56,7 @@ class WitnessMe:
         self.report_folder = f"scan_{time}"
 
         self._queue = asyncio.Queue()
-        self._scan_done = asyncio.Event()
+        self._scan_stop = asyncio.Event()
         self._scan_task = None
 
     async def _on_request(self, request):
@@ -63,7 +72,7 @@ class WitnessMe:
         # log.info(f"on_requestfinished() called, url: {request.url}")
 
     async def _task_watch(self):
-        while not self._scan_done.is_set():
+        while not self._scan_stop.is_set():
             await asyncio.sleep(5)
             log.info(
                 f"total: {self.stats.inputs}, done: {self.stats.execs}, pending: {self.stats.pending}"
@@ -186,25 +195,25 @@ class WitnessMe:
 
         asyncio.create_task(self._task_watch())
 
-        while self._queue.qsize() > 0 and not self._scan_done.is_set():
+        while self._queue.qsize() > 0 and not self._scan_stop.is_set():
             await self.scan(
                 n_urls=self.threads
                 if self._queue.qsize() > self.threads
                 else self._queue.qsize(),
             )
 
-        log.info(f"Saved scan to {self.report_folder}/")
-        self._scan_done.set()
-
     async def start(self):
-        # self.stats = ScanStats()
-        self.stats.started = True
+        self.stats.state = ScanState.STARTED
         log.info(f"Starting scan {self.id}")
         self._scan_task = asyncio.create_task(self.run())
         await self._scan_task
-        self.stats.done = True
+        log.info(f"Saved scan to {self.report_folder}/")
+        self._scan_stop.set()
+        if not self._scan_task.cancelled():
+            self.stats.state = ScanState.DONE
 
     async def stop(self):
         if self._scan_task:
-            self._scan_done.set()
+            self._scan_stop.set()
             self._scan_task.cancel()
+            self.stats.state = ScanState.STOPPED

@@ -14,7 +14,7 @@ handler.setFormatter(
 )
 
 log = logging.getLogger("witnessme")
-log.setLevel(logging.DEBUG)
+log.setLevel(logging.INFO)
 log.addHandler(handler)
 
 

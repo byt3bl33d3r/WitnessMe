@@ -1,5 +1,6 @@
 import ipaddress
 import uuid
+from witnessme.scan import ScanState
 from typing import Optional, List, Union
 from pydantic import BaseModel, AnyUrl
 
@@ -7,8 +8,7 @@ from pydantic import BaseModel, AnyUrl
 class ScanStats(BaseModel):
     inputs: int
     execs: int
-    started: bool = False
-    done: bool = False
+    state: ScanState
     pending: int
 
     class Config:

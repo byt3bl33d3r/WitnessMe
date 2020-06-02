@@ -11,7 +11,7 @@ from fastapi.responses import JSONResponse, FileResponse
 log = logging.getLogger("witnessme.api")
 patch_pyppeteer()
 
-router = APIRouter(default_response_class=JSONResponse)
+router = APIRouter()
 
 
 @router.post("/")
