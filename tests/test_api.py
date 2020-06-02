@@ -43,7 +43,7 @@ def test_scan():
 
     response = client.get(f"/scan/{scan_id}")
     assert response.status_code == 200
-    assert response.json()['stats']['state'] == 'started'
+    assert response.json()['state'] == 'started'
 
     sleep(5)
 
@@ -52,4 +52,4 @@ def test_scan():
 
     response = client.get(f"/scan/{scan_id}")
     assert response.status_code == 200
-    assert response.json()['stats']['state'] == 'stopped'
+    assert response.json()['state'] == 'stopped'

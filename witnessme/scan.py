@@ -30,7 +30,6 @@ class ScanState(str, Enum):
 class ScanStats:
     inputs: int = 0
     execs: int = 0
-    state: ScanState = ScanState.CONFIGURED
 
     @property
     def pending(self) -> int:
@@ -51,6 +50,7 @@ class WitnessMe:
         self.threads = threads
         self.timeout = timeout
         self.stats = ScanStats()
+        self.state = ScanState.CONFIGURED
 
         time = datetime.now().strftime("%Y_%m_%d_%H%M%S")
         self.report_folder = f"scan_{time}"
@@ -203,17 +203,17 @@ class WitnessMe:
             )
 
     async def start(self):
-        self.stats.state = ScanState.STARTED
+        self.state = ScanState.STARTED
         log.info(f"Starting scan {self.id}")
         self._scan_task = asyncio.create_task(self.run())
         await self._scan_task
         log.info(f"Saved scan to {self.report_folder}/")
         self._scan_stop.set()
         if not self._scan_task.cancelled():
-            self.stats.state = ScanState.DONE
+            self.state = ScanState.DONE
 
     async def stop(self):
         if self._scan_task:
             self._scan_stop.set()
             self._scan_task.cancel()
-            self.stats.state = ScanState.STOPPED
+            self.state = ScanState.STOPPED

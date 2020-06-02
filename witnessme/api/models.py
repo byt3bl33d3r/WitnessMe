@@ -8,7 +8,6 @@ from pydantic import BaseModel, AnyUrl
 class ScanStats(BaseModel):
     inputs: int
     execs: int
-    state: ScanState
     pending: int
 
     class Config:
@@ -29,6 +28,7 @@ class Scan(BaseModel):
     threads: int
     timeout: int
     stats: ScanStats
+    state: ScanState
     report_folder: str
 
     class Config:
