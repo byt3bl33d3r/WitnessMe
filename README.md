@@ -6,13 +6,13 @@
 
 My take on a Web Inventory tool, heavily inspired by [Eyewitness](https://github.com/FortyNorthSecurity/EyeWitness). Takes screenshots of webpages using [Pyppeteer](https://github.com/miyakogi/pyppeteer) (headless Chrome/Chromium).
 
-Supports Python 3.7+, fully asynchrounous and has extra bells & whistles that make life easier.
+Supports Python 3.7+, fully asynchronous and has extra bells & whistles that make life easier.
 
 ## Why & what problems does this solve
 
 - Python 3.7+
 - No dependency/installation hell, works on a variety of *nix flavors
-- Asyncio provides Mad Max level speeds
+- AsyncIO provides Mad Max level speeds
 - Headless chrome/chromium is the best.
 - Provides a RESTful API.
 
@@ -20,7 +20,7 @@ Supports Python 3.7+, fully asynchrounous and has extra bells & whistles that ma
 
 ### Native
 
-Natively installing WitnessMe is only reccomended if you intend to hack on the source code or you really can't install Docker on the system you're using.
+Natively installing WitnessMe is only recommended if you intend to hack on the source code or you really can't install Docker on the system you're using.
 
 ```bash
 git clone https://github.com/byt3bl33d3r/WitnessMe && cd WitnessMe
@@ -31,7 +31,7 @@ pipenv shell
 
 ### Docker
 
-Building & running WitnessMe from a Docker container is fully supported and is the reccommended way of using the tool.
+Building & running WitnessMe from a Docker container is fully supported and is the recommended way of using the tool.
 
 To build the docker image simply run:
 
@@ -53,11 +53,11 @@ docker run -v ~/scans:./scans --entrypoint wmdb.py ./scans/scan_folder --rm -ti 
 
 ## Deploying to the Cloud (™)
 
-Since WitnessMe has a RESTful API now, you can deploy it to the magical cloud and perform scanning from there. This would have a number of benifits, including giving you a fresh external IP on every scan (More opsec safe when assessing attack surface on Red Teams).
+Since WitnessMe has a RESTful API now, you can deploy it to the magical cloud and perform scanning from there. This would have a number of benefits, including giving you a fresh external IP on every scan (More OPSEC safe when assessing attack surface on Red Teams).
 
 There are a number of ways of doing this, you can obviously do it the traditional way (e.g. spin up a machine, install docker etc..).
 
-Recently cloud service providers started offerring ways of running Docker containers directly in a fully managed environment. Think of it as serverless functions (e.g. AWS Lambdas) only with Docker containers.
+Recently cloud service providers started offering ways of running Docker containers directly in a fully managed environment. Think of it as serverless functions (e.g. AWS Lambdas) only with Docker containers.
 
 This would technically allow you to really quickly deploy and run WitnessMe (or really anything in a Docker container) without having to worry about underlying infrastructure and removes a lot of the security concerns that come with that.
 
@@ -69,7 +69,7 @@ Cloud Run is by far the easiest of these services to work with.
 
 This repository includes the `cloudbuild.yaml` file necessary to get this setup and running.
 
-**Unfortunetely, it seems like Cloud Run doesn't allow outbound internet access to containers, if anybody knows of a way to get around this please get in touch**
+**Unfortunately, it seems like Cloud Run doesn't allow outbound internet access to containers, if anybody knows of a way to get around this please get in touch**
 
 From the repositories root folder (after you authenticated and setup a project), these two commands will automatically build the Docker image, publish it to the Gcloud Container Registry and deploy a working container to Cloud Run:
 
