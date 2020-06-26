@@ -15,7 +15,7 @@ log = logging.getLogger("witnessme")
 log.setLevel(logging.INFO)
 log.addHandler(handler)
 
-if __name__ == "__main__":
+def run():
     parser = argparse.ArgumentParser(formatter_class=ArgumentDefaultsHelpFormatter)
     parser.add_argument(
         "target",
@@ -45,3 +45,6 @@ if __name__ == "__main__":
 
     scan = WitnessMe(**vars(args))
     asyncio.run(scan.run())
+
+if __name__ == "__main__":
+    run()

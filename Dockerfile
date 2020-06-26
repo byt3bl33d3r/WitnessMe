@@ -2,16 +2,22 @@ FROM python:3-alpine
 
 ENV LANG=C.UTF-8
 ENV LC_ALL=C.UTF-8
+ENV PIP_NO_CACHE_DIR=off
 ENV CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium-browser
 
-WORKDIR /app
-
-COPY requirements.txt ./
+WORKDIR /usr/src/witnessme
 
 RUN apk update && \
-    apk add --no-cache chromium && \
-    pip3 install -r requirements.txt
+    apk add --no-cache chromium
+
+COPY requirements.txt .
+
+RUN pip3 install --no-cache-dir -r requirements.txt && \
+    pip3 install --no-cache-dir poetry
 
 COPY . .
 
-ENTRYPOINT [ "python", "witnessme.py"]
+RUN poetry config virtualenvs.create false && \
+    poetry install --no-dev
+
+ENTRYPOINT [ "witnessme"]

@@ -1,12 +1,26 @@
 [tool.poetry]
 name = "WitnessMe"
-version = "0.5.0"
-description = ""
+version = "1.0.0"
+description = " Web Inventory tool that uses Pyppeteer (headless Chrome/Chromium) and provides some extra bells & whistles to make life easier."
 authors = ["Marcello Salvati <byt3bl33d3r@pm.com>"]
 readme = "README.md"
 homepage = "https://github.com/by3bl33d3r/WitnessMe"
 repository = "https://github.com/by3bl33d3r/WitnessMe"
+exclude = ["tests/*", "dockerfiles/*"]
+include = ["LICENSE"]
 license = "GPL-3.0-only"
+classifiers = [
+    "Topic :: Security :: Web Inventory",
+    "Topic :: Security :: Tool"
+]
+packages = [
+    { include = "witnessme"}
+]
+
+[tool.poetry.scripts]
+witnessme = 'witnessme.console.witnessme:run'
+wmapi = 'witnessme.console.wmapi:run'
+wmdb = 'witnessme.console.wmdb:run'
 
 [tool.poetry.dependencies]
 python = "^3.6.1"

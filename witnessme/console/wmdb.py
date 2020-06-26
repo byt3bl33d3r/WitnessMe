@@ -268,7 +268,7 @@ class WMDBShell:
             await self.db.close()
 
 
-if __name__ == "__main__":
+def run():
     parser = argparse.ArgumentParser(formatter_class=ArgumentDefaultsHelpFormatter)
     parser.add_argument("db_path", type=str, help="WitnessMe database path to open")
     args = parser.parse_args()
@@ -281,3 +281,6 @@ if __name__ == "__main__":
     print("[!] Press tab for autocompletion and available commands")
     dbcli = WMDBShell(str(db_path.expanduser()))
     asyncio.run(dbcli.cmdloop())
+
+if __name__ == "__main__":
+    run()
