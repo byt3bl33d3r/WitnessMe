@@ -15,6 +15,11 @@ Supports Python >= 3.7, uses Asyncio and has some extra bells & whistles that ma
 - Asyncio provides Mad Max level speeds
 - Headless chrome/chromium is just straight up gangsta
 
+## Sponsors
+[<img src="https://www.blackhillsinfosec.com/wp-content/uploads/2016/03/BHIS-logo-L-300x300.png" width="100" height="100"/>](https://www.blackhillsinfosec.com/)
+[<img src="https://handbook.volkis.com.au/assets/img/Volkis_Logo_Landscape.svg" width="200" hspace="10"/>](https://volkis.com.au)
+[<img src="https://user-images.githubusercontent.com/5151193/85817125-875e0880-b743-11ea-83e9-764cd55a29c5.png" width="200" vspace="21"/>](https://qomplx.com/blog/cyber/)
+
 ## Installation
 
 ```bash
