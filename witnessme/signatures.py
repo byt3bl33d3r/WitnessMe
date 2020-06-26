@@ -3,6 +3,11 @@ import logging
 import yaml
 import pathlib
 
+try:
+    from yaml import CLoader as Loader
+except ImportError:
+    from yaml import Loader
+
 log = logging.getLogger("witnessme.signatures")
 
 
@@ -15,7 +20,7 @@ class Signatures:
         self.signatures = []
         for sig_file in os.listdir(self.sig_folder):
             with open(self.sig_folder.joinpath(sig_file).absolute()) as sig:
-                self.signatures.append(yaml.load(sig, Loader=yaml.CLoader))
+                self.signatures.append(yaml.load(sig, Loader=Loader))
 
         log.debug(f"Loaded {len(self.signatures)} signature(s)")
 
