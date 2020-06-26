@@ -7,15 +7,20 @@ from argparse import ArgumentDefaultsHelpFormatter
 from witnessme.utils import patch_pyppeteer
 from witnessme.scan import WitnessMe
 
-# logging.Formatter("%(asctime)s [%(levelname)s] - %(filename)s: %(funcName)s - %(message)s")
-
-handler = logging.StreamHandler()
-handler.setFormatter(logging.Formatter("%(asctime)s [%(levelname)s] - %(message)s"))
-log = logging.getLogger("witnessme")
-log.setLevel(logging.INFO)
-log.addHandler(handler)
 
 def run():
+    # logging.Formatter("%(asctime)s [%(levelname)s] - %(filename)s: %(funcName)s - %(message)s")
+    handler = logging.StreamHandler()
+    handler.setFormatter(
+        logging.Formatter(
+            "[%(name)s] %(levelname)s - %(message)s"
+        )
+    )
+
+    log = logging.getLogger("witnessme")
+    log.setLevel(logging.DEBUG)
+    log.addHandler(handler)
+
     parser = argparse.ArgumentParser(formatter_class=ArgumentDefaultsHelpFormatter)
     parser.add_argument(
         "target",

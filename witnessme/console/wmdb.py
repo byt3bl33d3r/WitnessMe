@@ -27,18 +27,18 @@ from prompt_toolkit.formatted_text import HTML
 
 # from prompt_toolkit.application import run_in_terminal
 from prompt_toolkit.styles import Style
-
 # from prompt_toolkit.document import Document
+
+# logging.Formatter("%(asctime)s [%(levelname)s] - %(filename)s: %(funcName)s - %(message)s")
 handler = logging.StreamHandler()
 handler.setFormatter(
     logging.Formatter(
-        "%(asctime)s [%(levelname)s] - %(filename)s: %(funcName)s - %(message)s"
+        "[%(name)s] %(levelname)s - %(message)s"
     )
 )
 log = logging.getLogger("witnessme")
 log.setLevel(logging.DEBUG)
 log.addHandler(handler)
-
 
 class WMCompleter(Completer):
     def __init__(self, cli_menu):
@@ -150,7 +150,7 @@ class WMDBShell:
         else:
             async with ScanDatabase(connection=self.db) as db:
                 entry = await db.get_service_by_id(server_id)
-                imgcat(open(db_path.parent.joinpath(entry[2]).absolute()))
+                imgcat(open(self.db_path.parent.joinpath(entry[2]).absolute()))
 
     async def open(self, args):
         """
@@ -166,7 +166,7 @@ class WMDBShell:
         else:
             async with ScanDatabase(connection=self.db) as db:
                 entry = await db.get_service_by_id(server_id)
-                screenshot_path = str(db_path.parent.joinpath(entry[2]).absolute())
+                screenshot_path = str(self.db_path.parent.joinpath(entry[2]).absolute())
                 webbrowser.open(screenshot_path.replace("/", "file:////", 1))
 
     async def hosts(self, args):
@@ -266,7 +266,6 @@ class WMDBShell:
                         print(f"Error calling command '{command[0]}': {e}")
         finally:
             await self.db.close()
-
 
 def run():
     parser = argparse.ArgumentParser(formatter_class=ArgumentDefaultsHelpFormatter)

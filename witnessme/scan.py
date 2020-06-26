@@ -7,6 +7,7 @@ import pyppeteer
 import pathlib
 import contextvars
 import uuid
+import shutil
 from enum import Enum
 from typing import List
 from datetime import datetime
@@ -15,7 +16,7 @@ from witnessme.utils import resolve_host, is_ipaddress
 from witnessme.database import ScanDatabase
 from witnessme.parsers import AutomaticTargetGenerator
 
-log = logging.getLogger("witnessme")
+log = logging.getLogger("witnessme.scan")
 
 
 class ScanState(str, Enum):
@@ -52,12 +53,19 @@ class WitnessMe:
         self.stats = ScanStats()
         self.state = ScanState.CONFIGURED
 
-        time = datetime.now().strftime("%Y_%m_%d_%H%M%S")
-        self.report_folder = f"scan_{time}"
-
         self._queue = asyncio.Queue()
         self._scan_stop = asyncio.Event()
         self._scan_task = None
+        self._report_folder = None
+
+    @property
+    def report_folder(self):
+        if self._report_folder:
+            return self._report_folder
+
+        time = datetime.now().strftime("%Y_%m_%d_%H%M%S")
+        self._report_folder = f"scan_{time}"
+        return self._report_folder
 
     async def _on_request(self, request):
         pass
@@ -73,10 +81,13 @@ class WitnessMe:
 
     async def _task_watch(self):
         while not self._scan_stop.is_set():
-            await asyncio.sleep(5)
-            log.info(
-                f"total: {self.stats.inputs}, done: {self.stats.execs}, pending: {self.stats.pending}"
-            )
+            try:
+                await asyncio.sleep(5)
+                log.info(
+                    f"total: {self.stats.inputs}, done: {self.stats.execs}, pending: {self.stats.pending}"
+                )
+            except asyncio.CancelledError:
+                break
 
     async def screenshot(self, url, page):
         """
@@ -136,7 +147,7 @@ class WitnessMe:
 
         try:
             r = await asyncio.wait_for(self.screenshot(url, page), timeout=self.timeout)
-            log.debug(r)
+            #log.debug(r)
             async with ScanDatabase(self.report_folder) as db:
                 await db.add_host_and_service(**r)
             log.info(f"Took screenshot of {url}")
@@ -176,7 +187,7 @@ class WitnessMe:
             log.info(f"Using {len(worker_threads)} worker thread(s)")
             await asyncio.gather(*worker_threads)
         except asyncio.CancelledError:
-            log.info(f"Stopping scan {self.id}")
+            log.info(f"Cancelling scan task {self.id}")
         finally:
             await context.close()
             log.info("Killing headless browser")
@@ -184,7 +195,13 @@ class WitnessMe:
             await browser.close()
 
     async def run(self):
-        os.mkdir(self.report_folder)
+        try:
+            os.mkdir(self.report_folder)
+        except FileExistsError:
+            if self.state == ScanState.STOPPED:
+                shutil.rmtree(self.report_folder, ignore_errors=True)
+                os.mkdir(self.report_folder)
+
         await ScanDatabase.create_db_and_schema(self.report_folder)
 
         asyncio.create_task(self.producer())
@@ -193,14 +210,17 @@ class WitnessMe:
         while self._queue.qsize() == 0:
             await asyncio.sleep(0.1)
 
-        asyncio.create_task(self._task_watch())
+        task_watcher = asyncio.create_task(self._task_watch())
 
-        while self._queue.qsize() > 0 and not self._scan_stop.is_set():
-            await self.scan(
-                n_urls=self.threads
-                if self._queue.qsize() > self.threads
-                else self._queue.qsize(),
-            )
+        try:
+            while self._queue.qsize() > 0 and not self._scan_stop.is_set():
+                await self.scan(
+                    n_urls=self.threads
+                    if self._queue.qsize() > self.threads
+                    else self._queue.qsize(),
+                )
+        finally:
+            task_watcher.cancel()
 
     async def start(self):
         self.state = ScanState.STARTED
@@ -214,6 +234,7 @@ class WitnessMe:
 
     async def stop(self):
         if self._scan_task:
+            log.info(f"Stopping scan {self.id}")
             self._scan_stop.set()
             self._scan_task.cancel()
             self.state = ScanState.STOPPED

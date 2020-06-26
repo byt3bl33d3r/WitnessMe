@@ -1,8 +1,10 @@
 import aiosqlite
 import os
 import json
+import logging
 from datetime import datetime
 
+log = logging.getLogger("witnessme.database")
 
 class ScanDatabase:
     def __init__(self, report_folder=None, connection=None):

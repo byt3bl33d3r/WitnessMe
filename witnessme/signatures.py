@@ -3,7 +3,7 @@ import logging
 import yaml
 import pathlib
 
-log = logging.getLogger("witnessme")
+log = logging.getLogger("witnessme.signatures")
 
 
 class Signatures:

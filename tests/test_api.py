@@ -1,16 +1,17 @@
 import pytest
-from fastapi.testclient import TestClient
+import shutil
+import pathlib
 from time import sleep
-from wmapi import app
+from fastapi.testclient import TestClient
+from witnessme.console.wmapi import app
 
 client = TestClient(app)
-
 
 def test_create_scan():
     response = client.post("/scan/", json={"target": "192.168.0.1-20"})
     assert response.status_code == 422
 
-    response = client.post("/scan/", json={"target": ["192.168.0.1-20"], "ports": [7373], "threads": 10, "timeout": 35})
+    response = client.post("/scan/", json={"target": ["192.168.0.1-20", "https://google.com"], "ports": [7373], "threads": 10, "timeout": 35})
     assert response.status_code == 200
 
 
@@ -31,25 +32,31 @@ def test_get_scan_by_id():
     assert response.status_code == 200
     assert len(scan_info.keys()) > 0
 
-def test_scan():
-    response = client.post("/scan/", json={"target": ["https://127.0.0.1"], "ports": [443], "threads": 10, "timeout": 10})
+"""
+def test_scan(fake_target_file):
+    response = client.post("/scan/", json={"target": ["https://google.com"], "ports": [443], "threads": 10, "timeout": 10})
     scan = response.json()
     assert response.status_code == 200
 
     scan_id = scan['id']
+    report_folder_path = pathlib.Path(scan['report_folder'])
 
-    response = client.get(f"/scan/{scan_id}/start")
-    assert response.status_code == 200
+    try:
+        response = client.get(f"/scan/{scan_id}/start")
+        assert response.status_code == 200
 
-    response = client.get(f"/scan/{scan_id}")
-    assert response.status_code == 200
-    assert response.json()['state'] == 'started'
+        response = client.get(f"/scan/{scan_id}")
+        assert response.status_code == 200
+        assert response.json()['state'] == 'started'
 
-    sleep(5)
+        sleep(6)
 
-    response = client.get(f"/scan/{scan_id}/stop")
-    assert response.status_code == 200
+        response = client.get(f"/scan/{scan_id}/stop")
+        assert response.status_code == 200
 
-    response = client.get(f"/scan/{scan_id}")
-    assert response.status_code == 200
-    assert response.json()['state'] == 'stopped'
+        response = client.get(f"/scan/{scan_id}")
+        assert response.status_code == 200
+        assert response.json()['state'] == 'stopped'
+    finally:
+        shutil.rmtree(report_folder_path.absolute(), ignore_errors=True)
+"""

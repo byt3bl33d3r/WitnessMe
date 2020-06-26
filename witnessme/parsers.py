@@ -5,7 +5,7 @@ from collections import OrderedDict
 from ipaddress import ip_address, ip_network, summarize_address_range
 from contextlib import ContextDecorator
 
-log = logging.getLogger("witnessme")
+log = logging.getLogger("witnessme.parsers")
 
 
 class TargetGenerator(ContextDecorator):

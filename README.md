@@ -194,8 +194,9 @@ If you're using ITerm2 on MacOSX, you can preview screenshots directly in the te
 
 1. ~~Store server info to a database~~
 2. HTML report generation
-3. ~~Cmdline script to search database~~
-4. Support NMap & .nessus files as input *(Almost there, still some bugs but usable)*
-5. Web server categorization & signature support
-6. ~~Accept URLs as targets (cmdline, files)~~
+3. ~~Command line script to search database~~
+4. ~~Support NMap & .nessus files as input~~
+5. ~~Web server categorization~~
+6. Signature scanning
+6. ~~Accept URLs as targets (stdin, files)~~
 7. Add support for previewing screenshots in *nix terminals using w3m

@@ -2,10 +2,10 @@ import asyncio
 import logging
 import uuid
 import functools
-from witnessme.scan import WitnessMe, ScanStats
+from witnessme.scan import WitnessMe, ScanStats, ScanState
 from witnessme.api.models import *
 from witnessme.utils import patch_pyppeteer, gen_random_string, zip_scan_folder
-from fastapi import APIRouter, Request, Response, status
+from fastapi import APIRouter, Request, Response, status, UploadFile, File
 from fastapi.responses import JSONResponse, FileResponse
 
 log = logging.getLogger("witnessme.api")
@@ -36,14 +36,19 @@ async def get_scan_by_id(scan_id: uuid.UUID, request: Request):
 @router.get("/{scan_id}/start")
 async def start_scan(scan_id: uuid.UUID, request: Request):
     scan = request.app.state.SCANS.get(scan_id)
-    asyncio.create_task(scan.start())
-    return Response(status_code=status.HTTP_200_OK)
+    if scan.state in [ScanState.CONFIGURED, ScanState.STOPPED]:
+        asyncio.create_task(scan.start())
+        return Response(status_code=status.HTTP_200_OK)
+
+    return JSONResponse(
+        {"error": "finished scans cannot be started"}, status_code=status.HTTP_400_BAD_REQUEST
+    )
 
 
 @router.get("/{scan_id}/stop")
 async def stop_scan(scan_id: uuid.UUID, request: Request):
     scan = request.app.state.SCANS.get(scan_id)
-    asyncio.create_task(scan.stop())
+    await scan.stop()
     return Response(status_code=status.HTTP_200_OK)
 
 
@@ -64,16 +69,14 @@ async def get_scan_result(scan_id: uuid.UUID, request: Request):
 
 
 @router.post("/{scan_id}/upload/{file_id}")
-async def upload_scan_target_file(scan_id: uuid.UUID, file_id: str, request: Request):
+async def upload_scan_target_file(scan_id: uuid.UUID, file_id: str, request: Request, file: UploadFile = File(...)):
     scan = request.app.state.SCANS.get(scan_id)
 
     for i, t in enumerate(scan.target):
         if t.startswith("file:"):
             _, f_name, f_id = t.split(":")
             if f_id == file_id:
-                with open(f_name, "wb") as uploaded_scan_file:
-                    async for data in request.body:
-                        uploaded_scan_file.write(data)
-                    scan.target.append(upload_scan_target_file.path)
-                scan.target[i] = f_name
+                scan.target[i] = file.path
                 return Response(status_code=status.HTTP_200_OK)
+
+    return Response(status_code=status.HTTP_400_BAD_REQUEST)

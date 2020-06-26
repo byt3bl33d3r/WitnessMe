@@ -1,21 +1,12 @@
 import logging
 import uvicorn
+import argparse
 from witnessme.api.routers import scan
+from argparse import ArgumentDefaultsHelpFormatter
 from fastapi import FastAPI, Request, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
-
-handler = logging.StreamHandler()
-handler.setFormatter(
-    logging.Formatter(
-        "%(asctime)s [%(levelname)s] %(name)s - %(filename)s: %(funcName)s - %(message)s"
-    )
-)
-
-log = logging.getLogger("witnessme")
-log.setLevel(logging.INFO)
-log.addHandler(handler)
 
 
 class ScanNotFoundError(Exception):
@@ -58,7 +49,23 @@ async def scan_not_found_exception_handler(request: Request, exc: ScanNotFoundEr
 
 
 def run():
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    handler = logging.StreamHandler()
+    handler.setFormatter(
+        logging.Formatter(
+            "%(asctime)s [%(levelname)s] %(name)s - %(filename)s: %(funcName)s - %(message)s"
+        )
+    )
+
+    log = logging.getLogger("witnessme")
+    log.setLevel(logging.DEBUG)
+    log.addHandler(handler)
+
+    parser = argparse.ArgumentParser(formatter_class=ArgumentDefaultsHelpFormatter)
+    parser.add_argument("host", type=str, nargs="?", help="IP to bind to", default="127.0.0.1")
+    parser.add_argument("port", type=int, nargs="?", help="port to bind to", default=8000)
+    args = parser.parse_args()
+
+    uvicorn.run(app, host=args.host, port=args.port)
 
 if __name__ == "__main__":
     run()
