@@ -8,7 +8,7 @@ ENV CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium-browser
 WORKDIR /usr/src/witnessme
 
 RUN apk update && \
-    apk add --no-cache chromium
+    apk add --no-cache build-base yaml-dev libffi-dev openssl-dev chromium
 
 COPY requirements.txt .
 
@@ -20,4 +20,4 @@ COPY . .
 RUN poetry config virtualenvs.create false && \
     poetry install --no-dev
 
-ENTRYPOINT [ "witnessme"]
+ENTRYPOINT [ "witnessme" ]
