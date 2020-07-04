@@ -223,7 +223,7 @@ class WMDBShell:
 
         await self.scan()
 
-        results_per_page = 1
+        results_per_page = 100
         template_path = pkg_resources.resource_filename(
             __name__, "../templates/template.html"
         )
