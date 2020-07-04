@@ -41,7 +41,8 @@ async def start_scan(scan_id: uuid.UUID, request: Request):
         return Response(status_code=status.HTTP_200_OK)
 
     return JSONResponse(
-        {"error": "finished scans cannot be started"}, status_code=status.HTTP_400_BAD_REQUEST
+        {"error": "finished scans cannot be started"},
+        status_code=status.HTTP_400_BAD_REQUEST,
     )
 
 
@@ -69,7 +70,9 @@ async def get_scan_result(scan_id: uuid.UUID, request: Request):
 
 
 @router.post("/{scan_id}/upload/{file_id}")
-async def upload_scan_target_file(scan_id: uuid.UUID, file_id: str, request: Request, file: UploadFile = File(...)):
+async def upload_scan_target_file(
+    scan_id: uuid.UUID, file_id: str, request: Request, file: UploadFile = File(...)
+):
     scan = request.app.state.SCANS.get(scan_id)
 
     for i, t in enumerate(scan.target):

@@ -6,10 +6,15 @@ import string
 import random
 import zipfile
 import os
+import json
 from ipaddress import ip_address
 from pyppeteer.network_manager import NetworkManager, Response
 
 log = logging.getLogger("witnessme.utils")
+
+
+def beautify_json(obj) -> str:
+    return "\n" + json.dumps(obj, sort_keys=True, indent=4, separators=(",", ": "))
 
 
 async def resolve_host(host):

@@ -6,12 +6,11 @@ import shlex
 import logging
 import sys
 import pathlib
-
-# import json
-# import functools
+import pkg_resources
 import aiosqlite
 import webbrowser
 from imgcat import imgcat
+from jinja2 import Template
 from time import time, gmtime, strftime
 from argparse import ArgumentDefaultsHelpFormatter
 from terminaltables import AsciiTable
@@ -27,18 +26,16 @@ from prompt_toolkit.formatted_text import HTML
 
 # from prompt_toolkit.application import run_in_terminal
 from prompt_toolkit.styles import Style
+
 # from prompt_toolkit.document import Document
 
 # logging.Formatter("%(asctime)s [%(levelname)s] - %(filename)s: %(funcName)s - %(message)s")
 handler = logging.StreamHandler()
-handler.setFormatter(
-    logging.Formatter(
-        "[%(name)s] %(levelname)s - %(message)s"
-    )
-)
+handler.setFormatter(logging.Formatter("[%(name)s] %(levelname)s - %(message)s"))
 log = logging.getLogger("witnessme")
 log.setLevel(logging.DEBUG)
 log.addHandler(handler)
+
 
 class WMCompleter(Completer):
     def __init__(self, cli_menu):
@@ -47,13 +44,22 @@ class WMCompleter(Completer):
     def get_completions(self, document, complete_event):
         word_before_cursor = document.get_word_before_cursor()
         try:
-            cmd_line = list(
+            list(
                 map(lambda s: s.lower(), shlex.split(document.current_line))
             )
         except ValueError:
             pass
         else:
-            for cmd in ["exit", "show", "open", "hosts", "servers", "scan"]:
+            for cmd in [
+                "exit",
+                "show",
+                "open",
+                "hosts",
+                "servers",
+                "scan",
+                "generate_report",
+                "open_report",
+            ]:
                 if cmd.startswith(word_before_cursor):
                     yield Completion(
                         cmd,
@@ -92,9 +98,7 @@ class WMDBShell:
         print(table.table)
 
     async def _print_hosts(self, hosts, table_title=None):
-        table_data = [
-            ["Id", "IP", "Hostname", "Discovered Services", "Matched Signature(s)"]
-        ]
+        table_data = []
 
         async with ScanDatabase(connection=self.db) as db:
             for entry in hosts:
@@ -124,6 +128,11 @@ class WMDBShell:
                     ]
                 )
 
+        table_data = list(sorted(table_data, key=lambda i: i[3], reverse=True))
+        table_data.insert(
+            0, ["Id", "IP", "Hostname", "Discovered Services", "Matched Signature(s)"]
+        )
+
         table = AsciiTable(table_data)
         table.inner_row_border = True
         table.title = table_title
@@ -150,7 +159,8 @@ class WMDBShell:
         else:
             async with ScanDatabase(connection=self.db) as db:
                 entry = await db.get_service_by_id(server_id)
-                imgcat(open(self.db_path.parent.joinpath(entry[2]).absolute()))
+                with open((self.db_path.parent / entry[2]).absolute(), "rb") as image:
+                    imgcat(image)
 
     async def open(self, args):
         """
@@ -166,8 +176,8 @@ class WMDBShell:
         else:
             async with ScanDatabase(connection=self.db) as db:
                 entry = await db.get_service_by_id(server_id)
-                screenshot_path = str(self.db_path.parent.joinpath(entry[2]).absolute())
-                webbrowser.open(screenshot_path.replace("/", "file:////", 1))
+                screenshot_path = self.db_path.parent / entry[2]
+                webbrowser.open(f"file:////{screenshot_path.absolute()}")
 
     async def hosts(self, args):
         """
@@ -205,6 +215,65 @@ class WMDBShell:
                 query_results = await db.get_services()
 
             await self._print_services(query_results)
+
+    async def generate_report(self):
+        """
+        Generate an HTML report
+        """
+
+        await self.scan()
+
+        results_per_page = 1
+        template_path = pkg_resources.resource_filename(
+            __name__, "../templates/template.html"
+        )
+
+        async with ScanDatabase(connection=self.db) as db:
+            service_count = await db.get_service_count()
+            total_pages = (
+                service_count // results_per_page
+                if service_count % results_per_page == 0
+                else (service_count // results_per_page) + 1
+            )
+
+            current_page = 1
+            offset = 0
+            while True:
+                services = await db.get_services(limit=results_per_page, offset=offset)
+                if not services:
+                    break
+
+                report_file = self.db_path.parent / f"report_page_{current_page}.html"
+                if current_page == 1:
+                    report_file = self.db_path.parent / "witnessme_report.html"
+
+                with open(report_file, "w") as report:
+                    with open(template_path) as file_:
+                        template = Template(file_.read())
+                        report.write(
+                            template.render(
+                                name="WitnessMe Report",
+                                current_page=current_page,
+                                total_pages=total_pages,
+                                services=services,
+                            )
+                        )
+
+                current_page += 1
+                offset += results_per_page
+
+        print(f"Report generated, total pages: {total_pages}")
+
+    async def open_report(self):
+        """
+        Open the generated report
+        """
+
+        report_path = self.db_path.parent / "witnessme_report.html"
+        if not report_path.exists():
+            await self.generate_report()
+
+        webbrowser.open(f"file:////{report_path.absolute()}")
 
     async def scan(self):
         """
@@ -251,6 +320,10 @@ class WMDBShell:
                             break
                         elif command[0] == "show":
                             await self.show(command[1:])
+                        elif command[0] == "generate_report":
+                            await self.generate_report()
+                        elif command[0] == "open_report":
+                            await self.open_report()
                         elif command[0] == "open":
                             await self.open(command[1:])
                         elif command[0] == "hosts":
@@ -259,6 +332,8 @@ class WMDBShell:
                             await self.servers(command[1:])
                         elif command[0] == "scan":
                             await self.scan()
+                        else:
+                            print("Command does not exist")
                     except Exception as e:
                         import traceback
 
@@ -266,6 +341,7 @@ class WMDBShell:
                         print(f"Error calling command '{command[0]}': {e}")
         finally:
             await self.db.close()
+
 
 def run():
     parser = argparse.ArgumentParser(formatter_class=ArgumentDefaultsHelpFormatter)
@@ -278,8 +354,9 @@ def run():
         sys.exit(1)
 
     print("[!] Press tab for autocompletion and available commands")
-    dbcli = WMDBShell(str(db_path.expanduser()))
+    dbcli = WMDBShell(db_path.expanduser())
     asyncio.run(dbcli.cmdloop())
+
 
 if __name__ == "__main__":
     run()

@@ -61,11 +61,16 @@ def run():
     log.addHandler(handler)
 
     parser = argparse.ArgumentParser(formatter_class=ArgumentDefaultsHelpFormatter)
-    parser.add_argument("host", type=str, nargs="?", help="IP to bind to", default="127.0.0.1")
-    parser.add_argument("port", type=int, nargs="?", help="port to bind to", default=8000)
+    parser.add_argument(
+        "host", type=str, nargs="?", help="IP to bind to", default="127.0.0.1"
+    )
+    parser.add_argument(
+        "port", type=int, nargs="?", help="port to bind to", default=8000
+    )
     args = parser.parse_args()
 
     uvicorn.run(app, host=args.host, port=args.port)
+
 
 if __name__ == "__main__":
     run()

@@ -7,11 +7,20 @@ from witnessme.console.wmapi import app
 
 client = TestClient(app)
 
+
 def test_create_scan():
     response = client.post("/scan/", json={"target": "192.168.0.1-20"})
     assert response.status_code == 422
 
-    response = client.post("/scan/", json={"target": ["192.168.0.1-20", "https://google.com"], "ports": [7373], "threads": 10, "timeout": 35})
+    response = client.post(
+        "/scan/",
+        json={
+            "target": ["192.168.0.1-20", "https://google.com"],
+            "ports": [7373],
+            "threads": 10,
+            "timeout": 35,
+        },
+    )
     assert response.status_code == 200
 
 
@@ -31,6 +40,7 @@ def test_get_scan_by_id():
 
     assert response.status_code == 200
     assert len(scan_info.keys()) > 0
+
 
 """
 def test_scan(fake_target_file):

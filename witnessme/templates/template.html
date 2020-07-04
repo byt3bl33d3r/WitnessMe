@@ -1,0 +1,113 @@
+<html>
+    <!-- CSS only -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.0/darkly/bootstrap.min.css">
+
+    <!-- JS, Popper.js, and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/json2html/1.4.1/json2html.js"></script>
+
+    <title>{{ name }}</title>
+
+    <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">WitnessMe Report</a>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <ul class="pagination">
+                    {% if current_page > 2 %}
+                        <li class="page-item"><a class="page-link" href="report_page_{{ current_page - 1}}.html">Previous</a></li>
+                    {% elif current_page == 2 %}
+                        <li class="page-item"><a class="page-link" href="witnessme_report.html">Previous</a></li>
+                    {% else %}
+                        <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+                    {% endif %}
+
+                    {% if current_page < total_pages %}
+                        <li class="page-item"><a class="page-link" href="report_page_{{ current_page + 1}}.html">Next</a></li>
+                    {% else %}
+                        <li class="page-item disabled"><a class="page-link" href="#">Next</a></li>
+                    {% endif %}
+                </ul>
+            </ul>
+            <a class="navbar-brand" href="#">Current Page: {{ current_page }}</a>
+            <a class="navbar-brand" href="#">Total Pages: {{ total_pages }}</a>
+            <form class="form-inline my-2 my-lg-0" onsubmit="goToPage();">
+                <input id="go_to_page" class="form-control mr-sm-2" type="search" placeholder="Page" aria-label="Page">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="form">Go to Page</button>
+            </form>
+        </div>
+    </nav>
+
+    <div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+            <th scope="col">#</th>
+            <th scope="col">Info</th>
+            <th scope="col">Screenshot</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for service in services %}
+            <tr>
+            <th scope="row">{{ service[0]}}</th>
+            <td>
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <th>URL</th>
+                            <td>
+                                <a href="{{ service[1] }}">
+                                    <div style="height:100%;width:100%">
+                                        {{ service[1] }}
+                                    </div>
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Title</th>
+                            <td>{{ service[5] }}</td>
+                        </tr>
+                        <tr>
+                            <th>Server</th>
+                            <td>{{ service[6] }}</td>
+                        <tr>
+                            <th>Matched Signatures</th>
+                            <td>{{ service[9] }}</td>
+                        </tr>
+                    <!--
+                        <tr>
+                            <th>Headers</th>
+                            <td>{{ service[7] }}</td>
+                        </tr>
+                    -->
+                    </tbody>
+                </table>
+            </td>
+            <td><img src="{{ service[2] }}"></img></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+
+    <script>
+        function goToPage() {
+            var page_n = document.getElementById("go_to_page").value;
+            //var page_n = $("#go_to_page").serialize()
+            //window.location.replace(`report_page_${page_n}.html`);
+            window.location.href = `/report_page_${page_n}.html`;
+            return;
+        }
+
+        /*
+        $('*[id*=headers]:visible').each(function() {
+            var text = $(this).text()
+            var parsed = JSON.parse(text)
+            var pretty_json = JSON.stringify(parsed, null, 2);
+            $(this).text(pretty_json);
+        });
+        */
+    </script>
+</html>

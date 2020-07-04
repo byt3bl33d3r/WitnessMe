@@ -6,6 +6,7 @@ from datetime import datetime
 
 log = logging.getLogger("witnessme.database")
 
+
 class ScanDatabase:
     def __init__(self, report_folder=None, connection=None):
         self.report_folder = report_folder
@@ -133,8 +134,10 @@ class ScanDatabase:
         async with self.db.execute("SELECT * FROM hosts") as cursor:
             return await cursor.fetchall()
 
-    async def get_services(self):
-        async with self.db.execute("SELECT * FROM services") as cursor:
+    async def get_services(self, limit=-1, offset=-1):
+        async with self.db.execute(
+            "SELECT * FROM services LIMIT (?) OFFSET (?)", [limit, offset]
+        ) as cursor:
             return await cursor.fetchall()
 
     async def search_hosts(self, search: str):

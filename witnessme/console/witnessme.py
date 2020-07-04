@@ -11,11 +11,7 @@ from witnessme.scan import WitnessMe
 def run():
     # logging.Formatter("%(asctime)s [%(levelname)s] - %(filename)s: %(funcName)s - %(message)s")
     handler = logging.StreamHandler()
-    handler.setFormatter(
-        logging.Formatter(
-            "[%(name)s] %(levelname)s - %(message)s"
-        )
-    )
+    handler.setFormatter(logging.Formatter("[%(name)s] %(levelname)s - %(message)s"))
 
     log = logging.getLogger("witnessme")
     log.setLevel(logging.DEBUG)
@@ -50,6 +46,7 @@ def run():
 
     scan = WitnessMe(**vars(args))
     asyncio.run(scan.run())
+
 
 if __name__ == "__main__":
     run()

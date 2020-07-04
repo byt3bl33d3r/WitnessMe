@@ -20,12 +20,12 @@ log = logging.getLogger("witnessme.scan")
 
 
 class ScanState(str, Enum):
-    STARTED = 'started'
-    STOPPED = 'stopped'
-    #CANCELLED = 'cancelled'
-    DONE = 'done'
-    #PAUSED = 'paused'
-    CONFIGURED = 'configured'
+    STARTED = "started"
+    STOPPED = "stopped"
+    # CANCELLED = 'cancelled'
+    DONE = "done"
+    # PAUSED = 'paused'
+    CONFIGURED = "configured"
 
 
 class ScanStats:
@@ -147,7 +147,7 @@ class WitnessMe:
 
         try:
             r = await asyncio.wait_for(self.screenshot(url, page), timeout=self.timeout)
-            #log.debug(r)
+            # log.debug(r)
             async with ScanDatabase(self.report_folder) as db:
                 await db.add_host_and_service(**r)
             log.info(f"Took screenshot of {url}")
