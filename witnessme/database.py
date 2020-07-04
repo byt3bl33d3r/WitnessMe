@@ -130,8 +130,10 @@ class ScanDatabase:
         ) as cursor:
             return await cursor.fetchone()
 
-    async def get_hosts(self):
-        async with self.db.execute("SELECT * FROM hosts") as cursor:
+    async def get_hosts(self, limit=-1, offset=-1):
+        async with self.db.execute(
+            "SELECT * FROM hosts LIMIT (?) OFFSET (?)", [limit, offset]
+        ) as cursor:
             return await cursor.fetchall()
 
     async def get_services(self, limit=-1, offset=-1):
@@ -139,6 +141,20 @@ class ScanDatabase:
             "SELECT * FROM services LIMIT (?) OFFSET (?)", [limit, offset]
         ) as cursor:
             return await cursor.fetchall()
+
+    async def get_services_with_host(self, limit=-1, offset=-1):
+        services_with_hosts = []
+
+        async with self.db.execute(
+            "SELECT * FROM services LIMIT (?) OFFSET (?)", [limit, offset]
+        ) as cursor:
+            services = await cursor.fetchall()
+
+        for service in services:
+            _, hostname, ip = await self.get_host_by_id(service[8])
+            services_with_hosts.append(service + (hostname, ip))
+
+        return services_with_hosts
 
     async def search_hosts(self, search: str):
         async with self.db.execute(

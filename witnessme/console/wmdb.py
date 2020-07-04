@@ -6,20 +6,19 @@ import shlex
 import logging
 import sys
 import pathlib
-import pkg_resources
 import aiosqlite
 import webbrowser
 from imgcat import imgcat
-from jinja2 import Template
 from time import time, gmtime, strftime
 from argparse import ArgumentDefaultsHelpFormatter
 from terminaltables import AsciiTable
 from witnessme.database import ScanDatabase
 from witnessme.signatures import Signatures
+from witnessme.reporting import generate_html_report, generate_csv_report
 from prompt_toolkit import PromptSession
 from prompt_toolkit.completion import Completer, Completion
-from prompt_toolkit.patch_stdout import patch_stdout
 
+# from prompt_toolkit.patch_stdout import patch_stdout
 # from prompt_toolkit.history import InMemoryHistory
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 from prompt_toolkit.formatted_text import HTML
@@ -44,9 +43,7 @@ class WMCompleter(Completer):
     def get_completions(self, document, complete_event):
         word_before_cursor = document.get_word_before_cursor()
         try:
-            list(
-                map(lambda s: s.lower(), shlex.split(document.current_line))
-            )
+            list(map(lambda s: s.lower(), shlex.split(document.current_line)))
         except ValueError:
             pass
         else:
@@ -58,7 +55,7 @@ class WMCompleter(Completer):
                 "servers",
                 "scan",
                 "generate_report",
-                "open_report",
+                "open_html_report",
             ]:
                 if cmd.startswith(word_before_cursor):
                     yield Completion(
@@ -69,8 +66,9 @@ class WMCompleter(Completer):
 
 
 class WMDBShell:
-    def __init__(self, db_path):
-        self.db_path = db_path
+    def __init__(self, scan_folder_path):
+        self.scan_folder_path = scan_folder_path
+        self.db_path = scan_folder_path / "witnessme.db"
 
         self.completer = WMCompleter(self)
         self.signatures = Signatures()
@@ -128,7 +126,7 @@ class WMDBShell:
                     ]
                 )
 
-        table_data = list(sorted(table_data, key=lambda i: i[3], reverse=True))
+        table_data = list(sorted(table_data, key=lambda i: (i[3], i[4]), reverse=True))
         table_data.insert(
             0, ["Id", "IP", "Hostname", "Discovered Services", "Matched Signature(s)"]
         )
@@ -159,7 +157,7 @@ class WMDBShell:
         else:
             async with ScanDatabase(connection=self.db) as db:
                 entry = await db.get_service_by_id(server_id)
-                with open((self.db_path.parent / entry[2]).absolute(), "rb") as image:
+                with open((self.scan_folder_path / entry[2]).absolute(), "rb") as image:
                     imgcat(image)
 
     async def open(self, args):
@@ -176,8 +174,8 @@ class WMDBShell:
         else:
             async with ScanDatabase(connection=self.db) as db:
                 entry = await db.get_service_by_id(server_id)
-                screenshot_path = self.db_path.parent / entry[2]
-                webbrowser.open(f"file:////{screenshot_path.absolute()}")
+                screenshot_path = self.scan_folder_path / entry[2]
+                webbrowser.open(screenshot_path.absolute().as_uri())
 
     async def hosts(self, args):
         """
@@ -216,64 +214,32 @@ class WMDBShell:
 
             await self._print_services(query_results)
 
-    async def generate_report(self):
+    async def generate_report(self, args):
         """
-        Generate an HTML report
+        Generate a report
         """
 
         await self.scan()
 
-        results_per_page = 100
-        template_path = pkg_resources.resource_filename(
-            __name__, "../templates/template.html"
-        )
+        if not args or args[0] == "html":
+            await generate_html_report(self.scan_folder_path, self.db)
+        elif args[0] == "csv":
+            await generate_csv_report(self.scan_folder_path, self.db)
+        elif args[0] == "json":
+            raise NotImplementedError
+        else:
+            print("Valid report formats are: csv,html,json")
 
-        async with ScanDatabase(connection=self.db) as db:
-            service_count = await db.get_service_count()
-            total_pages = (
-                service_count // results_per_page
-                if service_count % results_per_page == 0
-                else (service_count // results_per_page) + 1
-            )
-
-            current_page = 1
-            offset = 0
-            while True:
-                services = await db.get_services(limit=results_per_page, offset=offset)
-                if not services:
-                    break
-
-                report_file = self.db_path.parent / f"report_page_{current_page}.html"
-                if current_page == 1:
-                    report_file = self.db_path.parent / "witnessme_report.html"
-
-                with open(report_file, "w") as report:
-                    with open(template_path) as file_:
-                        template = Template(file_.read())
-                        report.write(
-                            template.render(
-                                name="WitnessMe Report",
-                                current_page=current_page,
-                                total_pages=total_pages,
-                                services=services,
-                            )
-                        )
-
-                current_page += 1
-                offset += results_per_page
-
-        print(f"Report generated, total pages: {total_pages}")
-
-    async def open_report(self):
+    async def open_html_report(self):
         """
-        Open the generated report
+        Open a generated HTML report in the default browser
         """
 
-        report_path = self.db_path.parent / "witnessme_report.html"
+        report_path = self.scan_folder_path / "witnessme_report.html"
         if not report_path.exists():
-            await self.generate_report()
+            await self.generate_report(["html"])
 
-        webbrowser.open(f"file:////{report_path.absolute()}")
+        webbrowser.open(report_path.absolute().as_uri())
 
     async def scan(self):
         """
@@ -286,9 +252,10 @@ class WMDBShell:
         start_time = time()
         async with ScanDatabase(connection=self.db) as db:
             tasks = [
-                asyncio.create_task(self.signatures.find_match(service))
+                self.signatures.find_match(service)
                 for service in await db.get_services()
             ]
+
             matches = list(
                 filter(lambda x: len(x[0]) > 0, await asyncio.gather(*tasks))
             )
@@ -321,9 +288,9 @@ class WMDBShell:
                         elif command[0] == "show":
                             await self.show(command[1:])
                         elif command[0] == "generate_report":
-                            await self.generate_report()
-                        elif command[0] == "open_report":
-                            await self.open_report()
+                            await self.generate_report(command[1:])
+                        elif command[0] == "open_html_report":
+                            await self.open_html_report()
                         elif command[0] == "open":
                             await self.open(command[1:])
                         elif command[0] == "hosts":
@@ -345,16 +312,21 @@ class WMDBShell:
 
 def run():
     parser = argparse.ArgumentParser(formatter_class=ArgumentDefaultsHelpFormatter)
-    parser.add_argument("db_path", type=str, help="WitnessMe database path to open")
+    parser.add_argument("scan_folder", type=str, help="WitnessMe scan folder")
     args = parser.parse_args()
 
-    db_path = pathlib.Path(args.db_path)
+    scan_folder = pathlib.Path(args.scan_folder)
+    # For backwards compatibility, handle pointing directly to the database
+    if scan_folder.name == "witnessme.db":
+        scan_folder = scan_folder.parent
+
+    db_path = scan_folder / "witnessme.db"
     if not db_path.exists():
-        print("Path to db doesn't appear to be valid")
+        print("Unable to find db, not a WitnessMe scan folder or invalid path?")
         sys.exit(1)
 
     print("[!] Press tab for autocompletion and available commands")
-    dbcli = WMDBShell(db_path.expanduser())
+    dbcli = WMDBShell(scan_folder.expanduser())
     asyncio.run(dbcli.cmdloop())
 
 
