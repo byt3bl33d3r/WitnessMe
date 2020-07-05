@@ -15,6 +15,7 @@ from urllib.parse import urlparse
 from witnessme.utils import resolve_host, is_ipaddress
 from witnessme.database import ScanDatabase
 from witnessme.parsers import AutomaticTargetGenerator
+from pyppeteer.errors import PageError
 
 log = logging.getLogger("witnessme.scan")
 
@@ -162,7 +163,9 @@ class WitnessMe:
             self._queue.task_done()
 
     async def producer(self):
-        with AutomaticTargetGenerator(self.target) as generated_targets:
+        with AutomaticTargetGenerator(
+            self.target, ports=self.ports
+        ) as generated_targets:
             for url in generated_targets:
                 self.stats.inputs += 1
                 await self._queue.put(url)
@@ -189,7 +192,11 @@ class WitnessMe:
         except asyncio.CancelledError:
             log.info(f"Cancelling scan task {self.id}")
         finally:
-            await context.close()
+            try:
+                await context.close()
+            except PageError:
+                log.error("Page crashed, ignoring...")
+
             log.info("Killing headless browser")
             await browser.disconnect()
             await browser.close()

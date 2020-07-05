@@ -51,13 +51,16 @@ class TargetGenerator(ContextDecorator):
 
 
 class GenericFileParser(ContextDecorator):
-    def __init__(self, file_path):
+    def __init__(self, file_path, ports=[80, 8080, 443, 8443]):
         self.file_path = file_path
+        self.ports = ports
 
     def __enter__(self):
         with open(self.file_path) as target_file:
             for target in target_file:
-                with TargetGenerator(target.strip()) as target_generator:
+                with TargetGenerator(
+                    target.strip(), ports=self.ports
+                ) as target_generator:
                     for url in target_generator:
                         yield url
 
@@ -165,8 +168,9 @@ class NessusParser(XmlParser):
 
 
 class AutomaticTargetGenerator(ContextDecorator):
-    def __init__(self, targets: list):
+    def __init__(self, targets: list, ports=[80, 8080, 443, 8443]):
         self.targets = targets
+        self.ports = ports
 
     def __enter__(self):
         for target in self.targets:
@@ -180,14 +184,14 @@ class AutomaticTargetGenerator(ContextDecorator):
                     file_parser = NmapParser(target)
                 else:
                     log.debug("Detected file as a target")
-                    file_parser = GenericFileParser(target)
+                    file_parser = GenericFileParser(target, ports=self.ports)
 
                 with file_parser as generated_urls:
                     for url in generated_urls:
                         yield url
             else:
                 log.debug("Detected IP Address/Range/CIDR, hostname or URL as a target")
-                with TargetGenerator(target) as generated_urls:
+                with TargetGenerator(target, ports=self.ports) as generated_urls:
                     for url in generated_urls:
                         yield url
 
