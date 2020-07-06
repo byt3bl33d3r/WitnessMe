@@ -32,7 +32,6 @@ jobs:
         password: ${{ secrets.GIT_TOKEN }}
         registry: docker.pkg.github.com
         image_name: witnessme
-        image_tag: dev
     - name: Build Docker WMAPI Image and Publish to Github Packages
       uses: whoan/docker-build-with-cache-action@v5
       with:

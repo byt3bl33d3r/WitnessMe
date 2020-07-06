@@ -22,39 +22,74 @@ Supports Python 3.7+, fully asynchronous and has extra bells & whistles that mak
 [<img src="https://user-images.githubusercontent.com/5151193/85817125-875e0880-b743-11ea-83e9-764cd55a29c5.png" width="200" vspace="21"/>](https://qomplx.com/blog/cyber/)
 [<img src="https://user-images.githubusercontent.com/5151193/86521020-9f0f4e00-be21-11ea-9256-836bc28e9d14.png" width="250" hspace="20"/>](https://ledgerops.com)
 
-## Installation
+## Table of Contents
 
-### Native
+Note, the documentation is still a WIP. I've released this early because of CVE-2020-5902.
 
-Natively installing WitnessMe is only recommended if you intend to hack on the source code or you really can't install Docker on the system you're using.
+- [WitnessMe](#witnessme)
+  * [Quick starts](#quick-starts)
+    + [Finding F5 Load Balancers Vulnerable to CVE-2020-5902](#finding-f5-load-balancers-vulerable-to-cve-2020-5902)
 
-```bash
-git clone https://github.com/byt3bl33d3r/WitnessMe && cd WitnessMe
-pip3 install --user pipenv && pipenv install --three
-pipenv shell
-(venv) python witnessme.py --help
+## Quick Starts
+### Finding F5 Load Balancers Vulnerable to CVE-2020-5902
+
+**Note it is highly recommended to give the Docker container at least 4GB of RAM during large scans as Chromium can be a resource hog. If you keep running into "Page Crash" errors, it's because your container does not have enough memory. On Mac/Windows you can change this by clicking the Docker Task Bar Icon -> Preferences -> Resources. For Linux, refer to Docker's documentation**
+
+Install WitnessMe using Docker:
+
+```console
+docker pull byt3bl33d3r/witnessme
 ```
+
+Get the `$IMAGE_ID` from the `docker images` command output, then run the following command to drop into a shell inside the container. Additionally, specify the `-v` flag to mount the current directory inside the container at the path `/transfer` in order to copy the scan results back to your host machine (if so desired):
+
+```console
+docker run -it --entrypoint=/bin/sh -v $(pwd):/transfer $IMAGE_ID
+```
+
+Scan your network using WitnessMe, it can accept multiple .Nessus files, Nmap XMLs, IP ranges/CIDRs. Example:
+
+```console
+witnessme 10.0.1.0/24 192.168.0.1-20 ~/my_nessus_scan.nessus ~/my_nmap_scan.nessus.
+```
+
+After the scan is finished, a folder will have been created in the current directory with the results. Access the results using the `wmdb` command line utility:
+
+```console
+wmdb scan_2020_$TIME/
+```
+
+To quickly identify F5 load balancers, first perform a signature scan using the `scan` command. Then search for "BIG-IP" or "F5" using the `servers` command (this will search for the "BIG-IP" and "F5" string in the signature name, page title and server header):
+
+![image](https://user-images.githubusercontent.com/5151193/86619581-43fc6900-bf91-11ea-9a01-ba8ce09c3f3b.png)
+
+Additionally, you can generate an HTML or CSV report using the following commands:
+```console
+WMDB ≫ generate_report html
+```
+```console
+WMDB ≫ generate_report csv
+```
+
+You can then copy the entire scan folder which will contain all of the reports and results to your host machine by copying it to the `/transfer` folder.
+
+
+## Installation
 
 ### Docker
 
-Building & running WitnessMe from a Docker container is fully supported and is the recommended way of using the tool.
+Running WitnessMe from a Docker container is fully supported and is the recommended way of using the tool.
 
-To build the docker image simply run:
+Pull the image from Docker Hub:
 
 ```bash
-docker build -t witnessme github.com/byt3bl33d3r/WitnessMe
+docker pull byt3bl33d3r/witnessme
 ```
 
 You can then spin up a docker container, run it like the main `witnessme.py` script and pass it the same arguments:
 
 ```bash
-docker run -v ~/scans:./scans --rm -ti witnessme https://google.com 192.168.0.1/24
-```
-
-To run `wmdb.py` after a scan completed:
-
-```bash
-docker run -v ~/scans:./scans --entrypoint wmdb.py ./scans/scan_folder --rm -ti witnessme
+docker --rm -ti $IMAGE_ID https://google.com 192.168.0.1/24
 ```
 
 ## Deploying to the Cloud (™)
@@ -118,9 +153,9 @@ optional arguments:
   -p PORTS [PORTS ...], --ports PORTS [PORTS ...]
                         Ports to scan if IP Range/CIDR is provided (default:
                         [80, 8080, 443, 8443])
-  --threads THREADS     Number of concurrent threads (default: 25)
+  --threads THREADS     Number of concurrent threads (default: 20)
   --timeout TIMEOUT     Timeout for each connection attempt in seconds
-                        (default: 35)
+                        (default: 15)
 ```
 
 Can accept a mix of .Nessus file(s), Nmap XML file(s), files containing URLs and/or IPs, IP addresses/ranges/CIDRs and URLs. Long story short, should be able to handle anything you throw at it:
