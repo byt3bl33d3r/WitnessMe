@@ -93,7 +93,13 @@ docker pull byt3bl33d3r/witnessme
 You can then spin up a docker container, run it like the main `witnessme.py` script and pass it the same arguments:
 
 ```bash
-docker --rm -ti $IMAGE_ID https://google.com 192.168.0.1/24
+docker run --rm -ti $IMAGE_ID https://google.com 192.168.0.1/24
+```
+
+Or drop into a shell within the container itself and run the tools that way. This also allows you to execute the `wmdb` and `wmapi` scripts.
+
+```console
+docker run --rm -ti --entrypoint=/bin/sh $IMAGE_ID
 ```
 
 ## RESTful API
@@ -102,7 +108,7 @@ As of version 1.0, WitnessMe has a RESTful API which allows you to interact with
 
 **Note: Currently, the API does not implement any authentication mechanisms. Make sure to allow/deny access at the transport level**
 
-To start the RESTful api in for testing/development purposes run :
+To start the RESTful API for testing/development purposes run :
 ```console
 wmapi
 ```
