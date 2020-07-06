@@ -28,12 +28,16 @@ Note, the documentation is still a WIP. I've released this early because of CVE-
 
 - [WitnessMe](#witnessme)
   * [Quick starts](#quick-starts)
-    + [Finding F5 Load Balancers Vulnerable to CVE-2020-5902](#finding-f5-load-balancers-vulerable-to-cve-2020-5902)
+    + [Finding F5 Load Balancers Vulnerable to CVE-2020-5902](#finding-f5-load-balancers-vulnerable-to-cve-2020-5902)
+  * [Installation](#Installation)
+  * [RESTful API](#restful-api)
+  * [Deploying to the Cloud](#deploying-to-the-cloud-)
+  * [Previewing Screenshots Directly in the Terminal](#preview-screenshots-directly-in-the-terminal)
 
 ## Quick Starts
 ### Finding F5 Load Balancers Vulnerable to CVE-2020-5902
 
-**Note it is highly recommended to give the Docker container at least 4GB of RAM during large scans as Chromium can be a resource hog. If you keep running into "Page Crash" errors, it's because your container does not have enough memory. On Mac/Windows you can change this by clicking the Docker Task Bar Icon -> Preferences -> Resources. For Linux, refer to Docker's documentation**
+**Note: it is highly recommended to give the Docker container at least 4GB of RAM during large scans as Chromium can be a resource hog. If you keep running into "Page Crash" errors, it's because your container does not have enough memory. On Mac/Windows you can change this by clicking the Docker Task Bar Icon -> Preferences -> Resources. For Linux, refer to Docker's documentation**
 
 Install WitnessMe using Docker:
 
@@ -50,7 +54,7 @@ docker run -it --entrypoint=/bin/sh -v $(pwd):/transfer $IMAGE_ID
 Scan your network using WitnessMe, it can accept multiple .Nessus files, Nmap XMLs, IP ranges/CIDRs. Example:
 
 ```console
-witnessme 10.0.1.0/24 192.168.0.1-20 ~/my_nessus_scan.nessus ~/my_nmap_scan.nessus.
+witnessme 10.0.1.0/24 192.168.0.1-20 ~/my_nessus_scan.nessus ~/my_nmap_scan.xml
 ```
 
 After the scan is finished, a folder will have been created in the current directory with the results. Access the results using the `wmdb` command line utility:
@@ -91,6 +95,21 @@ You can then spin up a docker container, run it like the main `witnessme.py` scr
 ```bash
 docker --rm -ti $IMAGE_ID https://google.com 192.168.0.1/24
 ```
+
+## RESTful API
+
+As of version 1.0, WitnessMe has a RESTful API which allows you to interact with the tool remotely.
+
+**Note: Currently, the API does not implement any authentication mechanisms. Make sure to allow/deny access at the transport level**
+
+To start the RESTful api in for testing/development purposes run :
+```console
+wmapi
+```
+
+The API documentation will then be available at http://127.0.0.1:8000/docs
+
+[Uvicorn](https://www.uvicorn.org/) should be used to enable SSL and run the API in production. See [this dockerfile](https://github.com/byt3bl33d3r/WitnessMe/blob/master/dockerfiles/Dockerfile.selfhosted) for an example.
 
 ## Deploying to the Cloud (™)
 
@@ -223,21 +242,12 @@ signatures:
 
 Yup that's it. Just plop it in the signatures folder and POW! Done.
 
-# Preview Screenshots Directly in the Terminal (ITerm2 on MacOSX)
+# Preview Screenshots Directly in the Terminal
 
-If you're using ITerm2 on MacOSX, you can preview screenshots directly in the terminal using the `show` command:
+**Note: this feature will only work if you're on MacOSX and using ITerm2**
+
+You can preview screenshots directly in the terminal using the `show` command:
 
 <p align="center">
   <img src="https://user-images.githubusercontent.com/5151193/68194496-5e012a00-ff72-11e9-9ccd-6a50aa384f3e.png" alt="ScreenPreview"/>
 </p>
-
-## To Do
-
-1. ~~Store server info to a database~~
-2. HTML report generation
-3. ~~Command line script to search database~~
-4. ~~Support NMap & .nessus files as input~~
-5. ~~Web server categorization~~
-6. Signature scanning
-6. ~~Accept URLs as targets (stdin, files)~~
-7. Add support for previewing screenshots in *nix terminals using w3m
