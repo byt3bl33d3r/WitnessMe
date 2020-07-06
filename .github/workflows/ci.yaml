@@ -1,9 +1,6 @@
 name: CI
 
-on:
-  push:
-    branches:
-      - dev
+on: [push]
 
 jobs:
   build:
@@ -28,13 +25,6 @@ jobs:
         pip install -r requirements-dev.txt
     - name: Run tests
       run: make tests
-    - name: Build Docker WMConsole Image and Publish to Hub
-      uses: whoan/docker-build-with-cache-action@v5
-      with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
-        image_name: witnessme
-        image_tag: dev
     - name: Build Docker WMConsole Image and Publish to Github Packages
       uses: whoan/docker-build-with-cache-action@v5
       with:
@@ -43,14 +33,6 @@ jobs:
         registry: docker.pkg.github.com
         image_name: witnessme
         image_tag: dev
-    - name: Build Docker WMAPI Image and Publish to Hub
-      uses: whoan/docker-build-with-cache-action@v5
-      with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
-        dockerfile: dockerfiles/Dockerfile.selfhosted
-        image_name: witnessme
-        image_tag: api
     - name: Build Docker WMAPI Image and Publish to Github Packages
       uses: whoan/docker-build-with-cache-action@v5
       with:

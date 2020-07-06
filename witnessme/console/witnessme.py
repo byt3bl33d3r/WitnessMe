@@ -36,7 +36,7 @@ def run():
     )
     parser.add_argument(
         "--timeout",
-        default=35,
+        default=15,
         type=int,
         help="Timeout for each connection attempt in seconds",
     )
