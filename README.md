@@ -30,9 +30,17 @@ Note, the documentation is still a WIP. I've released this early because of CVE-
   * [Quick starts](#quick-starts)
     + [Finding F5 Load Balancers Vulnerable to CVE-2020-5902](#finding-f5-load-balancers-vulnerable-to-cve-2020-5902)
   * [Installation](#Installation)
+    + [Docker](#docker)
+    + [Python Package](#python-package)
+    + [Development Install](#development-install)
   * [RESTful API](#restful-api)
   * [Deploying to the Cloud](#deploying-to-the-cloud-)
+    + [GCP Cloud Run](#gcp-cloud-run)
+    + [AWS ECS/Fargate](#aws-ecsfargate)
+  * [Usage and Examples](#usage-and-examples)
+    + [Generating Reports](#generating-reports)
   * [Previewing Screenshots Directly in the Terminal](#preview-screenshots-directly-in-the-terminal)
+  * [Call for Signatures!](#call-for-signatures)
 
 ## Quick Starts
 ### Finding F5 Load Balancers Vulnerable to CVE-2020-5902
@@ -82,24 +90,47 @@ You can then copy the entire scan folder which will contain all of the reports a
 
 ### Docker
 
-Running WitnessMe from a Docker container is fully supported and is the recommended way of using the tool.
+Running WitnessMe from a Docker container is fully supported and is the easiest/recommended way of using the tool.
 
 Pull the image from Docker Hub:
 
-```bash
+```console
 docker pull byt3bl33d3r/witnessme
 ```
 
-You can then spin up a docker container, run it like the main `witnessme.py` script and pass it the same arguments:
+You can then spin up a docker container, run it like the main `witnessme` script and pass it the same arguments:
 
-```bash
+```console
 docker run --rm -ti $IMAGE_ID https://google.com 192.168.0.1/24
 ```
 
-Or drop into a shell within the container itself and run the tools that way. This also allows you to execute the `wmdb` and `wmapi` scripts.
+Alternatively, you can drop into a shell within the container and run the tools that way. This also allows you to execute the `wmdb` and `wmapi` scripts.
 
 ```console
 docker run --rm -ti --entrypoint=/bin/sh $IMAGE_ID
+```
+
+### Python Package
+
+WitnessMe is also available as a Python package (Python 3.7 or above is required). If you do install it this way it is extremely recommended to use [pipx](https://github.com/pipxproject/pipx) as it takes care of installing everything in isolated environments for you in a seamless manner.
+
+Run the following commands:
+
+```console
+python3 -m pip install --user pipx
+python3 -m pipx ensurepath
+pipx install witnessme
+```
+
+All of the WitnessMe scripts should now be in your PATH and ready to go.
+
+### Development Install
+
+You really should only install WitnessMe this way if you intend to hack on the source code. You're going to Python 3.7+ and [Poetry](https://python-poetry.org/): please refer to the Poetry installation documentation in order to install it.
+
+```console
+git clone https://github.com/byt3bl33d3r/WitnessMe && cd WitnessMe
+poetry install
 ```
 
 ## RESTful API
@@ -157,18 +188,16 @@ gcloud container images delete gcr.io/$PROJECT_ID/witnessme
 
 TO DO
 
-## Usage & Examples
+## Usage and Examples
 
-There are 3 main scripts:
+There are 3 main tools:
 
-- `witnessme.py`: is the main CLI interface.
-- `wmdb.py`: allows you to browse the database (created on each scan) to view results.
-- `wmapi.py`: provides a RESTful API to schedule, start, stop and monitor scans.
+- `witnessme`: is the main CLI interface.
+- `wmdb`: allows you to browse the database (created on each scan) to view results and generate reports.
+- `wmapi`: provides a RESTful API to schedule, start, stop and monitor scans.
 
 ```
-usage: witnessme.py [-h] [-p PORTS [PORTS ...]] [--threads THREADS]
-                    [--timeout TIMEOUT]
-                    target [target ...]
+usage: witnessme [-h] [-p PORTS [PORTS ...]] [--threads THREADS] [--timeout TIMEOUT] target [target ...]
 
 positional arguments:
   target                The target IP(s), range(s), CIDR(s) or hostname(s)
@@ -176,17 +205,15 @@ positional arguments:
 optional arguments:
   -h, --help            show this help message and exit
   -p PORTS [PORTS ...], --ports PORTS [PORTS ...]
-                        Ports to scan if IP Range/CIDR is provided (default:
-                        [80, 8080, 443, 8443])
-  --threads THREADS     Number of concurrent threads (default: 20)
-  --timeout TIMEOUT     Timeout for each connection attempt in seconds
-                        (default: 15)
+                        Ports to scan if IP Range/CIDR is provided (default: [80, 8080, 443, 8443])
+  --threads THREADS     Number of concurrent threads (default: 25)
+  --timeout TIMEOUT     Timeout for each connection attempt in seconds (default: 15)
 ```
 
 Can accept a mix of .Nessus file(s), Nmap XML file(s), files containing URLs and/or IPs, IP addresses/ranges/CIDRs and URLs. Long story short, should be able to handle anything you throw at it:
 
-```bash
-python witnessme.py 192.168.1.0/24 192.168.1.10-20 https://bing.com ~/my_nessus_scan.nessus ~/my_nmap_scan.xml ~/myfilewithURLSandIPs
+```console
+witnessme 192.168.1.0/24 192.168.1.10-20 https://bing.com ~/my_nessus_scan.nessus ~/my_nmap_scan.xml ~/myfilewithURLSandIPs
 ```
 
 *Note: as of writing, WitnessMe detects .Nessus and NMap files by their extension so make sure Nessus files have a `.nessus` extension and NMap scans have a `.xml` extension*
@@ -195,8 +222,8 @@ If an IP address/range/CIDR is specified as a target, WitnessMe will attempt to 
 
 Once a scan is completed, a folder with all the screenshots and a database will be in the current directory, point `wmdb.py` to the database in order to see the results.
 
-```bash
-python wmdb.py scan_2019_11_05_021237/witnessme.db
+```console
+wmdb scan_2019_11_05_021237/
 ```
 
 Pressing tab will show you the available commands and a help menu:
@@ -207,7 +234,7 @@ Pressing tab will show you the available commands and a help menu:
 
 ## Searching the Database
 
-The `servers` and `hosts` commands in the `wmdb.py` CLI accept 1 argument. WMCLI is smart enough to know what you're trying to do with that argument
+The `servers` and `hosts` commands in the `wmdb` CLI accept 1 argument. WMCLI is smart enough to know what you're trying to do with that argument
 
 ### Server Command
 
@@ -226,6 +253,30 @@ No arguments will show all discovered hosts. Passing it an argument will search 
 ### Signature Scan
 
 You can perform a signature scan on all discovered services using the `scan` command.
+
+### Generating Reports
+
+You can use the `generate_report` command in the `wmdb` cli to generate reports in HTML or CSV format. To generate a HTML report simply run `generate_report` without any arguments. Here's an example of what it'll look like:
+
+![image](https://user-images.githubusercontent.com/5151193/86676611-2c44d500-bfd1-11ea-87fd-faf874a2dcf2.png)
+
+To generate a CSV report:
+
+```console
+WMDB ≫ generate_report csv
+```
+
+The reports will then be available in the scan folder.
+
+# Preview Screenshots Directly in the Terminal
+
+**Note: this feature will only work if you're on MacOSX and using ITerm2**
+
+You can preview screenshots directly in the terminal using the `show` command:
+
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/5151193/68194496-5e012a00-ff72-11e9-9ccd-6a50aa384f3e.png" alt="ScreenPreview"/>
+</p>
 
 ## Call for Signatures!
 
@@ -247,13 +298,3 @@ signatures:
 ```
 
 Yup that's it. Just plop it in the signatures folder and POW! Done.
-
-# Preview Screenshots Directly in the Terminal
-
-**Note: this feature will only work if you're on MacOSX and using ITerm2**
-
-You can preview screenshots directly in the terminal using the `show` command:
-
-<p align="center">
-  <img src="https://user-images.githubusercontent.com/5151193/68194496-5e012a00-ff72-11e9-9ccd-6a50aa384f3e.png" alt="ScreenPreview"/>
-</p>

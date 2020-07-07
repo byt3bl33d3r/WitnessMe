@@ -7,9 +7,6 @@ appdirs==1.4.4 \
 click==7.1.2 \
     --hash=sha256:dacca89f4bfadd5de3d7489b7c8a566eee0d3676333fbb50030263894c38c0dc \
     --hash=sha256:d2b5255c7c6349bc1bd1e59e08cd12acbbd63ce649f2588755783aa94dfb6b1a
-dataclasses==0.6; python_version < "3.7" \
-    --hash=sha256:454a69d788c7fda44efd71e259be79577822f5e3f53f029a22d08004e951dc9f \
-    --hash=sha256:6988bd2b895eef432d562370bb707d540f32f7360ab13da45340101bc2307d84
 fastapi==0.55.1 \
     --hash=sha256:b1a96ea772f10cd0235eb09d6e282b1f5e6135dad5121ed80d6beb8fa932e075 \
     --hash=sha256:912bc1a1b187146fd74dd45e17ea10aede3d962c921142c412458e911c50dc4c

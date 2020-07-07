@@ -109,15 +109,6 @@ version = "0.4.3"
 
 [[package]]
 category = "main"
-description = "A backport of the dataclasses module for Python 3.6"
-marker = "python_version < \"3.7\""
-name = "dataclasses"
-optional = false
-python-versions = "*"
-version = "0.6"
-
-[[package]]
-category = "main"
 description = "FastAPI framework, high performance, easy to learn, fast to code, ready for production"
 name = "fastapi"
 optional = false
@@ -336,11 +327,6 @@ name = "pydantic"
 optional = false
 python-versions = ">=3.6"
 version = "1.5.1"
-
-[package.dependencies]
-[package.dependencies.dataclasses]
-python = "<3.7"
-version = ">=0.6"
 
 [package.extras]
 dotenv = ["python-dotenv (>=0.10.4)"]
@@ -626,8 +612,8 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "3213490c28b3ba84a250f7e1d9f47c06b4693916958dc15add93fbd43f74aa21"
-python-versions = "^3.6.1"
+content-hash = "27a49b88d6111a1f510e865108b84ef0976a5469655afb0dd5b562d383a35a80"
+python-versions = "^3.7.0"
 
 [metadata.files]
 aiosqlite = [
@@ -669,10 +655,6 @@ click = [
 colorama = [
     {file = "colorama-0.4.3-py2.py3-none-any.whl", hash = "sha256:7d73d2a99753107a36ac6b455ee49046802e59d9d076ef8e47b61499fa29afff"},
     {file = "colorama-0.4.3.tar.gz", hash = "sha256:e96da0d330793e2cb9485e9ddfd918d456036c7149416295932478192f4436a1"},
-]
-dataclasses = [
-    {file = "dataclasses-0.6-py3-none-any.whl", hash = "sha256:454a69d788c7fda44efd71e259be79577822f5e3f53f029a22d08004e951dc9f"},
-    {file = "dataclasses-0.6.tar.gz", hash = "sha256:6988bd2b895eef432d562370bb707d540f32f7360ab13da45340101bc2307d84"},
 ]
 fastapi = [
     {file = "fastapi-0.55.1-py3-none-any.whl", hash = "sha256:b1a96ea772f10cd0235eb09d6e282b1f5e6135dad5121ed80d6beb8fa932e075"},

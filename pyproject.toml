@@ -7,11 +7,10 @@ readme = "README.md"
 homepage = "https://github.com/by3bl33d3r/WitnessMe"
 repository = "https://github.com/by3bl33d3r/WitnessMe"
 exclude = ["tests/*", "dockerfiles/*"]
-include = ["LICENSE"]
+include = ["LICENSE", "witnessme/signatures/*"]
 license = "GPL-3.0-only"
 classifiers = [
-    "Topic :: Security :: Web Inventory",
-    "Topic :: Security :: Tool"
+    "Topic :: Security",
 ]
 packages = [
     { include = "witnessme"}
@@ -23,7 +22,7 @@ wmapi = 'witnessme.console.wmapi:run'
 wmdb = 'witnessme.console.wmdb:run'
 
 [tool.poetry.dependencies]
-python = "^3.6.1"
+python = "^3.7.0"
 fastapi = "^0.55.1"
 xmltodict = "^0.12.0"
 terminaltables = "^3.1.0"
