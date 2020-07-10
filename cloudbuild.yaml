@@ -1,6 +1,6 @@
 steps:
 - name: gcr.io/cloud-builders/docker
-  args: ['build', '--no-cache', '-t', 'gcr.io/$PROJECT_ID/witnessme', '-f', 'dockerfiles/Dockerfile.gcloud', '.']
+  args: ['build', '--no-cache', '-t', 'gcr.io/$PROJECT_ID/witnessme', '-f', 'dockerfiles/Dockerfile.api', '.']
   timeout: 500s
 - name: gcr.io/cloud-builders/docker
   args: ['push', 'gcr.io/$PROJECT_ID/witnessme']

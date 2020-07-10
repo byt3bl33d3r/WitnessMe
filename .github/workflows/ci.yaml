@@ -16,7 +16,7 @@ jobs:
       uses: actions/cache@v2
       with:
         path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements-dev.txt') }}
         restore-keys: |
           ${{ runner.os }}-pip-
     - name: Install dev dependencies
@@ -25,19 +25,3 @@ jobs:
         pip install -r requirements-dev.txt
     - name: Run tests
       run: make tests
-    - name: Build Docker WMConsole Image and Publish to Github Packages
-      uses: whoan/docker-build-with-cache-action@v5
-      with:
-        username: ${{ secrets.GIT_USERNAME }}
-        password: ${{ secrets.GIT_TOKEN }}
-        registry: docker.pkg.github.com
-        image_name: witnessme
-    - name: Build Docker WMAPI Image and Publish to Github Packages
-      uses: whoan/docker-build-with-cache-action@v5
-      with:
-        username: ${{ secrets.GIT_USERNAME }}
-        password: ${{ secrets.GIT_TOKEN }}
-        dockerfile: dockerfiles/Dockerfile.selfhosted
-        registry: docker.pkg.github.com
-        image_name: witnessme
-        image_tag: api

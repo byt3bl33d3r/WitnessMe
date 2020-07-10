@@ -20,6 +20,7 @@ USER $USER
 COPY requirements.txt .
 
 RUN pip3 install -r requirements.txt
+RUN pip3 install gunicorn
 
 RUN pyppeteer-install
 
@@ -29,4 +30,6 @@ RUN pip3 install .
 
 WORKDIR /home/$USER
 
-ENTRYPOINT [ "witnessme" ]
+EXPOSE 8080
+
+CMD ["gunicorn", "-b", "0.0.0.0:8080", "--workers=1", "--threads=4", "--worker-class=gthread", "--log-file=-", "--worker-tmp-dir=/dev/shm", "-k", "uvicorn.workers.UvicornWorker", "witnessme.console.wmapi:app"]
