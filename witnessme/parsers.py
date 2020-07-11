@@ -105,6 +105,11 @@ class NmapParser(XmlParser):
             if "address" in item.keys() and "ports" in item.keys():
                 address = item["address"]["@addr"]
                 ports = item["ports"]["port"]
+
+                # If there's only a single port discovered, ports will be an OrderedDict
+                if isinstance(ports, OrderedDict):
+                    ports = [ ports ]
+
                 for port in ports:
                     if port["@protocol"] == "tcp" and port["state"]["@state"] == "open":
                         service = port["service"].get("@name")
