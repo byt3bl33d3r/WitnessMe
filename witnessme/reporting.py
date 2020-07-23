@@ -1,6 +1,5 @@
 import csv
 import logging
-import pathlib
 import pkg_resources
 from jinja2 import Template
 from witnessme.database import ScanDatabase
@@ -12,6 +11,7 @@ async def generate_html_report(scan_folder, db):
     results_per_page = 100
     template_path = pkg_resources.resource_filename(__name__, "templates/template.html")
 
+    log.info("Generating HTML report, please wait...")
     async with ScanDatabase(connection=db) as db:
         service_count = await db.get_service_count()
         total_pages = (
@@ -47,6 +47,7 @@ async def generate_html_report(scan_folder, db):
 
             current_page += 1
             offset += results_per_page
+        log.info("Done")
 
 
 async def generate_csv_report(scan_folder, db):
@@ -69,6 +70,7 @@ async def generate_csv_report(scan_folder, db):
             ]
         )
 
+        log.info("Generating CSV report, please wait...")
         async with ScanDatabase(connection=db) as db:
             offset = 0
             while True:
@@ -94,3 +96,4 @@ async def generate_csv_report(scan_folder, db):
                     )
 
                 offset += result_limit
+            log.info("Done")

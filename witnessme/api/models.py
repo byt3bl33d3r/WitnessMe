@@ -1,11 +1,10 @@
-import ipaddress
 import uuid
-from witnessme.scan import ScanState
+from witnessme.commands.screenshot import ScanState
 from typing import Optional, List, Union
 from pydantic import BaseModel, AnyUrl
 
 
-class ScanStats(BaseModel):
+class BrowserTasks(BaseModel):
     inputs: int
     execs: int
     pending: int
@@ -27,7 +26,7 @@ class Scan(BaseModel):
     ports: List[int]
     threads: int
     timeout: int
-    stats: ScanStats
+    stats: BrowserTasks
     state: ScanState
     report_folder: str
 

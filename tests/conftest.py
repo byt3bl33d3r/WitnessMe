@@ -1,5 +1,8 @@
 import logging
 import pytest
+from witnessme.utils import patch_pyppeteer
+
+patch_pyppeteer()
 
 handler = logging.StreamHandler()
 handler.setFormatter(logging.Formatter("[%(name)s] %(levelname)s - %(message)s"))

@@ -2,9 +2,9 @@ import asyncio
 import logging
 import uuid
 import functools
-from witnessme.scan import WitnessMe, ScanStats, ScanState
-from witnessme.api.models import *
-from witnessme.utils import patch_pyppeteer, gen_random_string, zip_scan_folder
+from witnessme.commands.screenshot import ScreenShot, ScanState
+from witnessme.api.models import Scan, ScanConfig
+from witnessme.utils import patch_pyppeteer, zip_scan_folder
 from fastapi import APIRouter, Request, Response, status, UploadFile, File
 from fastapi.responses import JSONResponse, FileResponse
 
@@ -17,7 +17,7 @@ router = APIRouter()
 @router.post("/")
 async def create_scan(scan_config: ScanConfig, request: Request):
     conf = scan_config.dict()
-    scan = WitnessMe(**conf)
+    scan = ScreenShot(**conf)
     request.app.state.SCANS.add(scan)
     return Scan.from_orm(scan)
 

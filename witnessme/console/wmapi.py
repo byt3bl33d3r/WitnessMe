@@ -29,7 +29,7 @@ class ActiveScans:
 
 app = FastAPI(title="WitnessMe API")
 app.state.SCANS = ActiveScans()
-app.include_router(scan.router, prefix="/scan", tags=["scan"])
+app.include_router(scan.router, prefix="/screenshot", tags=["scan"])
 
 
 @app.exception_handler(RequestValidationError)

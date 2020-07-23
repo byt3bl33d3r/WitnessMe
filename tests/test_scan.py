@@ -2,17 +2,14 @@ import pytest
 import pathlib
 import os
 import shutil
-from witnessme.scan import WitnessMe
-from witnessme.utils import patch_pyppeteer
-
-patch_pyppeteer()
+from witnessme.commands import ScreenShot
 
 
 @pytest.mark.asyncio
 async def test_scan():
     try:
-        scan = WitnessMe(target=["https://google.com"])
-        await scan.run()
+        scan = ScreenShot(target=["https://google.com"])
+        await scan.start()
         report_folder_path = pathlib.Path(scan.report_folder)
 
         assert report_folder_path.exists() == True

@@ -1,3 +1,4 @@
+import sys
 import xmltodict
 import pathlib
 import logging
@@ -108,7 +109,7 @@ class NmapParser(XmlParser):
 
                 # If there's only a single port discovered, ports will be an OrderedDict
                 if isinstance(ports, OrderedDict):
-                    ports = [ ports ]
+                    ports = [ports]
 
                 for port in ports:
                     if port["@protocol"] == "tcp" and port["state"]["@state"] == "open":
@@ -177,8 +178,10 @@ class AutomaticTargetGenerator(ContextDecorator):
         self.targets = targets
         self.ports = ports
 
-    def __enter__(self):
-        for target in self.targets:
+    def generate(self, targets):
+        for target in targets:
+            target = target.strip()
+
             if pathlib.Path(target).exists():
                 target = str(pathlib.Path(target).expanduser())
                 if target.lower().endswith(".nessus"):
@@ -199,6 +202,13 @@ class AutomaticTargetGenerator(ContextDecorator):
                 with TargetGenerator(target, ports=self.ports) as generated_urls:
                     for url in generated_urls:
                         yield url
+
+    def __enter__(self):
+        if "-" in self.targets:
+            log.debug("Reading targets from stdin")
+            return self.generate(sys.stdin)
+
+        return self.generate(self.targets)
 
     def __exit__(self, *exc):
         pass

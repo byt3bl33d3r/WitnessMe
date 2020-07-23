@@ -1,3 +1,4 @@
+.DS_Store
 # Scan folders
 scan_*/
 # Vscode folder

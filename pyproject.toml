@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "WitnessMe"
-version = "1.0.0"
-description = " Web Inventory tool that uses Pyppeteer (headless Chrome/Chromium) and provides some extra bells & whistles to make life easier."
+version = "1.5.0dev"
+description = "Web Inventory tool that uses Pyppeteer (headless Chrome/Chromium) and provides some extra bells & whistles to make life easier."
 authors = ["Marcello Salvati <byt3bl33d3r@pm.com>"]
 readme = "README.md"
 homepage = "https://github.com/byt3bl33d3r/WitnessMe"
@@ -35,6 +35,8 @@ uvicorn = "^0.11.5"
 pyppeteer = "^0.2.2"
 python-multipart = "^0.0.5"
 jinja2 = "^2.11.2"
+aiodns = "^2.0.0"
+lxml = "^4.5.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.4.2"

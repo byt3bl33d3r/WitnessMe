@@ -1,27 +1,30 @@
 import asyncio
-import socket
-import pyppeteer.connection
 import logging
 import string
 import random
 import zipfile
 import os
 import json
+import aiodns
+import pyppeteer
+import functools
+import argparse
 from ipaddress import ip_address
 from pyppeteer.network_manager import NetworkManager, Response
 
 log = logging.getLogger("witnessme.utils")
 
 
+class WitnessMeArgFormatter(
+    argparse.ArgumentDefaultsHelpFormatter,
+    argparse.RawTextHelpFormatter,
+    argparse.RawDescriptionHelpFormatter,
+):
+    pass
+
+
 def beautify_json(obj) -> str:
     return "\n" + json.dumps(obj, sort_keys=True, indent=4, separators=(",", ": "))
-
-
-async def resolve_host(host):
-    try:
-        return socket.gethostbyaddr(host)[0]
-    except Exception as e:
-        log.debug(f"Error resolving IP {host}: {e}")
 
 
 def is_ipaddress(host):
@@ -30,6 +33,14 @@ def is_ipaddress(host):
         return True
     except ValueError:
         return False
+
+
+def start_event_loop(f):
+    @functools.wraps(f)
+    def wrapper(*args, **kwargs):
+        return asyncio.run(f(*args, **kwargs))
+
+    return wrapper
 
 
 def gen_random_string(length=6):
@@ -60,7 +71,7 @@ def _customOnResponseReceived(self, event: dict) -> None:
 
         Let the browser handle everything! :)
 
-        Original function https://github.com/miyakogi/pyppeteer/blob/1aa0221f4fda21d59b18373e0f09071f2cd7402b/pyppeteer/network_manager.py#L255-L268
+        https://github.com/pyppeteer/pyppeteer/blob/dev/pyppeteer/network_manager.py#L260-L273
         """
 
     request = self._requestIdToRequest.get(event["requestId"])
@@ -88,22 +99,40 @@ def _customOnResponseReceived(self, event: dict) -> None:
 
 def patch_pyppeteer():
     """
-    There's a bug in pyppeteer currently (https://github.com/miyakogi/pyppeteer/issues/62) which closes the websocket connection to Chromium after ~20s.
-    This is a hack to fix that. Taken from https://github.com/miyakogi/pyppeteer/pull/160
-
-    Additionally this hooks the _onResponseReceived method with our own above.
+    This hooks the _onResponseReceived method with our own above.
     """
     log.debug("Patching pyppeteer...")
 
-    original_method = pyppeteer.connection.websockets.client.connect
-
-    def new_method(*args, **kwargs):
-        kwargs["ping_interval"] = None
-        kwargs["ping_timeout"] = None
-        return original_method(*args, **kwargs)
-
-    pyppeteer.connection.websockets.client.connect = new_method
     # Hook the onResponseReceived event
     pyppeteer.network_manager.NetworkManager._onResponseReceived = (
         _customOnResponseReceived
     )
+
+
+class AsyncDNSResolver:
+    def __init__(self):
+        self._resolver = None
+
+    async def __aenter__(self):
+        if not self._resolver:
+            self._resolver = aiodns.DNSResolver(loop=asyncio.get_running_loop())
+        return self._resolver
+
+    async def __aexit__(self, exc_type, exc_value, traceback):
+        return
+
+
+async def agethostbyaddr(addr):
+    hostname = ""
+    if not is_ipaddress(addr):
+        return addr
+
+    async with AsyncDNSResolver() as resolver:
+        try:
+            record = await asyncio.wait_for(resolver.gethostbyaddr(addr), timeout=3)
+            hostname = record.name
+            log.debug(f"Resolved {addr} to {hostname}")
+        except (asyncio.TimeoutError, aiodns.error.DNSError) as e:
+            log.debug(f"Unable to resolve {addr} to domain/host name: {e}")
+
+    return hostname

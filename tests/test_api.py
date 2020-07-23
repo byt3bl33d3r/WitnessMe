@@ -9,11 +9,11 @@ client = TestClient(app)
 
 
 def test_create_scan():
-    response = client.post("/scan/", json={"target": "192.168.0.1-20"})
+    response = client.post("/screenshot/", json={"target": "192.168.0.1-20"})
     assert response.status_code == 422
 
     response = client.post(
-        "/scan/",
+        "/screenshot/",
         json={
             "target": ["192.168.0.1-20", "https://google.com"],
             "ports": [7373],
@@ -25,17 +25,17 @@ def test_create_scan():
 
 
 def test_get_scans():
-    response = client.get("/scan/")
+    response = client.get("/screenshot/")
     created_scans = response.json()
     assert response.status_code == 200
     assert len(created_scans) == 1
 
 
 def test_get_scan_by_id():
-    response = client.get("/scan/")
+    response = client.get("/screenshot/")
     created_scans = response.json()
 
-    response = client.get(f"/scan/{list(created_scans.keys())[0]}")
+    response = client.get(f"/screenshot/{list(created_scans.keys())[0]}")
     scan_info = response.json()
 
     assert response.status_code == 200
@@ -44,7 +44,7 @@ def test_get_scan_by_id():
 
 """
 def test_scan(fake_target_file):
-    response = client.post("/scan/", json={"target": ["https://google.com"], "ports": [443], "threads": 10, "timeout": 10})
+    response = client.post("/screenshot/", json={"target": ["https://google.com"], "ports": [443], "threads": 10, "timeout": 10})
     scan = response.json()
     assert response.status_code == 200
 
@@ -52,19 +52,19 @@ def test_scan(fake_target_file):
     report_folder_path = pathlib.Path(scan['report_folder'])
 
     try:
-        response = client.get(f"/scan/{scan_id}/start")
+        response = client.get(f"/screenshot/{scan_id}/start")
         assert response.status_code == 200
 
-        response = client.get(f"/scan/{scan_id}")
+        response = client.get(f"/screenshot/{scan_id}")
         assert response.status_code == 200
         assert response.json()['state'] == 'started'
 
         sleep(6)
 
-        response = client.get(f"/scan/{scan_id}/stop")
+        response = client.get(f"/screenshot/{scan_id}/stop")
         assert response.status_code == 200
 
-        response = client.get(f"/scan/{scan_id}")
+        response = client.get(f"/screenshot/{scan_id}")
         assert response.status_code == 200
         assert response.json()['state'] == 'stopped'
     finally:
