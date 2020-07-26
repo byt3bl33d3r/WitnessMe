@@ -91,13 +91,20 @@ class HeadlessChromium:
             log.error(f"Error navigating to url {url}: {e}")
         finally:
             self.stats.execs += 1
-            await page.close()
+            try:
+                await page.close()
+            except:
+                pass
             self._queue.task_done()
 
     async def start_browser(self, n_urls: int):
         log.info("Starting headless browser")
         # --no-sandbox is required to make Chrome/Chromium run under root
-        browser_args = ["--no-sandbox", "--disable-gpu"]
+        browser_args = ["--disable-gpu", "--no-sandbox"]
+
+        if os.getuid() == 0:
+            log.warning("Running under root privileges, browser will start with --no-sandbox")
+            browser_args.append("--no-sandbox")
 
         proxy = os.environ.get("HTTP_PROXY")
         if proxy:
@@ -107,7 +114,7 @@ class HeadlessChromium:
         browser = await pyppeteer.launch(
             headless=True,
             ignoreHTTPSErrors=True,
-            autoClose=False,
+            autoClose=True,
             args=browser_args,
             executablePath=os.environ.get("CHROMIUM_EXECUTABLE_PATH"),
         )
@@ -116,22 +123,28 @@ class HeadlessChromium:
 
         try:
             worker_threads = [
-                asyncio.create_task(self.open_browser_tab(context))
+                self.open_browser_tab(context)
                 for _ in range(n_urls)
             ]
+
             log.info(f"Using {len(worker_threads)} browser tab(s)/thread(s)")
-            await asyncio.gather(*worker_threads)
+            done, pending = await asyncio.wait(worker_threads, timeout=(self.timeout * 2))
+            if len(pending):
+                log.warning(f"{len(pending)} tasks did not finish, continuing to avoid stalling")
+                for task in pending:
+                    task.cancel()
+
         except asyncio.CancelledError:
             log.info(f"Cancelling tab(s)/thread(s)")
         finally:
             try:
                 await context.close()
-            except PageError:
-                log.error("Page crashed, ignoring...")
-
-            log.info("Killing headless browser")
-            await browser.disconnect()
-            await browser.close()
+                #log.error("Page crashed, ignoring...")
+                log.info("Killing headless browser")
+                await browser.close()
+                await browser.disconnect()
+            except:
+                pass
 
     async def run(
         self, targets: List[str], ports: List[int] = [80, 8080, 443, 8443]
@@ -146,11 +159,17 @@ class HeadlessChromium:
 
         try:
             while self._queue.qsize() > 0 and not self._browser_stop_event.is_set():
-                await self.start_browser(
-                    n_urls=self.threads
-                    if self._queue.qsize() > self.threads
-                    else self._queue.qsize(),
-                )
+                try:
+                    await asyncio.wait_for(
+                            self.start_browser(
+                            n_urls=self.threads
+                            if self._queue.qsize() > self.threads
+                            else self._queue.qsize(),
+                        ),
+                        timeout=(self.timeout *2) + 10
+                    )
+                except asyncio.TimeoutError:
+                    log.error("Browser task timed out")
         finally:
             task_watcher.cancel()
 
