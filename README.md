@@ -19,6 +19,7 @@ WitnessMe uses the [Pyppeteer](https://github.com/pyppeteer/pyppeteer) library t
 
 - [WitnessMe](#witnessme)
   * [Motivation](#motivation)
+  * [Official Discord Channel](#official-discord-channel)
   * [Installation](#Installation)
     + [Docker](#docker)
     + [Python Package](#python-package)
@@ -63,6 +64,12 @@ Here are some of the main features that make WitnessMe "stand out":
 - Preview screenshots directly in the terminal (On MacOSX/ITerm2 and some Nix terminals)
 - Extensibly written, allowing you to add functionality that can take advantage of headless chromium.
 - Built to be deployed to the Clouds (e.g. GCP Cloud Run , AWS ElasticBeanstalk etc...)
+
+## Official Discord Channel
+
+Come hang out on Discord!
+
+[![Porchetta Industries](https://discordapp.com/api/guilds/736724457258745996/widget.png?style=banner3)](https://discord.gg/AKrqt6J)
 
 ## Installation
 
