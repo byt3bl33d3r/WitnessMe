@@ -37,6 +37,7 @@ WitnessMe uses the [Pyppeteer](https://github.com/pyppeteer/pyppeteer) library t
       * [Grab Mode](#grab-mode)
     + [Interacting with the Scan Database](#interacting-with-the-scan-database)
     + [Generating Reports](#generating-reports)
+    + [Proxying](#Proxying)
     + [Previewing Screenshots Directly in the Terminal](#preview-screenshots-directly-in-the-terminal)
   * [Creating Signatures](#call-for-signatures)
 
@@ -58,6 +59,7 @@ Here are some of the main features that make WitnessMe "stand out":
 - No installation/dependency hell
 - Full test suite! Everything is less prone to bugs
 - CSV & HTML reporting
+- HTTP Proxy Support
 - Provides a RESTful API! Scan stuff remotely!
 - CLI interface to view and search scan results without having to view the reports.
 - Signature scanning (Signatures use YAML files)
@@ -361,6 +363,18 @@ WMDB ≫ generate_report csv
 ```
 
 The reports will then be available in the scan folder.
+
+### Proxying
+
+As of v1.5 WitnessMe supports proxying all of its traffic through an HTTP proxy. Specify a `HTTP_PROXY` environment variable to force the underlying headless browser to proxy its traffic through the desired host:
+
+```console
+HTTP_PROXY=http://127.0.0.1:8080 witnessme screenshot ~/my_targets.txt
+```
+
+```console
+HTTP_PROXY=http://127.0.0.1:8080 witnessme grab https://www.google.com
+```
 
 ### Preview Screenshots Directly in the Terminal
 
