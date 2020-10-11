@@ -14,6 +14,8 @@ from witnessme.database import ScanDatabase
 
 log = logging.getLogger("witnessme.screenshot")
 
+class NoResponseReceived(Exception):
+    pass
 
 class ScanState(str, Enum):
     STARTED = "started"
@@ -75,6 +77,8 @@ class ScreenShot:
         dns_resolution_task = asyncio.create_task(agethostbyaddr(url.hostname))
 
         response = await page.goto(url.geturl(), options={"waitUntil": "networkidle0"})
+        if not response:
+            raise NoResponseReceived(f"Empty response was received")
 
         if not url.port:
             url = url._replace(netloc=f"{url.hostname}:{response.remotePort}")
