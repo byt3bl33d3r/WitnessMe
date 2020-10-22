@@ -107,9 +107,14 @@ class NmapParser(XmlParser):
                 try:
                     address = item["address"]["@addr"]
                 except TypeError:
-                    address = list(filter(lambda x: x["@addrtype"] == "ipv4", item["address"]))[0]["@addr"]
+                    address = list(filter(
+                        lambda x: x["@addrtype"] == "ipv4", 
+                        item["address"])
+                    )[0]["@addr"]
 
-                ports = item["ports"]["port"]
+                ports = item["ports"].get("port")
+                if not ports:
+                    return True
 
                 # If there's only a single port discovered, ports will be an OrderedDict
                 if isinstance(ports, OrderedDict):
