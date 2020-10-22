@@ -104,7 +104,11 @@ class NmapParser(XmlParser):
     def parser_callback(self, path, item):
         if isinstance(item, OrderedDict):
             if "address" in item.keys() and "ports" in item.keys():
-                address = item["address"]["@addr"]
+                try:
+                    address = item["address"]["@addr"]
+                except TypeError:
+                    address = list(filter(lambda x: x["@addrtype"] == "ipv4", item["address"]))[0]["@addr"]
+
                 ports = item["ports"]["port"]
 
                 # If there's only a single port discovered, ports will be an OrderedDict
@@ -114,10 +118,14 @@ class NmapParser(XmlParser):
                 for port in ports:
                     if port["@protocol"] == "tcp" and port["state"]["@state"] == "open":
                         service = port["service"].get("@name")
+                        tunnel = port["service"].get("@tunnel")
                         port_number = port["@portid"]
-                        if "ssl" in service or service == "https":
+                        if service in ["ssl", "https"]:
                             self.urls.add(f"https://{address}:{port_number}")
-                        elif service == "http-alt" or service == "http":
+                        # See https://github.com/byt3bl33d3r/WitnessMe/issues/19
+                        elif tunnel == "ssl" and service in ["http", "http-proxy"]:
+                            self.urls.add(f"https://{address}:{port_number}")
+                        elif service in ["http-alt", "http-proxy", "http"]:
                             self.urls.add(f"http://{address}:{port_number}")
         return True
 
