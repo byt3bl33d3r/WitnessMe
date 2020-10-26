@@ -5,6 +5,7 @@ import logging
 from collections import OrderedDict
 from ipaddress import ip_address, ip_network, summarize_address_range
 from contextlib import ContextDecorator
+from xml.parsers.expat import ExpatError
 
 log = logging.getLogger("witnessme.parsers")
 
@@ -82,12 +83,15 @@ class XmlParser(ContextDecorator):
 
     def __enter__(self):
         with open(self.xml_file_path, "rb") as xml_file_path:
-            xmltodict.parse(
-                xml_file_path,
-                item_depth=self.item_depth,
-                item_callback=self.parser_callback,
-                process_namespaces=True,
-            )
+            try:
+                xmltodict.parse(
+                    xml_file_path,
+                    item_depth=self.item_depth,
+                    item_callback=self.parser_callback,
+                    process_namespaces=True,
+                )
+            except ExpatError as e:
+                log.error(e)
 
             for url in self.urls:
                 yield url
@@ -121,7 +125,7 @@ class NmapParser(XmlParser):
                     ports = [ports]
 
                 for port in ports:
-                    if port["@protocol"] == "tcp" and port["state"]["@state"] == "open":
+                    if port["@protocol"] == "tcp" and port["state"]["@state"] == "open" and port.get("service"):
                         service = port["service"].get("@name")
                         tunnel = port["service"].get("@tunnel")
                         port_number = port["@portid"]
